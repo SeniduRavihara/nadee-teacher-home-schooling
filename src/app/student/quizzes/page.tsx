@@ -1,4 +1,5 @@
 import { ArrowRight, BookOpen, CheckCircle, Clock } from 'lucide-react';
+import Link from 'next/link';
 
 export default function StudentQuizzesPage() {
   const quizzes = [
@@ -77,7 +78,8 @@ export default function StudentQuizzesPage() {
                 </div>
               </div>
 
-              <button 
+              <Link 
+                href={`/student/quizzes/${quiz.id}`}
                 className={`w-full py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2 ${
                   quiz.status === 'Completed' 
                     ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' 
@@ -86,7 +88,7 @@ export default function StudentQuizzesPage() {
               >
                 {quiz.status === 'Completed' ? 'Review Answers' : quiz.status === 'In Progress' ? 'Continue Quiz' : 'Start Quiz'}
                 {quiz.status !== 'Completed' && <ArrowRight size={18} />}
-              </button>
+              </Link>
             </div>
           </div>
         ))}
