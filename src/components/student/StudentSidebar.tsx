@@ -5,6 +5,7 @@ import {
     BookOpen,
     LayoutDashboard,
     Star,
+    User,
     Users,
     Video
 } from 'lucide-react';
@@ -18,6 +19,7 @@ const menuItems = [
   { name: 'My Classes', href: '/student/classes', icon: Users },
   { name: 'Quizzes', href: '/student/quizzes', icon: BookOpen },
   { name: 'Video Library', href: '/student/videos', icon: Video },
+  { name: 'Profile', href: '/student/profile', icon: User },
 ];
 
 interface StudentSidebarProps {

@@ -4,6 +4,7 @@ import {
     BarChart3,
     BookOpen,
     CreditCard,
+    GraduationCap,
     LayoutDashboard,
     LogOut,
     Settings,
@@ -16,11 +17,12 @@ import { usePathname } from 'next/navigation';
 
 const menuItems = [
   { icon: LayoutDashboard, name: 'Dashboard', href: '/admin' },
+  { icon: GraduationCap, name: 'Students', href: '/admin/students' },
   { icon: BookOpen, name: 'Quizzes', href: '/admin/quizzes' },
   { icon: Users, name: 'Online Classes', href: '/admin/classes' },
   { icon: Video, name: 'Video Classes', href: '/admin/videos' },
-  { icon: CreditCard, name: 'Payments', href: '/admin/payments' }, // Added Payments link
-  { icon: BarChart3, name: 'Reports', href: '/admin/reports' }, // Changed icon and label to name
+  { icon: CreditCard, name: 'Payments', href: '/admin/payments' },
+  { icon: BarChart3, name: 'Reports', href: '/admin/reports' },
   { icon: Settings, name: 'Settings', href: '/admin/settings' },
 ];
 

@@ -43,7 +43,12 @@ export default async function QuizzesPage() {
   };
 
   const quizzes = (quizzesData || []).map(quiz => {
-    const attempt = quiz.quiz_attempts?.[0];
+    // Sort attempts by completed_at desc to get the latest one
+    const sortedAttempts = (quiz.quiz_attempts || []).sort((a: any, b: any) => 
+      new Date(b.completed_at).getTime() - new Date(a.completed_at).getTime()
+    );
+    const attempt = sortedAttempts[0];
+    
     const status = attempt ? 'Completed' : 'Not Started';
     const colors = getSubjectColors(quiz.subject);
     

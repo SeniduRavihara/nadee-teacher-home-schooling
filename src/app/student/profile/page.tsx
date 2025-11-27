@@ -82,7 +82,7 @@ export default function StudentProfilePage() {
       const { error } = await supabase
         .from('profiles')
         .update({
-          full_name: formData.fullName,
+          full_name: formData.childName, // Sync full_name with child_name
           grade: formData.grade,
           age: parseInt(formData.age) || null,
           address: formData.address,
@@ -129,24 +129,13 @@ export default function StudentProfilePage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-              <input
-                type="text"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={formData.fullName}
-                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                placeholder="Student's Full Name"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Child's Name (if different)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Child's Name</label>
               <input
                 type="text"
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={formData.childName}
                 onChange={(e) => setFormData({ ...formData, childName: e.target.value })}
-                placeholder="Preferred Name"
+                placeholder="Student's Name"
               />
             </div>
 
