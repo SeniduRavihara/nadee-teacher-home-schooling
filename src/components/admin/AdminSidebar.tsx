@@ -33,7 +33,7 @@ export default function AdminSidebar() {
         <div className="relative w-8 h-8 rounded-lg overflow-hidden">
           <Image src="/logo.jpg" alt="Logo" fill className="object-cover" />
         </div>
-        <span className="text-xl font-bold">SplashAdmin</span>
+        <span className="text-xl font-bold">NadeeTeacher</span>
       </div>
 
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
