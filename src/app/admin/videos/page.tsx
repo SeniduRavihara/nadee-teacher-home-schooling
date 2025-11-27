@@ -1,56 +1,306 @@
-import { MoreVertical, Play, Upload } from 'lucide-react';
+'use client';
 
-export default function VideosPage() {
-  const videos = [
-    { id: 1, title: 'Introduction to Algebra', duration: '15:30', views: 1200, date: '2023-11-15' },
-    { id: 2, title: 'Photosynthesis Explained', duration: '10:45', views: 850, date: '2023-11-18' },
-    { id: 3, title: 'World War II Overview', duration: '25:00', views: 2100, date: '2023-11-10' },
-    { id: 4, title: 'Basic Geometry Shapes', duration: '08:20', views: 3000, date: '2023-11-05' },
-    { id: 5, title: 'The Solar System', duration: '12:15', views: 1500, date: '2023-11-20' },
-    { id: 6, title: 'Grammar: Nouns & Verbs', duration: '18:00', views: 900, date: '2023-11-22' },
-  ];
+import { createClient } from '@/utils/supabase/client';
+import { BookOpen, Edit, Plus, Search, Trash2, Video } from 'lucide-react';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+
+interface Course {
+  id: string;
+  title: string;
+  description: string;
+  target_grade: string;
+  thumbnail_url: string;
+  created_at: string;
+}
+
+export default function AdminCoursesPage() {
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const supabase = createClient();
+
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    targetGrade: 'Preschool',
+    thumbnailUrl: ''
+  });
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('courses')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setCourses(data || []);
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEdit = (course: Course) => {
+    setEditingId(course.id);
+    setFormData({
+      title: course.title,
+      description: course.description,
+      targetGrade: course.target_grade,
+      thumbnailUrl: course.thumbnail_url || ''
+    });
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsCreateModalOpen(false);
+    setEditingId(null);
+    setFormData({
+      title: '',
+      description: '',
+      targetGrade: 'Preschool',
+      thumbnailUrl: ''
+    });
+  };
+
+  const handleSaveCourse = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const courseData = {
+        title: formData.title,
+        description: formData.description,
+        target_grade: formData.targetGrade,
+        thumbnail_url: formData.thumbnailUrl
+      };
+
+      let error;
+
+      if (editingId) {
+        // Update existing course
+        const { error: updateError } = await supabase
+          .from('courses')
+          .update(courseData)
+          .eq('id', editingId);
+        error = updateError;
+      } else {
+        // Create new course
+        const { error: insertError } = await supabase
+          .from('courses')
+          .insert([courseData]);
+        error = insertError;
+      }
+
+      if (error) throw error;
+
+      fetchCourses();
+      handleCloseModal();
+      
+    } catch (error: any) {
+      console.error('Error saving course:', error);
+      alert(`Failed to save course: ${error.message || 'Unknown error'}`);
+    }
+  };
+
+  const handleDeleteCourse = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this course? This will also delete all videos within it.')) return;
+
+    try {
+      const { error } = await supabase
+        .from('courses')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      setCourses(courses.filter(c => c.id !== id));
+    } catch (error) {
+      console.error('Error deleting course:', error);
+      alert('Failed to delete course');
+    }
+  };
+
+  const filteredCourses = courses.filter(course =>
+    course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    course.target_grade.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Video Classes</h1>
-          <p className="text-gray-500">Manage your recorded video lessons</p>
+          <h1 className="text-3xl font-bold text-gray-900">Video Courses</h1>
+          <p className="text-gray-500 mt-2">Manage your video classes and lessons</p>
         </div>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors flex items-center gap-2">
-          <Upload size={20} />
-          Upload Video
+        <button
+          onClick={() => {
+            setEditingId(null);
+            setFormData({
+              title: '',
+              description: '',
+              targetGrade: 'Preschool',
+              thumbnailUrl: ''
+            });
+            setIsCreateModalOpen(true);
+          }}
+          className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-700 transition-colors"
+        >
+          <Plus size={20} />
+          Create Course
         </button>
       </div>
 
+      {/* Search and Filter */}
+      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex gap-4">
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+          <input
+            type="text"
+            placeholder="Search courses..."
+            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* Courses List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {videos.map((video) => (
-          <div key={video.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group">
-            {/* Video Thumbnail Placeholder */}
-            <div className="relative h-48 bg-gray-200 flex items-center justify-center group-hover:bg-gray-300 transition-colors cursor-pointer">
-              <div className="w-12 h-12 bg-white/80 rounded-full flex items-center justify-center text-blue-600 backdrop-blur-sm group-hover:scale-110 transition-transform">
-                <Play size={24} fill="currentColor" />
+        {loading ? (
+          <div className="col-span-full text-center py-12 text-gray-500">Loading courses...</div>
+        ) : filteredCourses.length > 0 ? (
+          filteredCourses.map((course) => (
+            <div key={course.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
+              <div className="flex justify-between items-start mb-4">
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-600">
+                  {course.target_grade}
+                </span>
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => handleEdit(course)}
+                    className="text-gray-400 hover:text-blue-500 transition-colors"
+                  >
+                    <Edit size={18} />
+                  </button>
+                  <button 
+                    onClick={() => handleDeleteCourse(course.id)}
+                    className="text-gray-400 hover:text-red-500 transition-colors"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               </div>
-              <span className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                {video.duration}
-              </span>
+              
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{course.title}</h3>
+              <p className="text-gray-500 text-sm mb-6 line-clamp-2">{course.description}</p>
+              
+              <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
+                <div className="flex items-center gap-1">
+                  <BookOpen size={16} />
+                  <span>Course</span>
+                </div>
+                {/* We could fetch video count here if needed, or join in the query */}
+              </div>
+
+              <Link 
+                href={`/admin/videos/${course.id}`}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-white bg-gray-900 hover:bg-gray-800 transition-colors"
+              >
+                <Video size={20} />
+                Manage Videos
+              </Link>
             </div>
-            
-            <div className="p-4">
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="font-bold text-gray-900 line-clamp-2">{video.title}</h3>
-                <button className="text-gray-400 hover:text-gray-600">
-                  <MoreVertical size={16} />
+          ))
+        ) : (
+          <div className="col-span-full text-center py-12 text-gray-500">
+            No courses found. Create one to get started!
+          </div>
+        )}
+      </div>
+
+      {/* Create/Edit Course Modal */}
+      {isCreateModalOpen && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-lg p-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">{editingId ? 'Edit Course' : 'Create New Course'}</h2>
+            <form onSubmit={handleSaveCourse} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Course Title</label>
+                <input
+                  type="text"
+                  required
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  placeholder="e.g., English Grammar Basics"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <textarea
+                  required
+                  rows={3}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="What will students learn?"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Target Grade</label>
+                <select
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={formData.targetGrade}
+                  onChange={(e) => setFormData({ ...formData, targetGrade: e.target.value })}
+                >
+                  <option value="Preschool">Preschool</option>
+                  <option value="Grade 1">Grade 1</option>
+                  <option value="Grade 2">Grade 2</option>
+                  <option value="Grade 3">Grade 3</option>
+                  <option value="Grade 4">Grade 4</option>
+                  <option value="Grade 5">Grade 5</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Thumbnail URL (Optional)</label>
+                <input
+                  type="url"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={formData.thumbnailUrl}
+                  onChange={(e) => setFormData({ ...formData, thumbnailUrl: e.target.value })}
+                  placeholder="https://..."
+                />
+              </div>
+
+              <div className="flex gap-4 pt-4">
+                <button
+                  type="button"
+                  onClick={handleCloseModal}
+                  className="flex-1 px-6 py-3 rounded-xl font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-6 py-3 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                >
+                  {editingId ? 'Update Course' : 'Create Course'}
                 </button>
               </div>
-              <div className="flex justify-between text-xs text-gray-500">
-                <span>{video.views} views</span>
-                <span>{video.date}</span>
-              </div>
-            </div>
+            </form>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

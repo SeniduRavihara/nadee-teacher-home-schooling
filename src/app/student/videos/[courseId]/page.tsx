@@ -8,15 +8,15 @@ import { useState } from 'react';
 
 export default function CoursePlayerPage({ params }: { params: { courseId: string } }) {
   // Mock data - in a real app, fetch based on courseId
-  const [activeVideoId, setActiveVideoId] = useState(1);
+  const [activeVideoId, setActiveVideoId] = useState('1');
   
   const videos = [
-    { id: 1, title: 'Introduction to the Solar System', duration: '12:45', isLocked: false, isCompleted: true, isPlaying: activeVideoId === 1 },
-    { id: 2, title: 'The Sun: Our Star', duration: '15:20', isLocked: false, isCompleted: false, isPlaying: activeVideoId === 2 },
-    { id: 3, title: 'Mercury & Venus', duration: '10:15', isLocked: true, isCompleted: false, isPlaying: activeVideoId === 3 },
-    { id: 4, title: 'Earth & Mars', duration: '18:30', isLocked: true, isCompleted: false, isPlaying: activeVideoId === 4 },
-    { id: 5, title: 'Jupiter & Saturn', duration: '20:00', isLocked: true, isCompleted: false, isPlaying: activeVideoId === 5 },
-    { id: 6, title: 'Uranus & Neptune', duration: '14:10', isLocked: true, isCompleted: false, isPlaying: activeVideoId === 6 },
+    { id: '1', title: 'Introduction to the Solar System', duration: '12:45', isLocked: false, isCompleted: true, isPlaying: activeVideoId === '1' },
+    { id: '2', title: 'The Sun: Our Star', duration: '15:20', isLocked: false, isCompleted: false, isPlaying: activeVideoId === '2' },
+    { id: '3', title: 'Mercury & Venus', duration: '10:15', isLocked: true, isCompleted: false, isPlaying: activeVideoId === '3' },
+    { id: '4', title: 'Earth & Mars', duration: '18:30', isLocked: true, isCompleted: false, isPlaying: activeVideoId === '4' },
+    { id: '5', title: 'Jupiter & Saturn', duration: '20:00', isLocked: true, isCompleted: false, isPlaying: activeVideoId === '5' },
+    { id: '6', title: 'Uranus & Neptune', duration: '14:10', isLocked: true, isCompleted: false, isPlaying: activeVideoId === '6' },
   ];
 
   const activeVideo = videos.find(v => v.id === activeVideoId) || videos[0];

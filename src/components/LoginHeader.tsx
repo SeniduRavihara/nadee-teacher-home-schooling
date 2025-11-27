@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default function LoginHeader() {
@@ -8,8 +9,7 @@ export default function LoginHeader() {
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold">S</div>
-              <span className="text-2xl font-bold text-blue-900">SplashLearn</span>
+              <Image src="/logo.jpg" alt="SplashLearn" width={150} height={40} className="h-10 w-auto" />
             </Link>
           </div>
 

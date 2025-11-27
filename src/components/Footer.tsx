@@ -1,4 +1,5 @@
 import { Facebook, Instagram, Linkedin, Twitter, Youtube } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Footer() {
@@ -8,7 +9,9 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
           {/* Column 1 */}
           <div>
-            <h4 className="font-bold mb-4">SplashLearn</h4>
+            <div className="mb-4">
+              <Image src="/logo.jpg" alt="SplashLearn" width={150} height={40} className="h-8 w-auto brightness-0 invert" />
+            </div>
             <ul className="space-y-2 text-sm text-blue-200">
               <li><Link href="#" className="hover:text-white">About Us</Link></li>
               <li><Link href="#" className="hover:text-white">Careers</Link></li>

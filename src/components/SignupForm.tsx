@@ -1,11 +1,47 @@
 'use client';
 
+import { createClient } from '@/utils/supabase/client';
 import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const supabase = createClient();
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${location.origin}/auth/callback`,
+        },
+      });
+
+      if (error) throw error;
+
+      // For now, we assume auto-confirmation or just redirect to login/onboarding
+      // In a real app with email confirmation, you'd show a "Check your email" message
+      router.push('/onboarding');
+      router.refresh();
+    } catch (error: any) {
+      console.error('Signup error:', error);
+      setError(error.message || 'Failed to sign up');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-full max-w-md mx-auto">
@@ -47,11 +83,14 @@ export default function SignupForm() {
         <span className="bg-white px-4 text-gray-500 text-sm relative z-10">OR</span>
       </div>
 
-      <form className="space-y-4">
+      <form className="space-y-4" onSubmit={handleSignUp}>
         <div>
           <input
             type="email"
             placeholder="Parent Email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full px-6 py-3 rounded-full border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-gray-700"
           />
         </div>
@@ -59,6 +98,10 @@ export default function SignupForm() {
           <input
             type={showPassword ? 'text' : 'password'}
             placeholder="Set Password ( 6+ characters )"
+            required
+            minLength={6}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full px-6 py-3 rounded-full border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-gray-700"
           />
           <button
@@ -70,11 +113,16 @@ export default function SignupForm() {
           </button>
         </div>
 
+        {error && (
+          <div className="text-red-500 text-sm text-center">{error}</div>
+        )}
+
         <button
           type="submit"
-          className="w-full bg-[#5B5FC7] text-white py-3 rounded-full font-bold text-lg hover:bg-[#4a4ea3] transition-colors shadow-md mt-6"
+          disabled={loading}
+          className="w-full bg-[#5B5FC7] text-white py-3 rounded-full font-bold text-lg hover:bg-[#4a4ea3] transition-colors shadow-md mt-6 disabled:opacity-50"
         >
-          Create Account
+          {loading ? 'Creating Account...' : 'Create Account'}
         </button>
       </form>
 

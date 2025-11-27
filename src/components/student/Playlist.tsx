@@ -1,7 +1,7 @@
 import { CheckCircle, Lock, Play } from 'lucide-react';
 
 interface Video {
-  id: number;
+  id: string;
   title: string;
   duration: string;
   isLocked: boolean;
@@ -11,7 +11,7 @@ interface Video {
 
 interface PlaylistProps {
   videos: Video[];
-  onVideoSelect: (id: number) => void;
+  onVideoSelect: (id: string) => void;
 }
 
 export default function Playlist({ videos, onVideoSelect }: PlaylistProps) {

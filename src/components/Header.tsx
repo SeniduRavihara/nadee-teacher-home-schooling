@@ -1,4 +1,5 @@
 import { ChevronDown } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export function Header() {
@@ -9,7 +10,7 @@ export function Header() {
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
             <Link href="/" className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-blue-600">SplashLearn</span>
+              <Image src="/logo.jpg" alt="SplashLearn" width={150} height={40} className="h-10 w-auto" />
             </Link>
           </div>
 
