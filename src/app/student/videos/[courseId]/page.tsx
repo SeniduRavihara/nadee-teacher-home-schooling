@@ -11,6 +11,7 @@ import { use, useEffect, useState } from 'react';
 interface Video {
   id: string;
   title: string;
+  description: string;
   duration: string;
   video_url: string;
   is_locked: boolean;
