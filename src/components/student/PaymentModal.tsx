@@ -52,14 +52,11 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth 
         .getPublicUrl(fileName);
 
       // 3. Create Payment Record
-      // Ensure billing_month is the first day of the selected month
-      const billingDate = new Date(`${month}-01`);
-      
       const { error: dbError } = await supabase
         .from('payments')
         .insert({
           user_id: user.id,
-          billing_month: billingDate.toISOString(),
+          billing_month: `${month}-01`,
           amount: parseFloat(amount),
           slip_url: publicUrl,
           status: 'pending'

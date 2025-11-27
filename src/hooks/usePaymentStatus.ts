@@ -21,9 +21,11 @@ export function usePaymentStatus() {
         return;
       }
 
-      // Get current month's first day (e.g., '2025-11-01')
+      // Get current month's first day as YYYY-MM-01 (Local Time)
       const now = new Date();
-      const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const currentMonth = `${year}-${month}-01`;
 
       const { data, error } = await supabase
         .from('payments')
