@@ -30,14 +30,16 @@ ON CONFLICT (id) DO NOTHING;
 -- Videos for Course 1 (Space Exploration)
 INSERT INTO public.videos (course_id, title, description, video_url, duration, position)
 VALUES
-    ('33333333-3333-3333-3333-333333333331', 'The Sun: Our Star', 'Learn about the sun and its importance.', 'https://www.youtube.com/embed/VkW54j82e9U', '04:15', 1),
-    ('33333333-3333-3333-3333-333333333331', 'The Moon: Earth''s Satellite', 'Discover the phases of the moon.', 'https://www.youtube.com/embed/B-b4XVUQ4ld', '05:30', 2),
-    ('33333333-3333-3333-3333-333333333331', 'The Solar System', 'Tour the planets of our solar system.', 'https://www.youtube.com/embed/libKVRa01L8', '12:00', 3)
+    ('33333333-3333-3333-3333-333333333331', 'Lesson 1: Introduction', 'First video lesson.', 'https://www.youtube.com/watch?v=rMNAfMEM320', '10:00', 1),
+    ('33333333-3333-3333-3333-333333333331', 'Lesson 2: Core Concepts', 'Second video lesson.', 'https://www.youtube.com/watch?v=eLHINDvrbMM', '15:30', 2),
+    ('33333333-3333-3333-3333-333333333331', 'Lesson 3: Advanced Topics', 'Third video lesson.', 'https://www.youtube.com/watch?v=bVO69AhQquc', '12:45', 3),
+    ('33333333-3333-3333-3333-333333333331', 'Lesson 4: Summary', 'Fourth video lesson.', 'https://www.youtube.com/watch?v=uVeEAFy1z68', '08:20', 4)
 ON CONFLICT DO NOTHING;
 
 -- Videos for Course 2 (Basic Art)
 INSERT INTO public.videos (course_id, title, description, video_url, duration, position)
 VALUES
-    ('33333333-3333-3333-3333-333333333332', 'Drawing Shapes', 'How to draw circles, squares, and triangles.', 'https://www.youtube.com/embed/T8j35u1V2vM', '08:45', 1),
-    ('33333333-3333-3333-3333-333333333332', 'Primary Colors', 'Learning about Red, Blue, and Yellow.', 'https://www.youtube.com/embed/yu44JRTIxSQ', '06:20', 2)
+    ('33333333-3333-3333-3333-333333333332', 'Art Lesson 1', 'Learning the basics.', 'https://www.youtube.com/watch?v=xQThNOtJPNQ', '09:15', 1),
+    ('33333333-3333-3333-3333-333333333332', 'Art Lesson 2', 'Colors and Shapes.', 'https://www.youtube.com/watch?v=Uw9GRDRa464', '11:00', 2),
+    ('33333333-3333-3333-3333-333333333332', 'Art Lesson 3', 'Creative Drawing.', 'https://www.youtube.com/watch?v=aeVGwf9FmwU', '14:20', 3)
 ON CONFLICT DO NOTHING;

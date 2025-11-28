@@ -15,13 +15,6 @@ export default function SignupHeader() {
 
           {/* Right Side Actions */}
           <div className="flex items-center gap-4">
-             {/* Mascot Placeholder */}
-             <div className="hidden sm:block w-8 h-8 bg-pink-300 rounded-full"></div>
-             
-             <button className="hidden sm:block bg-blue-600 text-white px-4 py-2 rounded-full font-bold text-sm hover:bg-blue-700 transition-colors">
-                Sign in with Class Code
-             </button>
-             
              <Link href="/login" className="border-2 border-blue-200 text-blue-900 px-6 py-2 rounded-full font-bold text-sm hover:border-blue-600 transition-colors">
                 Log in
              </Link>

@@ -38,11 +38,32 @@ export default function LoginForm() {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${location.origin}/auth/callback`,
+        },
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      console.error('Google login error:', error);
+      setError(error.message || 'Failed to login with Google');
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="w-full max-w-md mx-auto">
       {/* Social Buttons */}
       <div className="flex gap-4 mb-6">
-        <button className="flex-1 bg-[#4285F4] text-white py-3 px-4 rounded-full font-bold flex items-center justify-center gap-2 hover:bg-[#3367D6] transition-colors">
+        <button 
+          onClick={handleGoogleLogin}
+          type="button"
+          className="flex-1 bg-[#4285F4] text-white py-3 px-4 rounded-full font-bold flex items-center justify-center gap-2 hover:bg-[#3367D6] transition-colors"
+        >
           <div className="bg-white p-1 rounded-full">
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
@@ -65,12 +86,13 @@ export default function LoginForm() {
           </div>
           <span className="text-sm">Log in with Google</span>
         </button>
-        <button className="flex-1 bg-black text-white py-3 px-4 rounded-full font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors">
+        {/* Apple Login Hidden */}
+        {/* <button className="flex-1 bg-black text-white py-3 px-4 rounded-full font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors">
           <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
             <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.64 3.4 1.63-3.12 1.88-2.6 5.75.35 7.1-.9 2.17-2.04 4.03-2.4 4.28zm-5.36-16.08c.34 1.54-1.32 2.71-2.42 2.45-.46-1.47 1.73-2.84 2.42-2.45z" />
           </svg>
           <span className="text-sm">Log in with Apple</span>
-        </button>
+        </button> */}
       </div>
 
       <div className="relative flex items-center justify-center mb-6">
