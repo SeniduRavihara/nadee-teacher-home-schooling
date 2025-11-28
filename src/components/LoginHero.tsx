@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import LoginForm from './LoginForm';
 
 export default function LoginHero() {
@@ -19,9 +20,14 @@ export default function LoginHero() {
             <div className="relative w-[400px] h-[400px] mb-8">
                {/* Abstract Shape Mask Placeholder */}
                <div className="absolute inset-0 bg-gray-200 rounded-[70%_30%_30%_70%_/_70%_70%_30%_30%] overflow-hidden border-4 border-white shadow-xl">
-                  {/* Placeholder for Family Image */}
-                  <div className="w-full h-full bg-gradient-to-br from-green-100 to-blue-100 flex items-center justify-center">
-                      <span className="text-gray-400 font-medium">Happy Learner Image</span>
+                  {/* Family Image */}
+                  <div className="w-full h-full relative">
+                      <Image 
+                        src="/nadee-teacher.jpeg" 
+                        alt="Happy Learner" 
+                        fill
+                        className="object-cover object-top"
+                      />
                   </div>
                </div>
                

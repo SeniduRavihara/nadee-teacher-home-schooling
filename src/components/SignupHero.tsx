@@ -1,4 +1,5 @@
 import { FileText, Smile, Star } from 'lucide-react';
+import Image from 'next/image';
 import SignupForm from './SignupForm';
 
 export default function SignupHero() {
@@ -20,9 +21,14 @@ export default function SignupHero() {
             <div className="relative w-[400px] h-[400px] mb-8">
                {/* Abstract Shape Mask Placeholder */}
                <div className="absolute inset-0 bg-gray-200 rounded-[30%_70%_70%_30%_/_30%_30%_70%_70%] overflow-hidden border-4 border-white shadow-xl">
-                  {/* Placeholder for Family Image */}
-                  <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
-                      <span className="text-gray-400 font-medium">Family Learning Image</span>
+                  {/* Family Image */}
+                  <div className="w-full h-full relative">
+                      <Image 
+                        src="/nadee-teacher.jpeg" 
+                        alt="Family Learning" 
+                        fill
+                        className="object-cover object-top"
+                      />
                   </div>
                </div>
                
