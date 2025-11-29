@@ -62,10 +62,18 @@ export default function SettingsPage() {
                 />
               </div>
               <div className="space-y-2 md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Site Name</label>
+              <input
+                type="text"
+                defaultValue="NadeeTeacher"
+                className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+              </div>
+              <div className="space-y-2 md:col-span-2">
                 <label className="text-sm font-medium text-gray-700">Email Address</label>
                 <input
                   type="email"
-                  defaultValue="admin@splashlearn.com"
+                  defaultValue="admin@nadeeteacher.com"
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>

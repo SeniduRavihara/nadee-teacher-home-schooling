@@ -8,6 +8,7 @@ export const metadata: Metadata = {
 
 import { AuthProvider } from '@/context/AuthContext';
 import { DataProvider } from '@/context/DataContext';
+import { DialogProvider } from '@/context/DialogContext';
 
 export default function RootLayout({
   children,
@@ -20,9 +21,11 @@ export default function RootLayout({
         className={`antialiased font-sans`}
       >
         <AuthProvider>
-          <DataProvider>
-            {children}
-          </DataProvider>
+          <DialogProvider>
+            <DataProvider>
+              {children}
+            </DataProvider>
+          </DialogProvider>
         </AuthProvider>
       </body>
     </html>

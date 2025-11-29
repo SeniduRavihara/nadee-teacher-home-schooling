@@ -1,17 +1,17 @@
-import { BookOpen, Calendar, FileText, Gamepad2 } from 'lucide-react';
+import { Calendar, ClipboardList, FileText } from 'lucide-react';
 
 export default function SomethingNew() {
   const features = [
     {
-      icon: <Gamepad2 size={40} className="text-blue-500" />,
-      title: 'Games',
-      description: 'Fun educational games for Math & Reading skills.',
+      icon: <ClipboardList size={40} className="text-blue-500" />,
+      title: 'Quizzes',
+      description: 'Fun educational quizzes for Math & Reading skills.',
       color: 'bg-blue-50',
     },
     {
       icon: <FileText size={40} className="text-orange-500" />,
-      title: 'Worksheets',
-      description: 'Printable worksheets for offline practice.',
+      title: 'Video Lessons',
+      description: 'Engaging video lessons for every topic.',
       color: 'bg-orange-50',
     },
     {
@@ -19,12 +19,6 @@ export default function SomethingNew() {
       title: 'Live Classes',
       description: 'Interactive classes with expert teachers.',
       color: 'bg-green-50',
-    },
-    {
-      icon: <BookOpen size={40} className="text-purple-500" />,
-      title: 'Learning Plans',
-      description: 'Structured plans to achieve learning goals.',
-      color: 'bg-purple-50',
     },
   ];
 
@@ -40,7 +34,7 @@ export default function SomethingNew() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <div key={index} className="flex flex-col items-center text-center">
               <div className={`w-24 h-24 ${feature.color} rounded-3xl flex items-center justify-center mb-6 shadow-sm`}>

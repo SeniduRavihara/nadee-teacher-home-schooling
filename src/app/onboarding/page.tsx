@@ -66,7 +66,19 @@ export default function OnboardingPage() {
   };
 
   return (
-    <section className="min-h-screen pt-12 pb-16 bg-white relative overflow-hidden flex items-center">
+    <section className="min-h-screen pt-24 pb-16 bg-white relative overflow-hidden flex items-center">
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm h-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+          <div className="flex justify-between items-center h-full">
+            <div className="flex-shrink-0 flex items-center gap-2">
+              <Image src="/logo.jpg" alt="NadeeTeacher" width={150} height={40} className="h-10 w-auto" />
+              <span className="text-xl font-bold text-blue-900">NadeeTeacher</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
       {/* Background Shapes */}
       <div className="absolute top-0 left-0 w-1/3 h-full bg-gray-50 rounded-r-[100px] -z-10 hidden lg:block"></div>
       

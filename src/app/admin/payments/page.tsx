@@ -28,6 +28,7 @@ export default function AdminPaymentsPage() {
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
   const [adminNote, setAdminNote] = useState('');
   const supabase = createClient();
+  const { showAlert } = useDialog();
 
   useEffect(() => {
     fetchPayments();
@@ -90,7 +91,7 @@ export default function AdminPaymentsPage() {
       .eq('id', id);
 
     if (error) {
-      alert('Error updating payment status');
+      await showAlert('Error updating payment status', 'Error');
     } else {
       setSelectedPayment(null);
       setAdminNote('');

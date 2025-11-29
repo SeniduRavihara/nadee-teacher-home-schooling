@@ -21,21 +21,21 @@ export default function CTA() {
     <section className="py-20 bg-white text-center">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-          Try SplashLearn for free
+          Try Nadee Teacher for free
         </h2>
         
         <div className="flex flex-col md:flex-row justify-center gap-8 mb-12 text-left max-w-2xl mx-auto">
            <div className="flex items-center gap-3">
               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span className="text-gray-700">No credit card required</span>
+              <span className="text-gray-700">Money-back guarantee</span>
            </div>
            <div className="flex items-center gap-3">
               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span className="text-gray-700">Cancel anytime</span>
+              <span className="text-gray-700">Access valid for the paid month</span>
            </div>
            <div className="flex items-center gap-3">
               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span className="text-gray-700">Access to all games</span>
+              <span className="text-gray-700">Full access to all resources</span>
            </div>
         </div>
 

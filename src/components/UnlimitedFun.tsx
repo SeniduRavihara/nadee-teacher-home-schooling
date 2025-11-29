@@ -14,28 +14,28 @@ const grades = [
 
 const games = [
   {
-    title: 'Counting with Animals',
+    title: 'Counting Quiz',
     grade: 'Pre-Kindergarten',
     subject: 'Math',
     image: '/placeholder-game-1.png', // Placeholder
     color: 'bg-green-100',
   },
   {
-    title: 'Shape Adventure',
+    title: 'Shape Quiz',
     grade: 'Kindergarten',
     subject: 'Math',
     image: '/placeholder-game-2.png', // Placeholder
     color: 'bg-purple-100',
   },
   {
-    title: 'Word Builder',
+    title: 'Word Quiz',
     grade: 'Grade 1',
     subject: 'Reading',
     image: '/placeholder-game-3.png', // Placeholder
     color: 'bg-orange-100',
   },
   {
-    title: 'Math Racer',
+    title: 'Math Quiz',
     grade: 'Grade 2',
     subject: 'Math',
     image: '/placeholder-game-4.png', // Placeholder
@@ -54,7 +54,7 @@ export default function UnlimitedFun() {
             Unlimited fun. Unlimited learning.
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Scientifically-designed games that bring out the best in every child.
+            Scientifically-designed quizzes that bring out the best in every child.
           </p>
         </div>
 
@@ -84,7 +84,7 @@ export default function UnlimitedFun() {
             >
               {/* Game Image Placeholder */}
               <div className={`h-40 ${game.color} relative flex items-center justify-center`}>
-                <span className="text-gray-400 font-medium">Game Preview</span>
+                <span className="text-gray-400 font-medium">Quiz Preview</span>
               </div>
               
               <div className="p-4">
@@ -102,7 +102,7 @@ export default function UnlimitedFun() {
         
         <div className="text-center mt-12">
             <button className="text-blue-600 font-bold hover:text-blue-800 flex items-center justify-center gap-2 mx-auto">
-                View all games
+                View all quizzes
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                 </svg>

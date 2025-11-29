@@ -38,6 +38,7 @@ export default function SignupHero() {
                <div className="absolute bottom-10 left-0 w-12 h-12 bg-purple-500 rounded-full"></div>
             </div>
 
+            <h1 className="text-4xl font-bold mb-6">Join NadeeTeacher Today</h1>
             <h2 className="text-xl font-bold text-[#0a0a4a] mb-8 text-center">
               Kids see fun. You see real learning outcomes.
             </h2>

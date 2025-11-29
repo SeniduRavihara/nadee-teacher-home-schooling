@@ -59,7 +59,7 @@ export default function DetailedFooter() {
                 <Link href="#" className="hover:text-white">Cookie Policy</Link>
              </div>
              <div className="text-xs text-blue-300">
-                StudyPad & SplashLearn are registered Trademarks of StudyPad, Inc.
+              &copy; {new Date().getFullYear()} NadeeTeacher. All rights reserved. Trademarks of StudyPad, Inc.
              </div>
           </div>
 

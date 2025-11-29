@@ -5,20 +5,20 @@ import { useState } from 'react';
 
 const faqs = [
   {
-    question: 'Is SplashLearn free?',
-    answer: 'SplashLearn offers a free trial for parents to explore the platform. Teachers can sign up for free access for their classrooms.',
+    question: 'Is NadeeTeacher free?',
+    answer: 'NadeeTeacher offers a free trial for parents to explore the platform. Teachers can sign up for free access for their classrooms.',
   },
   {
-    question: 'What grades does SplashLearn cover?',
-    answer: 'SplashLearn covers Pre-Kindergarten through Grade 5 for Math and Reading.',
+    question: 'What grades does NadeeTeacher cover?',
+    answer: 'NadeeTeacher covers Pre-Kindergarten through Grade 5 for Math and Reading.',
   },
   {
-    question: 'Is it aligned with Common Core?',
-    answer: 'Yes, our curriculum is aligned with Common Core State Standards and other state standards.',
+    question: "Is NadeeTeacher aligned with school curriculum?",
+    answer: "Yes, our content is aligned with Common Core and state standards.",
   },
   {
     question: 'Can I use it on multiple devices?',
-    answer: 'Yes, SplashLearn is available on iPads, Android tablets, and web browsers on computers.',
+    answer: 'Yes, NadeeTeacher is available on iPads, Android tablets, and web browsers on computers.',
   },
   {
     question: 'How do I track my child\'s progress?',

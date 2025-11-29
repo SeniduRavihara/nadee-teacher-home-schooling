@@ -6,7 +6,7 @@ export default function ExperienceGames() {
         <div className="text-center mb-16">
           <span className="text-orange-500 font-bold uppercase tracking-wider text-sm">Curriculum</span>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-2">
-            Experience games that <span className="text-purple-600">educate</span>
+            Experience quizzes that <span className="text-purple-600">educate</span>
           </h2>
         </div>
 
@@ -26,9 +26,9 @@ export default function ExperienceGames() {
             <div className="flex gap-4">
                <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-xl">1</div>
                <div>
-                 <h3 className="text-xl font-bold text-gray-900 mb-2">4000+ Scientifically designed games</h3>
+                 <h3 className="text-xl font-bold text-gray-900 mb-2">4000+ Scientifically designed quizzes</h3>
                  <p className="text-gray-600">
-                   Our games are designed by learning experts to build core skills in Math and Reading.
+                   Our quizzes are designed by learning experts to build core skills in Math and Reading.
                  </p>
                </div>
             </div>
@@ -36,9 +36,9 @@ export default function ExperienceGames() {
             <div className="flex gap-4">
                <div className="flex-shrink-0 w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold text-xl">2</div>
                <div>
-                 <h3 className="text-xl font-bold text-gray-900 mb-2">Personalized learning path</h3>
+                 <h3 className="text-xl font-bold text-gray-900 mb-2">Expert-led Classes</h3>
                  <p className="text-gray-600">
-                   The program adapts to your child's level and pace, ensuring they are always challenged but never overwhelmed.
+                   Interactive Zoom classes with experienced teachers to guide your child's learning journey.
                  </p>
                </div>
             </div>

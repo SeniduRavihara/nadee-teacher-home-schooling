@@ -1,5 +1,6 @@
 'use client';
 
+import { useDialog } from '@/context/DialogContext';
 import { createClient } from '@/utils/supabase/client';
 import { Check, Upload, X } from 'lucide-react';
 import { useState } from 'react';
@@ -19,6 +20,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth 
   );
   const [uploading, setUploading] = useState(false);
   const supabase = createClient();
+  const { showAlert } = useDialog();
 
   if (!isOpen) return null;
 
@@ -69,10 +71,10 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth 
 
       onSuccess();
       onClose();
-      alert('Payment slip uploaded successfully! Waiting for approval.');
+      await showAlert('Payment slip uploaded successfully! Waiting for approval.', 'Success');
     } catch (error: any) {
       console.error('Error uploading payment:', error);
-      alert(error.message || 'Failed to upload payment');
+      await showAlert(error.message || 'Failed to upload payment', 'Error');
     } finally {
       setUploading(false);
     }

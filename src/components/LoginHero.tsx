@@ -10,7 +10,7 @@ export default function LoginHero() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-4xl font-bold text-[#0a0a4a]">
-            Welcome back to SplashLearn
+            Welcome back to NadeeTeacher
           </h1>
         </div>
 

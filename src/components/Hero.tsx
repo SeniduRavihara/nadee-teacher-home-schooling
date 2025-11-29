@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/client';
 import { User } from '@supabase/supabase-js';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -19,8 +20,23 @@ export default function Hero() {
 
   return (
     <section className="relative bg-[#0a0a4a] text-white pt-32 pb-20 overflow-hidden">
+      {/* Video Background */}
+      <div className="absolute inset-0 z-0">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+        >
+          <source src="/Animated_educational_background.mp4" type="video/mp4" />
+        </video>
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-[#0a0a4a]/80"></div>
+      </div>
+
       {/* Background Shapes/Curve - Simplified representation */}
-      <div className="absolute bottom-0 left-0 right-0 h-16 bg-white rounded-t-[50%] transform scale-x-150 translate-y-1/2"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-16 bg-white rounded-t-[50%] transform scale-x-150 translate-y-1/2 z-10"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -35,7 +51,7 @@ export default function Hero() {
               You see real <span className="italic text-blue-300">learning outcomes</span>.
             </h1>
             <p className="text-lg text-blue-100 max-w-lg">
-              Scientifically-designed games that bring out the best in every child.
+              Scientifically-designed quizzes that bring out the best in every child.
             </p>
             
             <div className="pt-4">
@@ -52,10 +68,16 @@ export default function Hero() {
           <div className="relative h-[400px] lg:h-[500px] w-full flex items-center justify-center">
              {/* In a real app, this would be a composed image of kids and characters */}
              <div className="relative w-full h-full">
-                {/* Placeholder for the main hero graphic */}
+                {/* Main Hero Image */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-3xl border-2 border-white/10 backdrop-blur-sm flex items-center justify-center">
-                        <span className="text-white/50 text-xl font-medium">Hero Image Area</span>
+                    <div className="w-full h-full relative rounded-3xl overflow-hidden border-4 border-white/20 shadow-2xl transform hover:scale-[1.02] transition-transform duration-500">
+                        <Image 
+                          src="/nadee-teacher-hero.jpeg" 
+                          alt="Nadee Teacher Hero" 
+                          fill
+                          className="object-cover object-top"
+                          priority
+                        />
                     </div>
                 </div>
                 

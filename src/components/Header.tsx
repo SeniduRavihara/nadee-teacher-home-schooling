@@ -26,7 +26,8 @@ export function Header() {
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
             <Link href="/" className="flex items-center gap-2">
-              <Image src="/logo.jpg" alt="SplashLearn" width={150} height={40} className="h-10 w-auto" />
+              <Image src="/logo.jpg" alt="NadeeTeacher" width={150} height={40} className="h-10 w-auto" />
+              <span className="text-xl font-bold text-blue-900">NadeeTeacher</span>
             </Link>
           </div>
 

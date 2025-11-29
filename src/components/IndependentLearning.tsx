@@ -17,14 +17,14 @@ export default function IndependentLearning() {
           {/* Connecting Line */}
           <div className="absolute top-1/2 left-0 right-0 h-2 bg-yellow-200 transform -translate-y-1/2 hidden md:block rounded-full"></div>
           
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
             {/* Step 1 */}
             <div className="flex flex-col items-center">
                <div className="w-40 h-28 bg-purple-600 rounded-2xl shadow-lg flex items-center justify-center mb-4 transform rotate-[-5deg] border-4 border-white">
                  <span className="text-white font-bold">Concept</span>
                </div>
                <div className="w-8 h-8 bg-yellow-400 rounded-full border-4 border-white shadow-sm mb-2"></div>
-               <p className="text-center font-medium text-gray-800">Learn new concepts</p>
+               <p className="text-center font-medium text-gray-800">Watch Video Lessons</p>
             </div>
 
             {/* Step 2 */}
@@ -33,7 +33,7 @@ export default function IndependentLearning() {
                  <span className="text-white font-bold">Practice</span>
                </div>
                <div className="w-8 h-8 bg-yellow-400 rounded-full border-4 border-white shadow-sm mb-2"></div>
-               <p className="text-center font-medium text-gray-800">Practice with games</p>
+               <p className="text-center font-medium text-gray-800">Practice with Quizzes</p>
             </div>
 
             {/* Step 3 */}
@@ -42,16 +42,7 @@ export default function IndependentLearning() {
                  <span className="text-white font-bold">Master</span>
                </div>
                <div className="w-8 h-8 bg-yellow-400 rounded-full border-4 border-white shadow-sm mb-2"></div>
-               <p className="text-center font-medium text-gray-800">Master skills</p>
-            </div>
-
-            {/* Step 4 */}
-            <div className="flex flex-col items-center mt-8 md:mt-0">
-               <div className="w-40 h-28 bg-orange-500 rounded-2xl shadow-lg flex items-center justify-center mb-4 transform rotate-[5deg] border-4 border-white">
-                 <span className="text-white font-bold">Reward</span>
-               </div>
-               <div className="w-8 h-8 bg-yellow-400 rounded-full border-4 border-white shadow-sm mb-2"></div>
-               <p className="text-center font-medium text-gray-800">Earn rewards</p>
+               <p className="text-center font-medium text-gray-800">Attend Live Classes</p>
             </div>
           </div>
         </div>

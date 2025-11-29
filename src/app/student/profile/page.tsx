@@ -1,6 +1,7 @@
 'use client';
 
 import PaymentHistory from '@/components/student/PaymentHistory';
+import { useDialog } from '@/context/DialogContext';
 import { createClient } from '@/utils/supabase/client';
 import { CreditCard, Save, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -26,6 +27,7 @@ export default function StudentProfilePage() {
   const [activeTab, setActiveTab] = useState<'details' | 'payments'>('details');
   const [profile, setProfile] = useState<Profile | null>(null);
   const supabase = createClient();
+  const { showAlert } = useDialog();
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -97,11 +99,11 @@ export default function StudentProfilePage() {
         .eq('id', user.id);
 
       if (error) throw error;
-      alert('Profile updated successfully!');
+      await showAlert('Profile updated successfully!', 'Success');
       fetchProfile();
     } catch (error) {
       console.error('Error updating profile:', error);
-      alert('Failed to update profile');
+      await showAlert('Failed to update profile', 'Error');
     } finally {
       setSaving(false);
     }
