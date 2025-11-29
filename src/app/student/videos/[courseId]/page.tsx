@@ -23,6 +23,7 @@ interface Course {
   title: string;
   target_grade: string;
   description: string;
+  is_single_video: boolean;
 }
 
 export default function CoursePlayerPage({ params }: { params: Promise<{ courseId: string }> }) {
@@ -135,7 +136,7 @@ export default function CoursePlayerPage({ params }: { params: Promise<{ courseI
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
         {/* Video Player Area */}
-        <div className="lg:col-span-2 flex flex-col gap-4">
+        <div className={`${course.is_single_video ? 'col-span-full' : 'lg:col-span-2'} flex flex-col gap-4`}>
           {activeVideo ? (
             activeVideoIsLocked ? (
                <div className="bg-black rounded-2xl overflow-hidden aspect-video relative flex flex-col items-center justify-center text-white p-6 text-center">
@@ -169,10 +170,12 @@ export default function CoursePlayerPage({ params }: { params: Promise<{ courseI
           )}
         </div>
 
-        {/* Playlist Sidebar */}
-        <div className="h-full min-h-[400px]">
-          <Playlist videos={playlistVideos} onVideoSelect={handleVideoSelect} />
-        </div>
+        {/* Playlist Sidebar - Only show if NOT a single video course */}
+        {!course.is_single_video && (
+          <div className="h-full min-h-[400px]">
+            <Playlist videos={playlistVideos} onVideoSelect={handleVideoSelect} />
+          </div>
+        )}
       </div>
     </div>
   );

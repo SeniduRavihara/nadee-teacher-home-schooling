@@ -13,6 +13,7 @@ export default function VideosPage() {
   const { isPaid, loading: paymentLoading, checkPaymentStatus } = usePaymentStatus();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'recording' | 'movie' | 'yt_video'>('recording');
+  const [courses, setCourses] = useState<any[]>([]);
   const supabase = createClient();
 
   useEffect(() => {
@@ -68,7 +69,8 @@ export default function VideosPage() {
           thumbnailColor: getColors(course.title),
           progress: 0, // Placeholder for progress tracking
           targetGrade: course.target_grade,
-          category: course.category || 'yt_video'
+          category: course.category || 'yt_video',
+          isSingleVideo: course.is_single_video
         };
       });
 
@@ -79,8 +81,6 @@ export default function VideosPage() {
       setLoading(false);
     }
   };
-
-  const [courses, setCourses] = useState<any[]>([]);
 
   const filteredCourses = courses.filter(course => course.category === activeTab);
 
@@ -183,6 +183,11 @@ export default function VideosPage() {
                   <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                     <PlayCircle size={32} fill="currentColor" />
                   </div>
+                  {course.isSingleVideo && (
+                    <div className="absolute top-4 right-4 bg-purple-600 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-sm">
+                      Single Video
+                    </div>
+                  )}
                   <div className="absolute bottom-4 right-4 bg-black/50 backdrop-blur-md text-white text-xs px-2 py-1 rounded-lg flex items-center gap-1">
                     <Clock size={12} />
                     <span>{course.duration}</span>
@@ -194,7 +199,15 @@ export default function VideosPage() {
                   <p className="text-gray-500 text-sm mb-4 line-clamp-2">{course.description}</p>
                   
                   <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-gray-900">{course.videos} Videos</span>
+                    {course.isSingleVideo ? (
+                      <span className="font-bold text-purple-600 flex items-center gap-1">
+                        <PlayCircle size={16} />
+                        Watch Now
+                      </span>
+                    ) : (
+                      <span className="font-medium text-gray-900">{course.videos} Videos</span>
+                    )}
+                    
                     {course.progress > 0 ? (
                       <span className="text-blue-600 font-bold">{course.progress}% Complete</span>
                     ) : (

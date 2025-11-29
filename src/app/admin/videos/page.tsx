@@ -12,6 +12,7 @@ interface Course {
   target_grade: string;
   thumbnail_url: string;
   category: 'recording' | 'movie' | 'yt_video';
+  is_single_video: boolean;
   created_at: string;
 }
 
@@ -28,7 +29,10 @@ export default function AdminCoursesPage() {
     description: '',
     targetGrade: 'Preschool',
     thumbnailUrl: '',
-    category: 'yt_video' as Course['category']
+    category: 'yt_video' as Course['category'],
+    isSingleVideo: false,
+    videoUrl: '',
+    duration: ''
   });
 
   useEffect(() => {
@@ -59,7 +63,10 @@ export default function AdminCoursesPage() {
       description: course.description,
       targetGrade: course.target_grade,
       thumbnailUrl: course.thumbnail_url || '',
-      category: course.category || 'yt_video'
+      category: course.category || 'yt_video',
+      isSingleVideo: course.is_single_video || false,
+      videoUrl: '', // We don't fetch video details here for edit, user manages videos separately
+      duration: ''
     });
     setIsCreateModalOpen(true);
   };
@@ -72,7 +79,10 @@ export default function AdminCoursesPage() {
       description: '',
       targetGrade: 'Preschool',
       thumbnailUrl: '',
-      category: 'yt_video'
+      category: 'yt_video',
+      isSingleVideo: false,
+      videoUrl: '',
+      duration: ''
     });
   };
 
@@ -84,7 +94,8 @@ export default function AdminCoursesPage() {
         description: formData.description,
         target_grade: formData.targetGrade,
         thumbnail_url: formData.thumbnailUrl,
-        category: formData.category
+        category: formData.category,
+        is_single_video: formData.isSingleVideo
       };
 
       let error;
@@ -98,10 +109,33 @@ export default function AdminCoursesPage() {
         error = updateError;
       } else {
         // Create new course
-        const { error: insertError } = await supabase
+        const { data: newCourse, error: insertError } = await supabase
           .from('courses')
-          .insert([courseData]);
+          .insert([courseData])
+          .select()
+          .single();
+        
         error = insertError;
+
+        // If Single Video mode is enabled, create the video immediately
+        if (!error && newCourse && formData.isSingleVideo) {
+          const { error: videoError } = await supabase
+            .from('videos')
+            .insert([{
+              title: formData.title, // Use course title for the video
+              description: formData.description,
+              video_url: formData.videoUrl,
+              duration: formData.duration,
+              is_locked: true, // Default to locked
+              course_id: newCourse.id,
+              position: 0
+            }]);
+          
+          if (videoError) {
+            console.error('Error creating video:', videoError);
+            alert('Course created, but failed to create the video inside it.');
+          }
+        }
       }
 
       if (error) throw error;
@@ -168,7 +202,10 @@ export default function AdminCoursesPage() {
               description: '',
               targetGrade: 'Preschool',
               thumbnailUrl: '',
-              category: 'yt_video'
+              category: 'yt_video',
+              isSingleVideo: false,
+              videoUrl: '',
+              duration: ''
             });
             setIsCreateModalOpen(true);
           }}
@@ -209,6 +246,11 @@ export default function AdminCoursesPage() {
                     {getCategoryIcon(course.category || 'yt_video')}
                     {getCategoryLabel(course.category || 'yt_video')}
                   </span>
+                  {course.is_single_video && (
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-600">
+                      Single
+                    </span>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <button 
@@ -232,7 +274,7 @@ export default function AdminCoursesPage() {
               <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
                 <div className="flex items-center gap-1">
                   <BookOpen size={16} />
-                  <span>Course</span>
+                  <span>{course.is_single_video ? 'Single Video' : 'Course'}</span>
                 </div>
                 {/* We could fetch video count here if needed, or join in the query */}
               </div>
@@ -256,7 +298,7 @@ export default function AdminCoursesPage() {
       {/* Create/Edit Course Modal */}
       {isCreateModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-lg p-8">
+          <div className="bg-white rounded-2xl w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">{editingId ? 'Edit Course' : 'Create New Course'}</h2>
             <form onSubmit={handleSaveCourse} className="space-y-6">
               <div>
@@ -325,6 +367,51 @@ export default function AdminCoursesPage() {
                 />
               </div>
 
+              {/* Single Video Mode Checkbox - Only show when creating new course */}
+              {!editingId && (
+                <div className="bg-blue-50 p-4 rounded-xl space-y-4">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      checked={formData.isSingleVideo}
+                      onChange={(e) => setFormData({ ...formData, isSingleVideo: e.target.checked })}
+                    />
+                    <div>
+                      <span className="block font-bold text-gray-900">Single Video Mode</span>
+                      <span className="block text-xs text-gray-500">Create a course with one video directly</span>
+                    </div>
+                  </label>
+
+                  {formData.isSingleVideo && (
+                    <div className="space-y-4 pt-2 animate-in fade-in slide-in-from-top-2">
+                       <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Video URL</label>
+                        <input
+                          type="url"
+                          required
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          value={formData.videoUrl}
+                          onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
+                          placeholder="https://youtube.com/..."
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                        <input
+                          type="text"
+                          required
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          value={formData.duration}
+                          onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                          placeholder="e.g., 10:00"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className="flex gap-4 pt-4">
                 <button
                   type="button"
@@ -337,7 +424,7 @@ export default function AdminCoursesPage() {
                   type="submit"
                   className="flex-1 px-6 py-3 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
                 >
-                  {editingId ? 'Update Course' : 'Create Course'}
+                  {editingId ? 'Update Course' : (formData.isSingleVideo ? 'Create Course & Video' : 'Create Course')}
                 </button>
               </div>
             </form>
