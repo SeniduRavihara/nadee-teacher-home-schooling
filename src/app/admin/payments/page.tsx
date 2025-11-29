@@ -1,5 +1,6 @@
 'use client';
 
+import { useDialog } from '@/context/DialogContext';
 import { createClient } from '@/utils/supabase/client';
 import { Check, Eye, X } from 'lucide-react';
 import Image from 'next/image';

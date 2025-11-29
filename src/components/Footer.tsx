@@ -11,7 +11,7 @@ export default function Footer() {
           <div className="text-center md:text-left">
             <div className="mb-4 flex justify-center md:justify-start">
               <Link href="/">
-                <Image src="/logo.jpg" alt="Nadee Teacher" width={150} height={40} className="h-8 w-auto brightness-0 invert" />
+                <Image src="/logo.jpg" alt="Nadee Teacher" width={150} height={40} className="h-8 w-auto" />
               </Link>
             </div>
             <p className="text-blue-200 text-sm max-w-xs">

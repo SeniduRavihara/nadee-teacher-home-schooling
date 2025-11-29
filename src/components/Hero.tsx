@@ -5,6 +5,7 @@ import { User } from '@supabase/supabase-js';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import FadeIn from './animations/FadeIn';
 
 export default function Hero() {
   const [user, setUser] = useState<User | null>(null);
@@ -42,26 +43,36 @@ export default function Hero() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Text Content */}
           <div className="space-y-6">
-            <div className="inline-block bg-blue-900/50 px-4 py-1 rounded-full text-sm font-semibold text-blue-200 mb-2">
-              See learning outcomes in 2 weeks
-            </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-              Kids see fun.
-              <br />
-              You see real <span className="italic text-blue-300">learning outcomes</span>.
-            </h1>
-            <p className="text-lg text-blue-100 max-w-lg">
-              Scientifically-designed quizzes that bring out the best in every child.
-            </p>
+            <FadeIn delay={0.2} direction="right">
+              <div className="inline-block bg-blue-900/50 px-4 py-1 rounded-full text-sm font-semibold text-blue-200 mb-2">
+                See learning outcomes in 2 weeks
+              </div>
+            </FadeIn>
             
-            <div className="pt-4">
-              <Link 
-                href={user ? "/student" : "/login"}
-                className="inline-block bg-white text-blue-900 px-8 py-3 rounded-full font-bold text-lg hover:bg-blue-50 transition-colors shadow-lg text-center min-w-[160px]"
-              >
-                Get Started
-              </Link>
-            </div>
+            <FadeIn delay={0.4} direction="up">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                Kids see fun.
+                <br />
+                You see real <span className="italic text-blue-300">learning outcomes</span>.
+              </h1>
+            </FadeIn>
+
+            <FadeIn delay={0.6} direction="up">
+              <p className="text-lg text-blue-100 max-w-lg">
+                Scientifically-designed quizzes that bring out the best in every child.
+              </p>
+            </FadeIn>
+            
+            <FadeIn delay={0.8} direction="up">
+              <div className="pt-4">
+                <Link 
+                  href={user ? "/student" : "/login"}
+                  className="inline-block bg-white text-blue-900 px-8 py-3 rounded-full font-bold text-lg hover:bg-blue-50 transition-colors shadow-lg text-center min-w-[160px]"
+                >
+                  Get Started
+                </Link>
+              </div>
+            </FadeIn>
           </div>
 
           {/* Hero Image Placeholder */}
@@ -69,17 +80,19 @@ export default function Hero() {
              {/* In a real app, this would be a composed image of kids and characters */}
              <div className="relative w-full h-full">
                 {/* Main Hero Image */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-full h-full relative rounded-3xl overflow-hidden border-4 border-white/20 shadow-2xl transform hover:scale-[1.02] transition-transform duration-500">
-                        <Image 
-                          src="/nadee-teacher-hero.jpeg" 
-                          alt="Nadee Teacher Hero" 
-                          fill
-                          className="object-cover object-top"
-                          priority
-                        />
-                    </div>
-                </div>
+                <FadeIn delay={0.5} direction="left" className="w-full h-full">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-full h-full relative rounded-3xl overflow-hidden border-4 border-white/20 shadow-2xl transform hover:scale-[1.02] transition-transform duration-500">
+                          <Image 
+                            src="/nadee-teacher-hero.jpeg" 
+                            alt="Nadee Teacher Hero" 
+                            fill
+                            className="object-cover object-top"
+                            priority
+                          />
+                      </div>
+                  </div>
+                </FadeIn>
                 
                 {/* Floating Elements (Decorative) */}
                 <div className="absolute top-10 right-10 w-20 h-20 bg-yellow-400 rounded-full blur-xl opacity-20 animate-pulse"></div>
