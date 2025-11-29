@@ -6,12 +6,8 @@ import FadeIn from './animations/FadeIn';
 
 const faqs = [
   {
-    question: 'Is NadeeTeacher free?',
-    answer: 'NadeeTeacher offers a free trial for parents to explore the platform. Teachers can sign up for free access for their classrooms.',
-  },
-  {
     question: 'What grades does NadeeTeacher cover?',
-    answer: 'NadeeTeacher covers Pre-Kindergarten through Grade 5 for Math and Reading.',
+    answer: 'NadeeTeacher covers Pre-Kindergarten through Grade 5 for English.',
   },
   {
     question: "Is NadeeTeacher aligned with school curriculum?",

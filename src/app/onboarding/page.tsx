@@ -72,7 +72,7 @@ export default function OnboardingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
           <div className="flex justify-between items-center h-full">
             <div className="flex-shrink-0 flex items-center gap-2">
-              <Image src="/logo.jpg" alt="NadeeTeacher" width={150} height={40} className="h-10 w-auto" />
+              <Image src="/logo.png" alt="NadeeTeacher" width={150} height={40} className="h-10 w-auto" />
               <span className="text-xl font-bold text-blue-900">NadeeTeacher</span>
             </div>
           </div>

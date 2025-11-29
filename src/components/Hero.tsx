@@ -33,7 +33,7 @@ export default function Hero() {
           <source src="/Animated_educational_background.mp4" type="video/mp4" />
         </video>
         {/* Overlay */}
-        <div className="absolute inset-0 bg-[#0a0a4a]/80"></div>
+        <div className="absolute inset-0 bg-[#5BB7FF]/80"></div>
       </div>
 
       {/* Background Shapes/Curve - Simplified representation */}

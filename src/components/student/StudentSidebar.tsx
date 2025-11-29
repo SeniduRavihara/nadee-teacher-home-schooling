@@ -31,15 +31,21 @@ export default function StudentSidebar({ isOpen, onClose }: StudentSidebarProps)
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
-  const [stars, setStars] = useState(1250); // Default/Mock value
+  const [stars, setStars] = useState(0);
 
   useEffect(() => {
-    // Optional: Fetch real stars if available
     const fetchStars = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        // Example: Fetch from a 'stats' table or sum quiz scores
-        // For now, we keep the mock value or fetch if logic exists
+        const { data: stats } = await supabase
+          .from('student_stats')
+          .select('total_stars')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (stats) {
+          setStars(stats.total_stars || 0);
+        }
       }
     };
     fetchStars();
@@ -68,7 +74,7 @@ export default function StudentSidebar({ isOpen, onClose }: StudentSidebarProps)
         <div className="p-6 flex items-center gap-3">
            <Link href="/student" onClick={onClose} className="flex items-center gap-3">
              <div className="relative w-8 h-8 rounded-lg overflow-hidden">
-                <Image src="/logo.jpg" alt="Logo" fill className="object-cover" />
+                <Image src="/logo.png" alt="Logo" fill className="object-cover" />
              </div>
              <span className="text-xl font-bold text-gray-900">NadeeTeacher</span>
            </Link>

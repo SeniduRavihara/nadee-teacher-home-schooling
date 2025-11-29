@@ -107,9 +107,18 @@ export default function QuizPlayerPage({ params }: { params: Promise<{ quizId: s
     const score = calculateScore(finalAnswers);
     const percentage = Math.round((score / totalQuestions) * 100);
 
+    // Calculate earned points (stars)
+    let earnedPoints = 0;
+    quiz?.questions.forEach(q => {
+      if (finalAnswers[q.id] === q.correct_answer) {
+        earnedPoints += (q.points || 10);
+      }
+    });
+
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        // 1. Save Quiz Attempt
         await supabase.from('quiz_attempts').insert({
           quiz_id: quiz!.id,
           user_id: user.id,
@@ -117,6 +126,24 @@ export default function QuizPlayerPage({ params }: { params: Promise<{ quizId: s
           answers: finalAnswers,
           completed_at: new Date().toISOString()
         });
+
+        // 2. Update Student Stats (Stars)
+        const { data: stats } = await supabase
+          .from('student_stats')
+          .select('total_stars')
+          .eq('user_id', user.id)
+          .single();
+        
+        const currentStars = stats?.total_stars || 0;
+        const newTotal = currentStars + earnedPoints;
+
+        await supabase
+          .from('student_stats')
+          .update({ 
+            total_stars: newTotal,
+            last_activity_date: new Date().toISOString()
+          })
+          .eq('user_id', user.id);
       }
     } catch (error) {
       console.error('Error saving attempt:', error);
