@@ -1,150 +1,108 @@
 'use client';
 
-import { useState } from 'react';
+import { BookOpen, Calculator, GraduationCap, Palette, Rocket, Shapes } from 'lucide-react';
 import FadeIn from './animations/FadeIn';
 
-const grades = [
-  'Preschool',
-  'Grade 1',
-  'Grade 2',
-  'Grade 3',
-  'Grade 4',
-  'Grade 5',
-];
-
-const games = [
+const gradeCards = [
   {
-    title: 'Counting Adventure',
     grade: 'Preschool',
-    subject: 'Math',
-    image: '/placeholder-game-1.png',
-    color: 'bg-green-100',
+    description: 'Fun basics & discovery',
+    icon: <Shapes size={32} />,
+    color: 'bg-gradient-to-br from-pink-400 to-rose-500',
+    shadow: 'shadow-pink-200',
+    textColor: 'text-pink-600'
   },
   {
-    title: 'Word Builder',
     grade: 'Grade 1',
-    subject: 'Reading',
-    image: '/placeholder-game-3.png',
-    color: 'bg-orange-100',
+    description: 'Reading & counting',
+    icon: <BookOpen size={32} />,
+    color: 'bg-gradient-to-br from-orange-400 to-amber-500',
+    shadow: 'shadow-orange-200',
+    textColor: 'text-orange-600'
   },
   {
-    title: 'Math Challenge',
     grade: 'Grade 2',
-    subject: 'Math',
-    image: '/placeholder-game-4.png',
-    color: 'bg-blue-100',
+    description: 'Math & storytelling',
+    icon: <Calculator size={32} />,
+    color: 'bg-gradient-to-br from-green-400 to-emerald-500',
+    shadow: 'shadow-green-200',
+    textColor: 'text-green-600'
   },
   {
-    title: 'Science Explorer',
     grade: 'Grade 3',
-    subject: 'Science',
-    image: '/placeholder-game-5.png',
-    color: 'bg-teal-100',
+    description: 'Science & nature',
+    icon: <Rocket size={32} />,
+    color: 'bg-gradient-to-br from-cyan-400 to-blue-500',
+    shadow: 'shadow-cyan-200',
+    textColor: 'text-cyan-600'
   },
   {
-    title: 'History Quest',
     grade: 'Grade 4',
-    subject: 'Social Studies',
-    image: '/placeholder-game-6.png',
-    color: 'bg-red-100',
+    description: 'History & art',
+    icon: <Palette size={32} />,
+    color: 'bg-gradient-to-br from-purple-400 to-violet-500',
+    shadow: 'shadow-purple-200',
+    textColor: 'text-purple-600'
   },
   {
-    title: 'Advanced Logic',
     grade: 'Grade 5',
-    subject: 'Logic',
-    image: '/placeholder-game-7.png',
-    color: 'bg-indigo-100',
-  },
-  // Add more items to ensure every grade has at least one match for demo purposes
-  {
-    title: 'Color Match',
-    grade: 'Preschool',
-    subject: 'Art',
-    image: '/placeholder-game-8.png',
-    color: 'bg-pink-100',
+    description: 'Logic & reasoning',
+    icon: <GraduationCap size={32} />,
+    color: 'bg-gradient-to-br from-indigo-400 to-blue-600',
+    shadow: 'shadow-indigo-200',
+    textColor: 'text-indigo-600'
   },
 ];
 
 export default function UnlimitedFun() {
-  const [activeGrade, setActiveGrade] = useState('Preschool');
-
-  const filteredGames = games.filter(game => game.grade === activeGrade);
-
   return (
     <section className="py-20 bg-blue-50/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn direction="up">
-          <div className="text-center mb-12">
+          <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Unlimited fun. Unlimited learning.
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Scientifically-designed activities that bring out the best in every child.
+            <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+              Select a grade to explore scientifically-designed activities that bring out the best in every child.
             </p>
           </div>
         </FadeIn>
 
-        {/* Grade Selector */}
-        <FadeIn delay={0.2} direction="up">
-          <div className="flex flex-wrap justify-center gap-2 mb-12">
-            {grades.map((grade) => (
-              <button
-                key={grade}
-                onClick={() => setActiveGrade(grade)}
-                className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${
-                  activeGrade === grade
-                    ? 'bg-blue-900 text-white shadow-lg scale-105'
-                    : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-                }`}
+        {/* Grade Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {gradeCards.map((card, index) => (
+            <FadeIn key={card.grade} delay={0.1 * index} direction="up" className="h-full">
+              <div
+                className={`group relative h-full bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden border border-gray-100 ${card.shadow}`}
               >
-                {grade}
-              </button>
-            ))}
-          </div>
-        </FadeIn>
-
-        {/* Game Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredGames.length > 0 ? (
-            filteredGames.map((game, index) => (
-              <FadeIn key={index} delay={0.3 + index * 0.1} direction="up" className="h-full">
-                <div
-                  className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 group cursor-pointer h-full"
-                >
-                  {/* Game Image Placeholder */}
-                  <div className={`h-40 ${game.color} relative flex items-center justify-center`}>
-                    <span className="text-gray-500 font-medium opacity-70">Activity Preview</span>
+                {/* Background Decoration */}
+                <div className={`absolute top-0 right-0 w-32 h-32 ${card.color} opacity-10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-500`} />
+                
+                <div className="relative z-10">
+                  <div className={`w-16 h-16 ${card.color} rounded-2xl flex items-center justify-center text-white shadow-md mb-6 transform group-hover:rotate-6 transition-transform duration-300`}>
+                    {card.icon}
                   </div>
                   
-                  <div className="p-4">
-                    <h3 className="font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
-                      {game.title}
-                    </h3>
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <span className="bg-gray-100 px-2 py-1 rounded">{game.grade}</span>
-                      <span className="bg-gray-100 px-2 py-1 rounded">{game.subject}</span>
-                    </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                    {card.grade}
+                  </h3>
+                  
+                  <p className="text-gray-500 font-medium mb-6">
+                    {card.description}
+                  </p>
+
+                  <div className={`flex items-center gap-2 font-bold ${card.textColor} group-hover:translate-x-2 transition-transform`}>
+                    Explore Activities
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                    </svg>
                   </div>
                 </div>
-              </FadeIn>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12 text-gray-500">
-              <p>More exciting activities coming soon for {activeGrade}!</p>
-            </div>
-          )}
+              </div>
+            </FadeIn>
+          ))}
         </div>
-        
-        <FadeIn delay={0.8} direction="up">
-          <div className="text-center mt-12">
-              <button className="text-blue-600 font-bold hover:text-blue-800 flex items-center justify-center gap-2 mx-auto">
-                  View all activities
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                  </svg>
-              </button>
-          </div>
-        </FadeIn>
       </div>
     </section>
   );
