@@ -101,7 +101,7 @@ export default function ClassesPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">My Classes ({userGrade})</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Online Class ({userGrade})</h1>
         <p className="text-gray-500 mt-2">Join your live sessions and view upcoming schedule</p>
       </div>
 

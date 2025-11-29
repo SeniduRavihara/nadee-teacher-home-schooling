@@ -3,7 +3,7 @@
 import PaymentModal from '@/components/student/PaymentModal';
 import { usePaymentStatus } from '@/hooks/usePaymentStatus';
 import { createClient } from '@/utils/supabase/client';
-import { Clock, Lock, PlayCircle } from 'lucide-react';
+import { Clock, Film, Lock, MonitorPlay, PlayCircle, Video } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -12,6 +12,7 @@ export default function VideosPage() {
   const [loading, setLoading] = useState(true);
   const { isPaid, loading: paymentLoading, checkPaymentStatus } = usePaymentStatus();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'recording' | 'movie' | 'yt_video'>('recording');
   const supabase = createClient();
 
   useEffect(() => {
@@ -66,7 +67,8 @@ export default function VideosPage() {
           duration: '1h 30m', // Placeholder as we don't calculate total duration yet
           thumbnailColor: getColors(course.title),
           progress: 0, // Placeholder for progress tracking
-          targetGrade: course.target_grade
+          targetGrade: course.target_grade,
+          category: course.category || 'yt_video'
         };
       });
 
@@ -80,6 +82,8 @@ export default function VideosPage() {
 
   const [courses, setCourses] = useState<any[]>([]);
 
+  const filteredCourses = courses.filter(course => course.category === activeTab);
+
   if (loading || paymentLoading) {
     return <div className="p-8 text-center">Loading videos...</div>;
   }
@@ -91,9 +95,57 @@ export default function VideosPage() {
         <p className="text-gray-500 mt-2">Watch and learn at your own pace</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {courses.length > 0 ? (
-          courses.map((course) => (
+      {/* Tabs */}
+      <div className="flex gap-4 border-b border-gray-200 overflow-x-auto pb-1">
+        <button
+          onClick={() => setActiveTab('recording')}
+          className={`pb-3 px-4 font-medium transition-colors relative whitespace-nowrap flex items-center gap-2 ${
+            activeTab === 'recording' 
+              ? 'text-blue-600' 
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          <Video size={18} />
+          Recordings
+          {activeTab === 'recording' && (
+            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 rounded-t-full" />
+          )}
+        </button>
+
+        <button
+          onClick={() => setActiveTab('movie')}
+          className={`pb-3 px-4 font-medium transition-colors relative whitespace-nowrap flex items-center gap-2 ${
+            activeTab === 'movie' 
+              ? 'text-blue-600' 
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          <Film size={18} />
+          Movies
+          {activeTab === 'movie' && (
+            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 rounded-t-full" />
+          )}
+        </button>
+
+        <button
+          onClick={() => setActiveTab('yt_video')}
+          className={`pb-3 px-4 font-medium transition-colors relative whitespace-nowrap flex items-center gap-2 ${
+            activeTab === 'yt_video' 
+              ? 'text-blue-600' 
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          <MonitorPlay size={18} />
+          YT Videos
+          {activeTab === 'yt_video' && (
+            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 rounded-t-full" />
+          )}
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        {filteredCourses.length > 0 ? (
+          filteredCourses.map((course) => (
             <div key={course.id} className="relative group bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all hover:-translate-y-1">
               
               {/* Locking Overlay */}
@@ -149,7 +201,13 @@ export default function VideosPage() {
           ))
         ) : (
           <div className="col-span-full text-center py-12 text-gray-500">
-            No video courses available for {userGrade}.
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+              {activeTab === 'recording' && <Video size={32} />}
+              {activeTab === 'movie' && <Film size={32} />}
+              {activeTab === 'yt_video' && <MonitorPlay size={32} />}
+            </div>
+            <h3 className="text-lg font-bold text-gray-900">No {activeTab.replace('_', ' ')}s found</h3>
+            <p className="text-gray-500 mt-1">Check back later for new content!</p>
           </div>
         )}
       </div>

@@ -51,15 +51,18 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth 
         .from('payment-slips')
         .getPublicUrl(fileName);
 
-      // 3. Create Payment Record
+      // 3. Create or Update Payment Record
       const { error: dbError } = await supabase
         .from('payments')
-        .insert({
+        .upsert({
           user_id: user.id,
           billing_month: `${month}-01`,
           amount: parseFloat(amount),
           slip_url: publicUrl,
-          status: 'pending'
+          status: 'pending',
+          admin_note: null // Clear any previous rejection notes
+        }, {
+          onConflict: 'user_id, billing_month'
         });
 
       if (dbError) throw dbError;

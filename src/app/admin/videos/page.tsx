@@ -1,7 +1,7 @@
 'use client';
 
 import { createClient } from '@/utils/supabase/client';
-import { BookOpen, Edit, Plus, Search, Trash2, Video } from 'lucide-react';
+import { BookOpen, Edit, Film, MonitorPlay, Plus, Search, Trash2, Video } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -11,6 +11,7 @@ interface Course {
   description: string;
   target_grade: string;
   thumbnail_url: string;
+  category: 'recording' | 'movie' | 'yt_video';
   created_at: string;
 }
 
@@ -26,7 +27,8 @@ export default function AdminCoursesPage() {
     title: '',
     description: '',
     targetGrade: 'Preschool',
-    thumbnailUrl: ''
+    thumbnailUrl: '',
+    category: 'yt_video' as Course['category']
   });
 
   useEffect(() => {
@@ -56,7 +58,8 @@ export default function AdminCoursesPage() {
       title: course.title,
       description: course.description,
       targetGrade: course.target_grade,
-      thumbnailUrl: course.thumbnail_url || ''
+      thumbnailUrl: course.thumbnail_url || '',
+      category: course.category || 'yt_video'
     });
     setIsCreateModalOpen(true);
   };
@@ -68,7 +71,8 @@ export default function AdminCoursesPage() {
       title: '',
       description: '',
       targetGrade: 'Preschool',
-      thumbnailUrl: ''
+      thumbnailUrl: '',
+      category: 'yt_video'
     });
   };
 
@@ -79,7 +83,8 @@ export default function AdminCoursesPage() {
         title: formData.title,
         description: formData.description,
         target_grade: formData.targetGrade,
-        thumbnail_url: formData.thumbnailUrl
+        thumbnail_url: formData.thumbnailUrl,
+        category: formData.category
       };
 
       let error;
@@ -132,6 +137,22 @@ export default function AdminCoursesPage() {
     course.target_grade.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case 'movie': return <Film size={16} />;
+      case 'recording': return <Video size={16} />;
+      default: return <MonitorPlay size={16} />;
+    }
+  };
+
+  const getCategoryLabel = (category: string) => {
+    switch (category) {
+      case 'movie': return 'Movie';
+      case 'recording': return 'Recording';
+      default: return 'YT Video';
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
@@ -146,7 +167,8 @@ export default function AdminCoursesPage() {
               title: '',
               description: '',
               targetGrade: 'Preschool',
-              thumbnailUrl: ''
+              thumbnailUrl: '',
+              category: 'yt_video'
             });
             setIsCreateModalOpen(true);
           }}
@@ -179,9 +201,15 @@ export default function AdminCoursesPage() {
           filteredCourses.map((course) => (
             <div key={course.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
               <div className="flex justify-between items-start mb-4">
-                <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-600">
-                  {course.target_grade}
-                </span>
+                <div className="flex gap-2">
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-600">
+                    {course.target_grade}
+                  </span>
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-600 flex items-center gap-1">
+                    {getCategoryIcon(course.category || 'yt_video')}
+                    {getCategoryLabel(course.category || 'yt_video')}
+                  </span>
+                </div>
                 <div className="flex gap-2">
                   <button 
                     onClick={() => handleEdit(course)}
@@ -255,20 +283,35 @@ export default function AdminCoursesPage() {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Target Grade</label>
-                <select
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={formData.targetGrade}
-                  onChange={(e) => setFormData({ ...formData, targetGrade: e.target.value })}
-                >
-                  <option value="Preschool">Preschool</option>
-                  <option value="Grade 1">Grade 1</option>
-                  <option value="Grade 2">Grade 2</option>
-                  <option value="Grade 3">Grade 3</option>
-                  <option value="Grade 4">Grade 4</option>
-                  <option value="Grade 5">Grade 5</option>
-                </select>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Target Grade</label>
+                  <select
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={formData.targetGrade}
+                    onChange={(e) => setFormData({ ...formData, targetGrade: e.target.value })}
+                  >
+                    <option value="Preschool">Preschool</option>
+                    <option value="Grade 1">Grade 1</option>
+                    <option value="Grade 2">Grade 2</option>
+                    <option value="Grade 3">Grade 3</option>
+                    <option value="Grade 4">Grade 4</option>
+                    <option value="Grade 5">Grade 5</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                  <select
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
+                  >
+                    <option value="yt_video">YT Video</option>
+                    <option value="recording">Recording</option>
+                    <option value="movie">Movie</option>
+                  </select>
+                </div>
               </div>
 
               <div>
