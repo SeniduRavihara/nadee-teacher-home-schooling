@@ -16,7 +16,7 @@ import { useEffect, useState } from 'react';
 
 const menuItems = [
   { name: 'Dashboard', href: '/student', icon: LayoutDashboard },
-  { name: 'Online Class', href: '/student/classes', icon: Users },
+  { name: 'Zoom classes', href: '/student/classes', icon: Users },
   { name: 'Quizzes', href: '/student/quizzes', icon: BookOpen },
   { name: 'Video Library', href: '/student/videos', icon: Video },
   { name: 'Profile', href: '/student/profile', icon: User },

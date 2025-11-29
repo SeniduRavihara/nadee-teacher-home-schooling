@@ -47,6 +47,15 @@ export async function updateSession(request: NextRequest) {
 
     const isOnboarding = request.nextUrl.pathname === '/onboarding'
     const isProfileCompleted = profile?.is_profile_completed
+    const isAuthPage = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/signup')
+
+    // If user is logged in and tries to access auth pages, redirect them
+    if (isAuthPage) {
+      if (!isProfileCompleted) {
+        return NextResponse.redirect(new URL('/onboarding', request.url))
+      }
+      return NextResponse.redirect(new URL('/student', request.url))
+    }
 
     // If profile is not completed and user is not on onboarding page, redirect to onboarding
     if (!isProfileCompleted && !isOnboarding && !request.nextUrl.pathname.startsWith('/auth') && !request.nextUrl.pathname.startsWith('/login') && !request.nextUrl.pathname.startsWith('/signup')) {

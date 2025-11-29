@@ -1,8 +1,24 @@
-import { ChevronDown } from 'lucide-react';
+'use client';
+
+import { createClient } from '@/utils/supabase/client';
+import { User } from '@supabase/supabase-js';
+import { ChevronDown, LayoutDashboard } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export function Header() {
+  const [user, setUser] = useState<User | null>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, [supabase]);
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,15 +49,27 @@ export function Header() {
 
           {/* Auth Buttons */}
           <div className="flex items-center space-x-4">
-            <Link href="/login" className="text-blue-600 font-bold hover:text-blue-700">
-              Log In
-            </Link>
-            <Link
-              href="/signup"
-              className="bg-blue-600 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition-colors"
-            >
-              Sign Up
-            </Link>
+            {user ? (
+              <Link
+                href="/student"
+                className="bg-blue-600 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition-colors flex items-center gap-2"
+              >
+                <LayoutDashboard size={18} />
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" className="text-blue-600 font-bold hover:text-blue-700">
+                  Log In
+                </Link>
+                <Link
+                  href="/signup"
+                  className="bg-blue-600 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition-colors"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

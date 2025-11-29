@@ -1,5 +1,22 @@
+'use client';
+
+import { createClient } from '@/utils/supabase/client';
+import { User } from '@supabase/supabase-js';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function CTA() {
+  const [user, setUser] = useState<User | null>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, [supabase]);
+
   return (
     <section className="py-20 bg-white text-center">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -22,9 +39,12 @@ export default function CTA() {
            </div>
         </div>
 
-        <button className="bg-blue-900 text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-blue-800 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">
+        <Link 
+          href={user ? "/student" : "/signup"}
+          className="inline-block bg-blue-900 text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-blue-800 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
+        >
           Sign Up for Free
-        </button>
+        </Link>
         
         {/* Decorative elements */}
         <div className="mt-12 flex justify-center gap-4 opacity-50">

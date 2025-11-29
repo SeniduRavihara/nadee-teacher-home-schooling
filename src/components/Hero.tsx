@@ -1,5 +1,22 @@
+'use client';
+
+import { createClient } from '@/utils/supabase/client';
+import { User } from '@supabase/supabase-js';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function Hero() {
+  const [user, setUser] = useState<User | null>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, [supabase]);
+
   return (
     <section className="relative bg-[#0a0a4a] text-white pt-32 pb-20 overflow-hidden">
       {/* Background Shapes/Curve - Simplified representation */}
@@ -21,13 +38,13 @@ export default function Hero() {
               Scientifically-designed games that bring out the best in every child.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <button className="bg-white text-blue-900 px-8 py-3 rounded-full font-bold text-lg hover:bg-blue-50 transition-colors shadow-lg">
-                I'm a Parent
-              </button>
-              <button className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-full font-bold text-lg hover:bg-white/10 transition-colors">
-                I'm a Teacher
-              </button>
+            <div className="pt-4">
+              <Link 
+                href={user ? "/student" : "/login"}
+                className="inline-block bg-white text-blue-900 px-8 py-3 rounded-full font-bold text-lg hover:bg-blue-50 transition-colors shadow-lg text-center min-w-[160px]"
+              >
+                Get Started
+              </Link>
             </div>
           </div>
 

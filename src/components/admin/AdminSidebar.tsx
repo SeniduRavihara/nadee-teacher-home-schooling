@@ -19,7 +19,7 @@ const menuItems = [
   { icon: LayoutDashboard, name: 'Dashboard', href: '/admin' },
   { icon: GraduationCap, name: 'Students', href: '/admin/students' },
   { icon: BookOpen, name: 'Quizzes', href: '/admin/quizzes' },
-  { icon: Users, name: 'Online Classes', href: '/admin/classes' },
+  { icon: Users, name: 'Zoom classes', href: '/admin/classes' },
   { icon: Video, name: 'Video Classes', href: '/admin/videos' },
   { icon: CreditCard, name: 'Payments', href: '/admin/payments' },
   { icon: BarChart3, name: 'Reports', href: '/admin/reports' },

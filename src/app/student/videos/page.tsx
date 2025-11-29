@@ -90,9 +90,22 @@ export default function VideosPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Video Library ({userGrade})</h1>
-        <p className="text-gray-500 mt-2">Watch and learn at your own pace</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Video Library ({userGrade})</h1>
+          <p className="text-gray-500 mt-2">Watch and learn at your own pace</p>
+        </div>
+        
+        {/* Introductory Video */}
+        <div className="relative w-40 h-24 bg-gray-900 rounded-xl overflow-hidden shadow-md border-2 border-white transition-all duration-300 hover:scale-[2.5] hover:shadow-xl hover:z-50 origin-top-right group cursor-pointer">
+          <iframe 
+            src="https://www.youtube.com/embed/jfKfPfyJRdk?controls=0&mute=1" 
+            className="w-full h-full object-cover"
+            title="Intro Video"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          />
+          <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors pointer-events-none" />
+        </div>
       </div>
 
       {/* Tabs */}
