@@ -1,13 +1,13 @@
 'use client';
 
-import { BookOpen, Calculator, GraduationCap, Palette, Rocket, Shapes } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import FadeIn from './animations/FadeIn';
 
 const gradeCards = [
   {
     grade: 'Preschool',
     description: 'Fun basics & discovery',
-    icon: <Shapes size={32} />,
+    icon: <BookOpen size={32} />,
     color: 'bg-gradient-to-br from-pink-400 to-rose-500',
     shadow: 'shadow-pink-200',
     textColor: 'text-pink-600'
@@ -23,7 +23,7 @@ const gradeCards = [
   {
     grade: 'Grade 2',
     description: 'Math & storytelling',
-    icon: <Calculator size={32} />,
+    icon: <BookOpen size={32} />,
     color: 'bg-gradient-to-br from-green-400 to-emerald-500',
     shadow: 'shadow-green-200',
     textColor: 'text-green-600'
@@ -31,7 +31,7 @@ const gradeCards = [
   {
     grade: 'Grade 3',
     description: 'Science & nature',
-    icon: <Rocket size={32} />,
+    icon: <BookOpen size={32} />,
     color: 'bg-gradient-to-br from-cyan-400 to-blue-500',
     shadow: 'shadow-cyan-200',
     textColor: 'text-cyan-600'
@@ -39,7 +39,7 @@ const gradeCards = [
   {
     grade: 'Grade 4',
     description: 'History & art',
-    icon: <Palette size={32} />,
+    icon: <BookOpen size={32} />,
     color: 'bg-gradient-to-br from-purple-400 to-violet-500',
     shadow: 'shadow-purple-200',
     textColor: 'text-purple-600'
@@ -47,7 +47,7 @@ const gradeCards = [
   {
     grade: 'Grade 5',
     description: 'Logic & reasoning',
-    icon: <GraduationCap size={32} />,
+    icon: <BookOpen size={32} />,
     color: 'bg-gradient-to-br from-indigo-400 to-blue-600',
     shadow: 'shadow-indigo-200',
     textColor: 'text-indigo-600'

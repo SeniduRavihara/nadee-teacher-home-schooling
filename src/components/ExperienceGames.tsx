@@ -1,4 +1,5 @@
 
+import Image from 'next/image';
 import FadeIn from './animations/FadeIn';
 
 export default function ExperienceGames() {
@@ -17,13 +18,14 @@ export default function ExperienceGames() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Device Mockup Placeholder */}
           <FadeIn delay={0.2} direction="right" className="w-full">
-            <div className="relative h-[300px] md:h-[400px] w-full bg-gray-100 rounded-3xl flex items-center justify-center overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-gray-400 font-medium">Device Mockup (Desktop & Mobile)</span>
-              </div>
-              {/* Decorative elements */}
-              <div className="absolute top-1/4 left-1/4 w-16 h-16 bg-blue-500 rounded-full blur-xl opacity-20"></div>
-              <div className="absolute bottom-1/4 right-1/4 w-20 h-20 bg-pink-500 rounded-full blur-xl opacity-20"></div>
+            <div className="relative w-full flex items-center justify-center">
+              <Image
+                src="/images/quiz-mockup.png"
+                alt="Quiz Interface Mockup"
+                width={600}
+                height={400}
+                className="w-full h-auto object-contain"
+              />
             </div>
           </FadeIn>
 
