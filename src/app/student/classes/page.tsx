@@ -48,12 +48,16 @@ export default function ClassesPage() {
 
       const formattedClasses = (data || []).map(cls => {
         const startTime = new Date(cls.start_time);
+        const durationMs = (cls.duration_minutes || 60) * 60 * 1000;
+        const endTime = new Date(startTime.getTime() + durationMs);
         const now = new Date();
-        const diff = startTime.getTime() - now.getTime();
         
         let status = 'Upcoming';
-        if (diff < 0 && diff > -3600000) status = 'Live'; // Within last hour
-        else if (diff <= -3600000) status = 'Completed';
+        if (now >= startTime && now < endTime) {
+          status = 'Live';
+        } else if (now >= endTime) {
+          status = 'Completed';
+        }
 
         const dateStr = startTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         const timeStr = startTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
@@ -80,7 +84,8 @@ export default function ClassesPage() {
           color: colors.color,
           lightColor: colors.light,
           textColor: colors.text,
-          targetGrade: cls.target_grade
+          targetGrade: cls.target_grade,
+          zoomLink: cls.zoom_link
         };
       });
 
@@ -93,6 +98,14 @@ export default function ClassesPage() {
   };
 
   const [classes, setClasses] = useState<any[]>([]);
+
+  const handleClassAction = (cls: any) => {
+    if (cls.status === 'Upcoming') {
+      alert('Reminder set! (This is a demo feature)');
+    } else if (cls.status === 'Completed') {
+      alert('Recording not available yet.');
+    }
+  };
 
   if (loading || paymentLoading) {
     return <div className="p-8 text-center">Loading classes...</div>;
@@ -153,9 +166,23 @@ export default function ClassesPage() {
                 </div>
               </div>
 
-              <button className={`w-full mt-6 py-3 rounded-xl font-bold text-white transition-opacity ${cls.color} ${cls.status === 'Completed' ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'}`}>
-                {cls.status === 'Live' ? 'Join Now' : cls.status === 'Completed' ? 'Watch Recording' : 'Set Reminder'}
-              </button>
+              {cls.status === 'Live' ? (
+                <a 
+                  href={cls.zoomLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`block w-full mt-6 py-3 rounded-xl font-bold text-white text-center transition-opacity ${cls.color} hover:opacity-90`}
+                >
+                  Join Now
+                </a>
+              ) : (
+                <button 
+                  onClick={() => handleClassAction(cls)}
+                  className={`w-full mt-6 py-3 rounded-xl font-bold text-white transition-opacity ${cls.color} ${cls.status === 'Completed' ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'}`}
+                >
+                  {cls.status === 'Completed' ? 'Watch Recording' : 'Set Reminder'}
+                </button>
+              )}
             </div>
           ))
         ) : (

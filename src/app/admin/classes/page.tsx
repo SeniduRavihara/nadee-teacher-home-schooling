@@ -56,7 +56,13 @@ export default function ClassesPage() {
     
     // Parse ISO string to date and time
     const dateObj = new Date(classItem.start_time);
-    const date = dateObj.toISOString().split('T')[0];
+    
+    // Get local date components to avoid timezone shifts
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const date = `${year}-${month}-${day}`;
+    
     const time = dateObj.toTimeString().slice(0, 5); // HH:MM
 
     setFormData({
@@ -312,6 +318,8 @@ export default function ClassesPage() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={formData.zoomLink}
                   onChange={(e) => setFormData({...formData, zoomLink: e.target.value})}
+                  pattern="https?://.*"
+                  title="Please enter a valid URL starting with http:// or https://"
                 />
               </div>
 
