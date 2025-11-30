@@ -27,7 +27,7 @@ export default function Hero() {
           src="/full-background.jpeg"
           alt="Background"
           fill
-          className="object-cover"
+          className="object-cover object-top"
           priority
         />
         {/* Overlay */}
