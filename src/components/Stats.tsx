@@ -2,9 +2,9 @@ import FadeIn from './animations/FadeIn';
 
 export default function Stats() {
   const stats = [
-    { label: 'Young Learners', value: '25,000+' },
+    { label: 'Learners', value: '10,000+' },
     { label: 'English & Phonics Skills', value: '300+' },
-    { label: 'Trusted Parents & Educators', value: '4,500+' },
+    { label: 'Trusted Parents', value: '200,000+' },
   ];
 
   return (
@@ -12,7 +12,7 @@ export default function Stats() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn direction="up">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900">Set 2: Suitable for Early-Childhood / English Teaching</h2>
+            <h2 className="text-3xl font-bold text-gray-900">Join millions of confident learners</h2>
           </div>
         </FadeIn>
         
