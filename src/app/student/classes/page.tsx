@@ -166,14 +166,14 @@ export default function ClassesPage() {
                 </div>
               </div>
 
-              {cls.status === 'Live' ? (
+              {cls.status === 'Live' || cls.status === 'Upcoming' ? (
                 <a 
                   href={cls.zoomLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`block w-full mt-6 py-3 rounded-xl font-bold text-white text-center transition-opacity ${cls.color} hover:opacity-90`}
                 >
-                  Join Now
+                  {cls.status === 'Live' ? 'Join Now' : 'Join Early'}
                 </a>
               ) : (
                 <button 

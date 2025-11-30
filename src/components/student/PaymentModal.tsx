@@ -14,7 +14,7 @@ interface PaymentModalProps {
 
 export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth }: PaymentModalProps) {
   const [file, setFile] = useState<File | null>(null);
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState('1000');
   const [month, setMonth] = useState(
     billingMonth ? billingMonth.toISOString().slice(0, 7) : new Date().toISOString().slice(0, 7)
   );
@@ -113,9 +113,8 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth 
             <input
               type="number"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="e.g. 2500"
-              className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none"
+              readOnly
+              className="w-full p-3 border border-gray-200 rounded-xl bg-gray-100 text-gray-500 cursor-not-allowed focus:outline-none"
               required
             />
           </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { createClient } from '@/utils/supabase/client';
-import { Search, User } from 'lucide-react';
+import { Download, Search, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface Student {
@@ -19,6 +19,7 @@ export default function AdminStudentsPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('All');
+  const [downloading, setDownloading] = useState(false);
 
   const supabase = createClient();
 
@@ -43,6 +44,55 @@ export default function AdminStudentsPage() {
     }
   };
 
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      // 1. Get current billing month
+      const now = new Date();
+      const billingMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+      const monthName = now.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+      // 2. Fetch payments for this month
+      const { data: payments, error: paymentError } = await supabase
+        .from('payments')
+        .select('user_id, status')
+        .eq('billing_month', billingMonth);
+
+      if (paymentError) throw paymentError;
+
+      // Create a map for quick lookup
+      const paymentMap = new Map();
+      payments?.forEach(p => paymentMap.set(p.user_id, p.status));
+
+      // 3. Generate Excel Data
+      const studentsToExport = filteredStudents.length > 0 ? filteredStudents : students;
+
+      const excelData = studentsToExport.map(student => ({
+        'Student Name': student.full_name || '',
+        'Email': student.email || '',
+        'Grade': student.grade || '',
+        'Parent Name': student.parent_name || '',
+        'Contact Number': student.contact_number || '',
+        [`Payment Status (${monthName})`]: paymentMap.get(student.id) || 'Not Paid'
+      }));
+
+      // 4. Create Workbook and Download
+      // Dynamically import xlsx to avoid server-side issues if any
+      const XLSX = await import('xlsx');
+      const worksheet = XLSX.utils.json_to_sheet(excelData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Students');
+      
+      XLSX.writeFile(workbook, `students_payment_status_${billingMonth}.xlsx`);
+
+    } catch (error) {
+      console.error('Error downloading Excel:', error);
+      alert('Failed to download student data.');
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   const filteredStudents = students.filter(student => {
     const matchesSearch = (student.full_name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
                           (student.email?.toLowerCase() || '').includes(searchTerm.toLowerCase());
@@ -57,8 +107,18 @@ export default function AdminStudentsPage() {
           <h1 className="text-3xl font-bold text-gray-900">Students</h1>
           <p className="text-gray-500 mt-2">Manage and view all registered students</p>
         </div>
-        <div className="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg font-medium">
-          Total Students: {students.length}
+        <div className="flex items-center gap-4">
+          <div className="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg font-medium">
+            Total Students: {students.length}
+          </div>
+          <button
+            onClick={handleDownload}
+            disabled={downloading}
+            className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700 transition-colors disabled:opacity-50"
+          >
+            <Download size={20} />
+            {downloading ? 'Exporting...' : 'Download Excel'}
+          </button>
         </div>
       </div>
 

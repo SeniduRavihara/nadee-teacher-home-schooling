@@ -9,12 +9,25 @@ import { useEffect, useState } from 'react';
 
 export function Header() {
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<{ child_name: string; grade: string } | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
+
+      if (user) {
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('child_name, grade')
+          .eq('id', user.id)
+          .single();
+        
+        if (profileData) {
+          setProfile(profileData);
+        }
+      }
     };
     getUser();
   }, [supabase]);
@@ -51,13 +64,33 @@ export function Header() {
           {/* Auth Buttons */}
           <div className="flex items-center space-x-4">
             {user ? (
-              <Link
-                href="/student"
-                className="bg-blue-600 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition-colors flex items-center gap-2"
-              >
-                <LayoutDashboard size={18} />
-                Dashboard
-              </Link>
+              <div className="flex items-center gap-4">
+                {profile?.child_name ? (
+                  <Link href="/student/profile" className="flex items-center gap-3 hover:bg-gray-50 p-2 rounded-full transition-colors">
+                     <div className="text-right hidden sm:block">
+                        <div className="text-sm font-bold text-gray-900 leading-tight">{profile.child_name}</div>
+                        <div className="text-xs text-gray-500 font-medium">{profile.grade}</div>
+                     </div>
+                     <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center border-2 border-white shadow-sm overflow-hidden">
+                        {/* Placeholder Avatar - could be replaced with actual avatar if available */}
+                        <Image 
+                          src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.child_name}`} 
+                          alt={profile.child_name}
+                          width={40}
+                          height={40}
+                        />
+                     </div>
+                  </Link>
+                ) : (
+                  <Link
+                    href="/student"
+                    className="bg-blue-600 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition-colors flex items-center gap-2"
+                  >
+                    <LayoutDashboard size={18} />
+                    Dashboard
+                  </Link>
+                )}
+              </div>
             ) : (
               <>
                 <Link href="/login" className="text-blue-600 font-bold hover:text-blue-700">
