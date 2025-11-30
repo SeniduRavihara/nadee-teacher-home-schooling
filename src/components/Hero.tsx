@@ -21,19 +21,17 @@ export default function Hero() {
 
   return (
     <section className="relative bg-[#0a0a4a] text-white pt-32 pb-20 overflow-hidden">
-      {/* Video Background */}
+      {/* Background Image */}
       <div className="absolute inset-0 z-0">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover"
-        >
-          <source src="/Animated_educational_background.mp4" type="video/mp4" />
-        </video>
+        <Image
+          src="/full-background.jpeg"
+          alt="Background"
+          fill
+          className="object-cover"
+          priority
+        />
         {/* Overlay */}
-        <div className="absolute inset-0 bg-[#000]/90"></div>
+        <div className="absolute inset-0 bg-[#000]/30"></div>
       </div>
 
       {/* Background Shapes/Curve - Simplified representation */}
@@ -73,31 +71,6 @@ export default function Hero() {
                 </Link>
               </div>
             </FadeIn>
-          </div>
-
-          {/* Hero Image Placeholder */}
-          <div className="relative h-[400px] lg:h-[500px] w-full flex items-center justify-center">
-             {/* In a real app, this would be a composed image of kids and characters */}
-             <div className="relative w-full h-full">
-                {/* Main Hero Image */}
-                <FadeIn delay={0.5} direction="left" className="w-full h-full">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-full h-full relative rounded-3xl overflow-hidden border-4 border-white/20 shadow-2xl transform hover:scale-[1.02] transition-transform duration-500">
-                          <Image 
-                            src="/nadee-teacher-hero.jpeg" 
-                            alt="Nadee Teacher Hero" 
-                            fill
-                            className="object-cover object-top"
-                            priority
-                          />
-                      </div>
-                  </div>
-                </FadeIn>
-                
-                {/* Floating Elements (Decorative) */}
-                <div className="absolute top-10 right-10 w-20 h-20 bg-yellow-400 rounded-full blur-xl opacity-20 animate-pulse"></div>
-                <div className="absolute bottom-10 left-10 w-32 h-32 bg-purple-500 rounded-full blur-xl opacity-20"></div>
-             </div>
           </div>
         </div>
       </div>
