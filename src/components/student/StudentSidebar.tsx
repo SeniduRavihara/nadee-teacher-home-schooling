@@ -72,7 +72,7 @@ export default function StudentSidebar({ isOpen, onClose }: StudentSidebarProps)
       `}>
         {/* Logo Section */}
         <div className="p-6 flex items-center gap-3">
-           <Link href="/student" onClick={onClose} className="flex items-center gap-3">
+           <Link href="/" onClick={onClose} className="flex items-center gap-3">
              <div className="relative w-8 h-8 rounded-lg overflow-hidden">
                 <Image src="/logo.png" alt="Logo" fill className="object-cover" />
              </div>
