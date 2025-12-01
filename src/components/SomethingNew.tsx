@@ -18,7 +18,7 @@ export default function SomethingNew() {
     {
       icon: <Calendar size={40} className="text-green-500" />,
       title: 'Live Classes',
-      description: 'Interactive classes with expert teachers.',
+      description: 'Interactive classes with NadeeTeacher.',
       color: 'bg-green-50',
     },
   ];

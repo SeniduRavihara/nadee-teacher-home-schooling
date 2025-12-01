@@ -37,7 +37,7 @@ export default function ExperienceGames() {
                  <div>
                    <h3 className="text-xl font-bold text-gray-900 mb-2">4000+ Scientifically designed quizzes</h3>
                    <p className="text-gray-600">
-                     Our quizzes are designed by learning experts to build core skills in Math and Reading.
+                     Our quizzes are designed by NadeeTeacher to build core skills in Math and Reading.
                    </p>
                  </div>
               </div>
@@ -47,9 +47,9 @@ export default function ExperienceGames() {
               <div className="flex gap-4">
                  <div className="flex-shrink-0 w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold text-xl">2</div>
                  <div>
-                   <h3 className="text-xl font-bold text-gray-900 mb-2">Expert-led Classes</h3>
+                   <h3 className="text-xl font-bold text-gray-900 mb-2">NadeeTeacher's Classes</h3>
                    <p className="text-gray-600">
-                     Interactive Zoom classes with experienced teachers to guide your child's learning journey.
+                     Interactive Zoom classes with NadeeTeacher to guide your child's learning journey.
                    </p>
                  </div>
               </div>
