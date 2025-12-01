@@ -24,7 +24,7 @@ export default function ExperienceGames() {
                 alt="Quiz Interface Mockup"
                 width={600}
                 height={400}
-                className="w-full h-auto object-contain"
+                className="w-3/4 h-auto object-contain rounded-3xl border-8 border-white shadow-2xl rotate-3 hover:rotate-0 transition-all duration-500 ease-in-out"
               />
             </div>
           </FadeIn>
