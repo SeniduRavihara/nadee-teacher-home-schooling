@@ -1,13 +1,11 @@
-'use client';
-
-import { BookOpen } from 'lucide-react';
+import Image from 'next/image';
 import FadeIn from './animations/FadeIn';
 
 const gradeCards = [
   {
     grade: 'Preschool',
     description: 'Fun basics & discovery',
-    icon: <BookOpen size={32} />,
+    icon: <Image src="/images/preschool-icon.png" alt="Preschool" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-pink-400 to-rose-500',
     shadow: 'shadow-pink-200',
     textColor: 'text-pink-600'
@@ -15,7 +13,7 @@ const gradeCards = [
   {
     grade: 'Grade 1',
     description: 'Reading & counting',
-    icon: <BookOpen size={32} />,
+    icon: <Image src="/images/grade1-icon.png" alt="Grade 1" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-orange-400 to-amber-500',
     shadow: 'shadow-orange-200',
     textColor: 'text-orange-600'
@@ -23,7 +21,7 @@ const gradeCards = [
   {
     grade: 'Grade 2',
     description: 'Math & storytelling',
-    icon: <BookOpen size={32} />,
+    icon: <Image src="/images/grade2-icon.png" alt="Grade 2" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-green-400 to-emerald-500',
     shadow: 'shadow-green-200',
     textColor: 'text-green-600'
@@ -31,7 +29,7 @@ const gradeCards = [
   {
     grade: 'Grade 3',
     description: 'Science & nature',
-    icon: <BookOpen size={32} />,
+    icon: <Image src="/images/grade2-icon.png" alt="Grade 3" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-cyan-400 to-blue-500',
     shadow: 'shadow-cyan-200',
     textColor: 'text-cyan-600'
@@ -39,7 +37,7 @@ const gradeCards = [
   {
     grade: 'Grade 4',
     description: 'History & art',
-    icon: <BookOpen size={32} />,
+    icon: <Image src="/images/grade2-icon.png" alt="Grade 4" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-purple-400 to-violet-500',
     shadow: 'shadow-purple-200',
     textColor: 'text-purple-600'
@@ -47,7 +45,7 @@ const gradeCards = [
   {
     grade: 'Grade 5',
     description: 'Logic & reasoning',
-    icon: <BookOpen size={32} />,
+    icon: <Image src="/images/grade2-icon.png" alt="Grade 5" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-indigo-400 to-blue-600',
     shadow: 'shadow-indigo-200',
     textColor: 'text-indigo-600'
