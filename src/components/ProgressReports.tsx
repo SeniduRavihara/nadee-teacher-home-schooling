@@ -1,4 +1,5 @@
 import { Check } from 'lucide-react';
+import Image from 'next/image';
 import FadeIn from './animations/FadeIn';
 
 export default function ProgressReports() {
@@ -42,23 +43,13 @@ export default function ProgressReports() {
 
           {/* Dashboard Mockup */}
           <FadeIn direction="left" className="order-1 lg:order-2 relative">
-             <div className="relative w-full aspect-[4/3] bg-blue-50 rounded-3xl p-6 shadow-xl transform rotate-2 hover:rotate-0 transition-transform duration-500">
-                {/* Mockup UI */}
-                <div className="bg-white w-full h-full rounded-2xl shadow-inner p-4 flex flex-col gap-4">
-                    <div className="flex justify-between items-center border-b pb-4">
-                        <div className="w-1/3 h-4 bg-gray-200 rounded"></div>
-                        <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
-                    </div>
-                    <div className="flex gap-4">
-                        <div className="w-1/2 h-32 bg-blue-100 rounded-xl"></div>
-                        <div className="w-1/2 h-32 bg-purple-100 rounded-xl"></div>
-                    </div>
-                    <div className="flex-1 bg-gray-50 rounded-xl p-4">
-                        <div className="w-full h-4 bg-gray-200 rounded mb-2"></div>
-                        <div className="w-3/4 h-4 bg-gray-200 rounded mb-2"></div>
-                        <div className="w-1/2 h-4 bg-gray-200 rounded"></div>
-                    </div>
-                </div>
+             <div className="relative w-full aspect-[4/3] transform rotate-2 hover:rotate-0 transition-transform duration-500">
+                <Image 
+                  src="/images/progress-report-mockup.png" 
+                  alt="Progress Report Dashboard" 
+                  fill 
+                  className="object-contain drop-shadow-2xl rounded-3xl"
+                />
                 
                 {/* Floating Badge */}
                 <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-lg flex items-center gap-3 animate-bounce">

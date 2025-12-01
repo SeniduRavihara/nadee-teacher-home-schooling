@@ -1,4 +1,4 @@
-
+import Image from 'next/image';
 import FadeIn from './animations/FadeIn';
 
 export default function IndependentLearning() {
@@ -25,8 +25,13 @@ export default function IndependentLearning() {
             {/* Step 1 */}
             <FadeIn delay={0.2} direction="up" className="h-full">
               <div className="flex flex-col items-center">
-                 <div className="w-40 h-28 bg-purple-600 rounded-2xl shadow-lg flex items-center justify-center mb-4 transform rotate-[-5deg] border-4 border-white">
-                   <span className="text-white font-bold">Concept</span>
+                 <div className="w-48 h-48 relative mb-4 transform rotate-[-5deg] hover:rotate-0 transition-transform duration-300">
+                   <Image 
+                     src="/images/concept-learning.png" 
+                     alt="Watch Video Lessons" 
+                     fill
+                     className="object-cover rounded-2xl shadow-lg border-4 border-white"
+                   />
                  </div>
                  <div className="w-8 h-8 bg-yellow-400 rounded-full border-4 border-white shadow-sm mb-2"></div>
                  <p className="text-center font-medium text-gray-800">Watch Video Lessons</p>
@@ -36,8 +41,13 @@ export default function IndependentLearning() {
             {/* Step 2 */}
             <FadeIn delay={0.4} direction="up" className="h-full">
               <div className="flex flex-col items-center mt-8 md:mt-0">
-                 <div className="w-40 h-28 bg-blue-500 rounded-2xl shadow-lg flex items-center justify-center mb-4 transform rotate-[3deg] border-4 border-white">
-                   <span className="text-white font-bold">Practice</span>
+                 <div className="w-48 h-48 relative mb-4 transform rotate-[3deg] hover:rotate-0 transition-transform duration-300">
+                   <Image 
+                     src="/images/practice-quiz.png" 
+                     alt="Practice with Quizzes" 
+                     fill
+                     className="object-cover rounded-2xl shadow-lg border-4 border-white"
+                   />
                  </div>
                  <div className="w-8 h-8 bg-yellow-400 rounded-full border-4 border-white shadow-sm mb-2"></div>
                  <p className="text-center font-medium text-gray-800">Practice with Quizzes</p>
@@ -47,8 +57,13 @@ export default function IndependentLearning() {
             {/* Step 3 */}
             <FadeIn delay={0.6} direction="up" className="h-full">
               <div className="flex flex-col items-center">
-                 <div className="w-40 h-28 bg-green-500 rounded-2xl shadow-lg flex items-center justify-center mb-4 transform rotate-[-2deg] border-4 border-white">
-                   <span className="text-white font-bold">Master</span>
+                 <div className="w-48 h-48 relative mb-4 transform rotate-[-2deg] hover:rotate-0 transition-transform duration-300">
+                   <Image 
+                     src="/images/mastery-celebration.png" 
+                     alt="Attend Live Classes" 
+                     fill
+                     className="object-cover rounded-2xl shadow-lg border-4 border-white"
+                   />
                  </div>
                  <div className="w-8 h-8 bg-yellow-400 rounded-full border-4 border-white shadow-sm mb-2"></div>
                  <p className="text-center font-medium text-gray-800">Attend Live Classes</p>
