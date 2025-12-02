@@ -49,9 +49,10 @@ export default function Hero() {
             
             <FadeIn delay={0.4} direction="up">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                Kids see fun.
+                <span className="text-5xl md:text-6xl lg:text-7xl inline-block font-bold">Kids see fun.</span>
                 <br />
-                <span className="text-5xl md:text-6xl lg:text-7xl inline-block">You see real</span> <span className="italic text-blue-300">learning outcomes</span>.
+                <span className="text-5xl md:text-6xl lg:text-7xl inline-block font-bold">You see real</span>{' '}
+                <span className="italic text-blue-300">learning outcomes</span>.
               </h1>
             </FadeIn>
 
