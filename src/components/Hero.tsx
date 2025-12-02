@@ -49,16 +49,16 @@ export default function Hero() {
             
             <FadeIn delay={0.4} direction="up">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                <span className="text-5xl md:text-6xl lg:text-7xl inline-block font-bold">Kids see fun.</span>
+                 <span className="text-6xl md:text-7xl lg:text-8xl inline-block font-bold font-chewy tracking-wider">Kids see fun.</span>
                 <br />
-                <span className="text-5xl md:text-6xl lg:text-7xl inline-block font-bold">You see real</span>{' '}
+                 <span className="text-6xl md:text-7xl lg:text-8xl inline-block font-bold font-chewy tracking-wider">You see real</span>{' '}
                 <span className="italic text-blue-300">learning outcomes</span>.
               </h1>
             </FadeIn>
 
             <FadeIn delay={0.6} direction="up">
-              <p className="text-lg text-blue-100 max-w-lg">
-                Scientifically-designed quizzes that bring out the best in every child.
+              <p className="text-lg font-bold text-blue-100 max-w-lg">
+                Engaging English activities that bring out the best in every child.
               </p>
             </FadeIn>
             
