@@ -1,9 +1,11 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import FadeIn from './animations/FadeIn';
 
 const gradeCards = [
   {
     grade: 'Preschool',
+    slug: 'preschool',
     description: 'Fun basics & discovery',
     icon: <Image src="/images/preschool-icon.png" alt="Preschool" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-pink-400 to-rose-500',
@@ -12,6 +14,7 @@ const gradeCards = [
   },
   {
     grade: 'Grade 1',
+    slug: 'grade-1',
     description: 'Reading & counting',
     icon: <Image src="/images/grade1-icon.png" alt="Grade 1" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-orange-400 to-amber-500',
@@ -20,6 +23,7 @@ const gradeCards = [
   },
   {
     grade: 'Grade 2',
+    slug: 'grade-2',
     description: 'Math & storytelling',
     icon: <Image src="/images/grade2-icon.png" alt="Grade 2" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-green-400 to-emerald-500',
@@ -28,6 +32,7 @@ const gradeCards = [
   },
   {
     grade: 'Grade 3',
+    slug: 'grade-3',
     description: 'Science & nature',
     icon: <Image src="/images/grade2-icon.png" alt="Grade 3" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-cyan-400 to-blue-500',
@@ -36,6 +41,7 @@ const gradeCards = [
   },
   {
     grade: 'Grade 4',
+    slug: 'grade-4',
     description: 'History & art',
     icon: <Image src="/images/grade2-icon.png" alt="Grade 4" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-purple-400 to-violet-500',
@@ -44,6 +50,7 @@ const gradeCards = [
   },
   {
     grade: 'Grade 5',
+    slug: 'grade-5',
     description: 'Logic & reasoning',
     icon: <Image src="/images/grade2-icon.png" alt="Grade 5" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-indigo-400 to-blue-600',
@@ -71,33 +78,35 @@ export default function UnlimitedFun() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {gradeCards.map((card, index) => (
             <FadeIn key={card.grade} delay={0.1 * index} direction="up" className="h-full">
-              <div
-                className={`group relative h-full bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden border border-gray-100 ${card.shadow}`}
-              >
-                {/* Background Decoration */}
-                <div className={`absolute top-0 right-0 w-32 h-32 ${card.color} opacity-10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-500`} />
-                
-                <div className="relative z-10">
-                  <div className={`w-16 h-16 ${card.color} rounded-2xl flex items-center justify-center text-white shadow-md mb-6 transform group-hover:rotate-6 transition-transform duration-300`}>
-                    {card.icon}
-                  </div>
+              <Link href={`/classes/${card.slug}`} className="block h-full">
+                <div
+                  className={`group relative h-full bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden border border-gray-100 ${card.shadow}`}
+                >
+                  {/* Background Decoration */}
+                  <div className={`absolute top-0 right-0 w-32 h-32 ${card.color} opacity-10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-500`} />
                   
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                    {card.grade}
-                  </h3>
-                  
-                  <p className="text-gray-500 font-medium mb-6">
-                    {card.description}
-                  </p>
+                  <div className="relative z-10">
+                    <div className={`w-16 h-16 ${card.color} rounded-2xl flex items-center justify-center text-white shadow-md mb-6 transform group-hover:rotate-6 transition-transform duration-300`}>
+                      {card.icon}
+                    </div>
+                    
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                      {card.grade}
+                    </h3>
+                    
+                    <p className="text-gray-500 font-medium mb-6">
+                      {card.description}
+                    </p>
 
-                  <div className={`flex items-center gap-2 font-bold ${card.textColor} group-hover:translate-x-2 transition-transform`}>
-                    Explore Activities
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                    </svg>
+                    <div className={`flex items-center gap-2 font-bold ${card.textColor} group-hover:translate-x-2 transition-transform`}>
+                      Explore Activities
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             </FadeIn>
           ))}
         </div>

@@ -37,16 +37,36 @@ export function Header() {
           {/* Navigation */}
           <nav className="hidden md:flex space-x-8">
             <div className="relative group">
-              <button className="text-gray-600 hover:text-blue-600 font-medium flex items-center gap-1">
-                Parents <ChevronDown size={16} />
+              <button className="text-gray-600 hover:text-blue-600 font-medium flex items-center gap-1 py-2">
+                Classes <ChevronDown size={16} />
               </button>
+              
+              {/* Dropdown Menu */}
+              <div className="absolute top-full left-0 w-48 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
+                <div className="py-2">
+                  <Link href="/classes/preschool" className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition-colors">
+                    Preschool
+                  </Link>
+                  <Link href="/classes/grade-1" className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition-colors">
+                    Grade 1
+                  </Link>
+                  <Link href="/classes/grade-2" className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition-colors">
+                    Grade 2
+                  </Link>
+                  <Link href="/classes/grade-3" className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition-colors">
+                    Grade 3
+                  </Link>
+                  <Link href="/classes/grade-4" className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition-colors">
+                    Grade 4
+                  </Link>
+                  <Link href="/classes/grade-5" className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition-colors">
+                    Grade 5
+                  </Link>
+                </div>
+              </div>
             </div>
-            <div className="relative group">
-              <button className="text-gray-600 hover:text-blue-600 font-medium flex items-center gap-1">
-                Educators <ChevronDown size={16} />
-              </button>
-            </div>
-            <Link href="#" className="text-gray-600 hover:text-blue-600 font-medium">
+
+            <Link href="#" className="text-gray-600 hover:text-blue-600 font-medium py-2">
               Our Story
             </Link>
           </nav>
