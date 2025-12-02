@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import IndependentLearning from '@/components/IndependentLearning';
+import OurStory from '@/components/OurStory';
 import ProgressReports from '@/components/ProgressReports';
 import SomethingNew from '@/components/SomethingNew';
 import Stats from '@/components/Stats';
@@ -21,6 +22,7 @@ export default function Home() {
       <SomethingNew />
       <IndependentLearning />
       <ProgressReports />
+      <OurStory />
       <FAQ />
       <CTA />
       <Footer />

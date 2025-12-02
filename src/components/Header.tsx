@@ -66,7 +66,7 @@ export function Header() {
               </div>
             </div>
 
-            <Link href="#" className="text-gray-600 hover:text-blue-600 font-medium py-2">
+            <Link href="/#our-story" className="text-gray-600 hover:text-blue-600 font-medium py-2">
               Our Story
             </Link>
           </nav>

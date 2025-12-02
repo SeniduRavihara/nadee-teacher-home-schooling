@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
+import { Facebook, Phone, Youtube } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -14,17 +14,19 @@ export default function Footer() {
                 <Image src="/logo.png" alt="Nadee Teacher" width={150} height={40} className="h-8 w-auto" />
               </Link>
             </div>
-            <p className="text-blue-200 text-sm max-w-xs">
+            <p className="text-blue-200 text-sm max-w-xs mb-4">
               Empowering students with interactive quizzes and expert-led classes.
             </p>
+            <div className="flex items-center justify-center md:justify-start gap-2 text-blue-200">
+              <Phone size={16} />
+              <span className="font-medium">070 700 1709</span>
+            </div>
           </div>
 
           {/* Socials */}
           <div className="flex gap-6">
-             <Link href="#" className="text-blue-200 hover:text-white transition-colors"><Facebook size={24} /></Link>
-             <Link href="#" className="text-blue-200 hover:text-white transition-colors"><Twitter size={24} /></Link>
-             <Link href="#" className="text-blue-200 hover:text-white transition-colors"><Instagram size={24} /></Link>
-             <Link href="#" className="text-blue-200 hover:text-white transition-colors"><Youtube size={24} /></Link>
+             <Link href="https://web.facebook.com/NadeeTeacherHomeSchooling" target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-white transition-colors"><Facebook size={24} /></Link>
+             <Link href="https://www.youtube.com/c/nadeeteacherhomeschooling" target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-white transition-colors"><Youtube size={24} /></Link>
           </div>
         </div>
 
