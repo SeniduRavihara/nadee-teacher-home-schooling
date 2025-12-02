@@ -162,7 +162,7 @@ export default function VideosPage() {
             <div key={course.id} className="relative group bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all hover:-translate-y-1">
               
               {/* Locking Overlay */}
-              {!isPaid && (
+              {!isPaid && activeTab !== 'yt_video' && (
                 <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-20 flex flex-col items-center justify-center text-center p-4">
                   <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
                     <Lock className="text-gray-500" size={24} />

@@ -24,6 +24,7 @@ interface Course {
   target_grade: string;
   description: string;
   is_single_video: boolean;
+  category: string;
 }
 
 export default function CoursePlayerPage({ params }: { params: Promise<{ courseId: string }> }) {
@@ -46,7 +47,7 @@ export default function CoursePlayerPage({ params }: { params: Promise<{ courseI
       // 1. Fetch Course Details
       const { data: courseData, error: courseError } = await supabase
         .from('courses')
-        .select('*')
+        .select('*, category')
         .eq('id', courseId)
         .single();
 
@@ -104,10 +105,10 @@ export default function CoursePlayerPage({ params }: { params: Promise<{ courseI
 
   // Map videos to Playlist format
   const playlistVideos = videos.map(v => {
-    // Logic: Locked if (video is premium AND user not paid)
+    // Logic: Locked if (video is premium AND user not paid AND category is not yt_video)
     // If video.is_locked is false, it's free for everyone.
-    // If video.is_locked is true, it requires payment.
-    const isLocked = v.is_locked && !isPaid;
+    // If video.is_locked is true, it requires payment, unless it's a YT video.
+    const isLocked = v.is_locked && !isPaid && course?.category !== 'yt_video';
 
     return {
       id: v.id,
@@ -120,7 +121,7 @@ export default function CoursePlayerPage({ params }: { params: Promise<{ courseI
   });
 
   // Check if active video is locked
-  const activeVideoIsLocked = activeVideo && activeVideo.is_locked && !isPaid;
+  const activeVideoIsLocked = activeVideo && activeVideo.is_locked && !isPaid && course?.category !== 'yt_video';
 
   return (
     <div className="space-y-6 h-[calc(100vh-8rem)] flex flex-col">

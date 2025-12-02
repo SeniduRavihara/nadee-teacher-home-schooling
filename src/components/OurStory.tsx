@@ -12,30 +12,44 @@ export default function OurStory() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           
-          {/* Image Side */}
           <FadeIn direction="right" className="relative">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-[2rem] transform rotate-3 opacity-10"></div>
-              <div className="relative bg-white p-4 rounded-[2rem] shadow-xl border-4 border-white transform -rotate-2 hover:rotate-0 transition-transform duration-500">
-                <div className="aspect-[4/5] relative rounded-2xl overflow-hidden bg-blue-50">
+            <div className="relative w-full max-w-sm mx-auto">
+              {/* Background Blob */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-200 to-purple-200 rounded-[3rem] transform rotate-6 opacity-30 blur-xl"></div>
+
+              {/* Main Image (Teacher 1) */}
+              <div className="relative z-10 bg-white p-3 rounded-[2.5rem] shadow-2xl transform -rotate-2 hover:rotate-0 transition-transform duration-500">
+                <div className="aspect-[3/4] relative rounded-[2rem] overflow-hidden">
                   <Image
-                    src="https://api.dicebear.com/7.x/avataaars/svg?seed=NadeeTeacher&backgroundColor=b6e3f4"
-                    alt="NadeeTeacher"
+                    src="/nadee-teacher1.jpeg"
+                    alt="NadeeTeacher Portrait"
                     fill
                     className="object-cover"
                   />
-                  
-                  {/* Floating Badge */}
-                  <div className="absolute bottom-6 right-6 bg-white py-3 px-5 rounded-full shadow-lg flex items-center gap-2 animate-bounce-slow">
-                    <Heart className="text-red-500 fill-current" size={20} />
-                    <span className="font-bold text-gray-800">Passionate Educator</span>
-                  </div>
                 </div>
+              </div>
+
+              {/* Secondary Image (Teacher 2) - Floating */}
+              <div className="absolute -bottom-12 -right-12 w-2/3 border-4 border-white bg-white rounded-[2rem] shadow-xl transform rotate-3 hover:rotate-6 transition-transform duration-500 z-20 hidden sm:block">
+                <div className="aspect-[4/3] relative rounded-[1.8rem] overflow-hidden">
+                  <Image
+                    src="/nadee-teacher2.jpeg"
+                    alt="NadeeTeacher Teaching"
+                    fill
+                    className="object-cover object-[center_15%]"
+                  />
+                </div>
+              </div>
+
+              {/* Floating Badge */}
+              <div className="absolute top-10 -left-8 bg-white py-3 px-5 rounded-full shadow-lg flex items-center gap-2 animate-bounce-slow z-30">
+                <Heart className="text-red-500 fill-current" size={20} />
+                {/* <span className="font-bold text-gray-800">Passionate Educator</span> */}
               </div>
               
               {/* Decorative Elements */}
-              <Star className="absolute -top-6 -left-6 text-yellow-400 fill-current animate-spin-slow" size={48} />
-              <Sparkles className="absolute -bottom-8 -right-4 text-purple-400" size={40} />
+              <Star className="absolute -top-12 -right-8 text-yellow-400 fill-current animate-spin-slow z-0" size={56} />
+              <Sparkles className="absolute bottom-20 -left-12 text-purple-400 z-0" size={48} />
             </div>
           </FadeIn>
 

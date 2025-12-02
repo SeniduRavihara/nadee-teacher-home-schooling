@@ -1,4 +1,5 @@
-import { Bell, Search, User } from 'lucide-react';
+import { Bell, LayoutDashboard, Search, User } from 'lucide-react';
+import Link from 'next/link';
 
 export default function AdminHeader() {
   return (
@@ -15,6 +16,14 @@ export default function AdminHeader() {
 
       {/* Right Side Actions */}
       <div className="flex items-center gap-6">
+        <Link 
+          href="/student" 
+          className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors bg-gray-50 hover:bg-blue-50 px-3 py-2 rounded-lg"
+        >
+          <LayoutDashboard size={18} />
+          Student View
+        </Link>
+
         <button className="relative text-gray-500 hover:text-blue-600 transition-colors">
           <Bell size={20} />
           <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
