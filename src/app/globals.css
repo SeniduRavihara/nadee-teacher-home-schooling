@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@theme {
+  --font-chewy: var(--font-chewy);
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

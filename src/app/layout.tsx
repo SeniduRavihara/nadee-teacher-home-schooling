@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
+import { Chewy } from 'next/font/google';
 import "./globals.css";
+
+const chewy = Chewy({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-chewy",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`antialiased font-sans`}
+        className={`antialiased font-sans ${chewy.variable}`}
       >
         <AuthProvider>
           <DialogProvider>
