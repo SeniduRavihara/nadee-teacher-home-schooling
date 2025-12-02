@@ -34,7 +34,7 @@ export default function FAQ() {
     <section className="py-20 bg-gray-50">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn direction="up">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center font-chewy">
             Frequently Asked Questions
           </h2>
         </FadeIn>

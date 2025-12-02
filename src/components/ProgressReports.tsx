@@ -16,7 +16,7 @@ export default function ProgressReports() {
           {/* Text Content */}
           <div className="order-2 lg:order-1">
             <FadeIn direction="right">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-chewy">
                 The most comprehensive progress reports ever. Period.
               </h2>
               <p className="text-lg text-gray-600 mb-8">
