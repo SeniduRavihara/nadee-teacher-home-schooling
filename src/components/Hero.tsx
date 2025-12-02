@@ -57,7 +57,7 @@ export default function Hero() {
 
             <FadeIn delay={0.6} direction="up">
               <p className="text-lg text-blue-100 max-w-lg">
-                Scientifically-designed quizzes that bring out the best in every child.
+                Engaging English activities that bring out the best in every child..
               </p>
             </FadeIn>
             

@@ -43,7 +43,7 @@ export default function VideosPage() {
     try {
       const { data, error } = await supabase
         .from('courses')
-        .select('*, videos(count)')
+        .select('*, videos(id, is_locked)')
         .eq('target_grade', grade)
         .order('created_at', { ascending: false });
 
@@ -60,17 +60,22 @@ export default function VideosPage() {
           return 'bg-indigo-600';
         };
 
+        // Check if any video is unlocked (free)
+        const hasFreeVideo = course.videos?.some((v: any) => !v.is_locked) || false;
+        const videoCount = course.videos?.length || 0;
+
         return {
           id: course.id,
           title: course.title,
           description: course.description,
-          videos: course.videos?.[0]?.count || 0,
+          videos: videoCount,
           duration: '1h 30m', // Placeholder as we don't calculate total duration yet
           thumbnailColor: getColors(course.title),
           progress: 0, // Placeholder for progress tracking
           targetGrade: course.target_grade,
           category: course.category || 'yt_video',
-          isSingleVideo: course.is_single_video
+          isSingleVideo: course.is_single_video,
+          hasFreeVideo
         };
       });
 
@@ -161,8 +166,8 @@ export default function VideosPage() {
           filteredCourses.map((course) => (
             <div key={course.id} className="relative group bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all hover:-translate-y-1">
               
-              {/* Locking Overlay */}
-              {!isPaid && activeTab !== 'yt_video' && (
+              {/* Locking Overlay - Only show if NOT paid AND NOT yt_video AND NO free videos */}
+              {!isPaid && activeTab !== 'yt_video' && !course.hasFreeVideo && (
                 <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-20 flex flex-col items-center justify-center text-center p-4">
                   <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
                     <Lock className="text-gray-500" size={24} />
@@ -178,11 +183,20 @@ export default function VideosPage() {
                 </div>
               )}
 
-              <Link href={`/student/videos/${course.id}`} className="block">
+              <Link href={(!isPaid && activeTab !== 'yt_video' && !course.hasFreeVideo) ? '#' : `/student/videos/${course.id}`} className="block">
                 <div className={`h-48 ${course.thumbnailColor} relative flex items-center justify-center`}>
                   <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                     <PlayCircle size={32} fill="currentColor" />
                   </div>
+                  
+                  {/* Free Preview Badge */}
+                  {!isPaid && activeTab !== 'yt_video' && course.hasFreeVideo && (
+                     <div className="absolute top-4 left-4 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-sm flex items-center gap-1">
+                       <PlayCircle size={12} fill="currentColor" />
+                       Free Preview
+                     </div>
+                  )}
+
                   {course.isSingleVideo && (
                     <div className="absolute top-4 right-4 bg-purple-600 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-sm">
                       Single Video
@@ -221,6 +235,15 @@ export default function VideosPage() {
                       style={{ width: `${course.progress}%` }}
                     ></div>
                   </div>
+                  
+                  {/* Watch Free Video Button for unpaid users with free content */}
+                  {!isPaid && activeTab !== 'yt_video' && course.hasFreeVideo && (
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <span className="block w-full text-center py-2 bg-green-50 text-green-600 font-bold rounded-lg hover:bg-green-100 transition-colors">
+                        Watch Free Video
+                      </span>
+                    </div>
+                  )}
                 </div>
               </Link>
             </div>

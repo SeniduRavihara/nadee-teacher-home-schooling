@@ -26,10 +26,10 @@ export default function Playlist({ videos, onVideoSelect }: PlaylistProps) {
         {videos.map((video, index) => (
           <button
             key={video.id}
-            onClick={() => !video.isLocked && onVideoSelect(video.id)}
+            onClick={() => onVideoSelect(video.id)}
             className={`w-full p-4 flex items-center gap-3 border-b border-gray-50 last:border-0 transition-colors text-left ${
               video.isPlaying ? 'bg-blue-50' : 'hover:bg-gray-50'
-            } ${video.isLocked ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
+            } ${video.isLocked ? 'opacity-75' : ''} cursor-pointer`}
           >
             <div className="flex-shrink-0">
               {video.isLocked ? (
@@ -53,7 +53,15 @@ export default function Playlist({ videos, onVideoSelect }: PlaylistProps) {
               <h4 className={`text-sm font-medium truncate ${video.isPlaying ? 'text-blue-700' : 'text-gray-900'}`}>
                 {video.title}
               </h4>
-              <span className="text-xs text-gray-500">{video.duration}</span>
+              <div className="flex items-center gap-2 text-xs text-gray-500">
+                <span>{video.duration}</span>
+                {video.isLocked && (
+                  <span className="flex items-center gap-1 text-orange-500 font-medium bg-orange-50 px-1.5 py-0.5 rounded">
+                    <Lock size={10} />
+                    Locked
+                  </span>
+                )}
+              </div>
             </div>
 
             {video.isPlaying && (

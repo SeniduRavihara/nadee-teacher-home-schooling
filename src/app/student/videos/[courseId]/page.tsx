@@ -1,5 +1,6 @@
 'use client';
 
+import PaymentModal from '@/components/student/PaymentModal';
 import Playlist from '@/components/student/Playlist';
 import VideoPlayer from '@/components/student/VideoPlayer';
 import { usePaymentStatus } from '@/hooks/usePaymentStatus';
@@ -29,12 +30,13 @@ interface Course {
 
 export default function CoursePlayerPage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = use(params);
-  const { isPaid, loading: paymentLoading } = usePaymentStatus();
+  const { isPaid, loading: paymentLoading, checkPaymentStatus } = usePaymentStatus();
   const [course, setCourse] = useState<Course | null>(null);
   const [videos, setVideos] = useState<Video[]>([]);
   const [completedVideoIds, setCompletedVideoIds] = useState<Set<string>>(new Set());
   const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   const supabase = createClient();
 
@@ -148,9 +150,12 @@ export default function CoursePlayerPage({ params }: { params: Promise<{ courseI
                  <p className="text-gray-400 mb-6 max-w-md">
                    Please complete your monthly payment to access premium content.
                  </p>
-                 <Link href="/student/payments" className="px-6 py-3 bg-orange-500 hover:bg-orange-600 rounded-xl font-bold transition-colors">
+                 <button 
+                   onClick={() => setIsModalOpen(true)}
+                   className="px-6 py-3 bg-orange-500 hover:bg-orange-600 rounded-xl font-bold transition-colors text-white"
+                 >
                    Unlock Access
-                 </Link>
+                 </button>
                </div>
             ) : (
               <VideoPlayer title={activeVideo.title} videoUrl={activeVideo.video_url} />
@@ -178,6 +183,15 @@ export default function CoursePlayerPage({ params }: { params: Promise<{ courseI
           </div>
         )}
       </div>
+
+      <PaymentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={() => {
+          checkPaymentStatus();
+          setIsModalOpen(false);
+        }}
+      />
     </div>
   );
 }
