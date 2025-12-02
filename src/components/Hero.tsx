@@ -51,7 +51,7 @@ export default function Hero() {
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
                 Kids see fun.
                 <br />
-                You see real <span className="italic text-blue-300">learning outcomes</span>.
+                <span className="text-5xl md:text-6xl lg:text-7xl inline-block">You see real</span> <span className="italic text-blue-300">learning outcomes</span>.
               </h1>
             </FadeIn>
 
