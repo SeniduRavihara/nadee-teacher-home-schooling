@@ -31,11 +31,13 @@ export default function AdminSidebar() {
 
   return (
     <aside className="w-64 bg-[#0a0a4a] text-white h-screen fixed left-0 top-0 flex flex-col">
-      <div className="p-6 flex items-center gap-2 border-b border-blue-900">
-        <div className="relative w-8 h-8 rounded-lg overflow-hidden">
-          <Image src="/logo.png" alt="Logo" fill className="object-cover" />
-        </div>
-        <span className="text-xl font-bold">NadeeTeacher</span>
+      <div className="p-6 border-b border-blue-900">
+        <Link href="/" className="flex items-center gap-2">
+          <div className="relative w-8 h-8 rounded-lg overflow-hidden">
+            <Image src="/logo.png" alt="Logo" fill className="object-cover" />
+          </div>
+          <span className="text-xl font-bold">NadeeTeacher</span>
+        </Link>
       </div>
 
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
