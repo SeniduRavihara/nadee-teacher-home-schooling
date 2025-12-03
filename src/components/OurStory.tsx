@@ -59,7 +59,7 @@ export default function OurStory() {
               <span className="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-700 font-bold text-sm mb-4">
                 Our Story
               </span>
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight font-chewy">
                 Hi, I'm <span className="text-blue-600">NadeeTeacher!</span>
               </h2>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
