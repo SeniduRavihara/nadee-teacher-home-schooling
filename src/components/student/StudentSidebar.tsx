@@ -1,13 +1,14 @@
 'use client';
 
+import { useData } from '@/context/DataContext';
 import { createClient } from '@/utils/supabase/client';
 import {
-    BookOpen,
-    LayoutDashboard,
-    Star,
-    User,
-    Users,
-    Video
+  BookOpen,
+  LayoutDashboard,
+  Star,
+  User,
+  Users,
+  Video
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -30,6 +31,7 @@ interface StudentSidebarProps {
 export default function StudentSidebar({ isOpen, onClose }: StudentSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { profile } = useData();
   const supabase = createClient();
   const [stars, setStars] = useState(0);
 
@@ -93,6 +95,7 @@ export default function StudentSidebar({ isOpen, onClose }: StudentSidebarProps)
 
         {/* Navigation */}
         <nav className="flex-1 px-4 space-y-2 overflow-y-auto">
+
           {menuItems.map((item) => {
             const isActive = pathname === item.href || (item.href !== '/student' && pathname.startsWith(item.href));
             return (

@@ -1,33 +1,13 @@
-import { createClient } from '@/utils/supabase/client';
-import { Menu, Search } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useData } from '@/context/DataContext';
+import { LayoutDashboard, Menu, Search } from 'lucide-react';
+import Link from 'next/link';
 
 interface StudentHeaderProps {
   onMenuClick?: () => void;
 }
 
 export default function StudentHeader({ onMenuClick }: StudentHeaderProps) {
-  const [profile, setProfile] = useState<{ full_name: string; grade: string } | null>(null);
-  const supabase = createClient();
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data } = await supabase
-          .from('profiles')
-          .select('full_name, grade')
-          .eq('id', user.id)
-          .single();
-        
-        if (data) {
-          setProfile(data);
-        }
-      }
-    };
-
-    fetchProfile();
-  }, []);
+  const { profile } = useData();
 
   return (
     <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 h-16 flex items-center justify-between px-4 md:px-8 fixed top-0 right-0 left-0 md:left-64 z-10 transition-all duration-300">
@@ -54,6 +34,16 @@ export default function StudentHeader({ onMenuClick }: StudentHeaderProps) {
       {/* Right Side Actions */}
       <div className="flex items-center gap-4 md:gap-6">
         {/* Notification button removed as requested */}
+        
+        {profile?.role === 'admin' && (
+          <Link 
+            href="/admin" 
+            className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors bg-gray-50 hover:bg-blue-50 px-3 py-2 rounded-lg"
+          >
+            <LayoutDashboard size={18} />
+            Admin View
+          </Link>
+        )}
         
         <div className="flex items-center gap-3 pl-6 border-l border-gray-200">
           <div className="text-right hidden md:block">

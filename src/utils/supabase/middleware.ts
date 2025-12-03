@@ -41,12 +41,13 @@ export async function updateSession(request: NextRequest) {
     // Check profile completion status
     const { data: profile } = await supabase
       .from('profiles')
-      .select('is_profile_completed')
+      .select('is_profile_completed, role')
       .eq('id', user.id)
       .single()
 
     const isOnboarding = request.nextUrl.pathname === '/onboarding'
     const isProfileCompleted = profile?.is_profile_completed
+    const isAdmin = profile?.role === 'admin'
     const isAuthPage = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/signup')
 
     // If user is logged in and tries to access auth pages, redirect them
@@ -57,13 +58,13 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(new URL('/student', request.url))
     }
 
+    // Protect Admin Routes
+    if (request.nextUrl.pathname.startsWith('/admin') && !isAdmin) {
+      return NextResponse.redirect(new URL('/student', request.url))
+    }
+
     // If profile is not completed and user is not on onboarding page, redirect to onboarding
     if (!isProfileCompleted && !isOnboarding && !request.nextUrl.pathname.startsWith('/auth') && !request.nextUrl.pathname.startsWith('/login') && !request.nextUrl.pathname.startsWith('/signup')) {
-       // Allow login/signup/auth routes
-       // But wait, if user IS logged in (user exists), they shouldn't be on login/signup usually, but if they are, we might want to let them be or redirect.
-       // The requirement is: "After sign up... It need to make some Appear some other fields... And then Also after student... Register for That step"
-       // So if they are logged in and incomplete, they MUST go to onboarding.
-       // Unless they are logging out.
        return NextResponse.redirect(new URL('/onboarding', request.url))
     }
 

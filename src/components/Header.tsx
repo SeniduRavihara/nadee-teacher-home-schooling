@@ -1,5 +1,6 @@
 'use client';
 
+import { useData } from '@/context/DataContext';
 import { createClient } from '@/utils/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { ChevronDown, LayoutDashboard } from 'lucide-react';
@@ -9,6 +10,7 @@ import { useEffect, useState } from 'react';
 
 export function Header() {
   const [user, setUser] = useState<User | null>(null);
+  const { profile } = useData();
 
   const supabase = createClient();
 
@@ -75,6 +77,15 @@ export function Header() {
           <div className="flex items-center space-x-4">
             {user ? (
               <div className="flex items-center gap-4">
+                  {profile?.role === 'admin' && (
+                    <Link
+                      href="/admin"
+                      className="bg-gray-100 text-gray-700 px-6 py-2 rounded-full font-bold hover:bg-gray-200 transition-colors flex items-center gap-2"
+                    >
+                      <LayoutDashboard size={18} />
+                      Admin
+                    </Link>
+                  )}
                   <Link
                     href="/student"
                     className="bg-blue-600 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition-colors flex items-center gap-2"
