@@ -48,18 +48,10 @@ export async function updateSession(request: NextRequest) {
     const isOnboarding = request.nextUrl.pathname === '/onboarding'
     const isProfileCompleted = profile?.is_profile_completed
     const isAdmin = profile?.role === 'admin'
-    const isAuthPage = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/signup')
-
-    // If user is logged in and tries to access auth pages, redirect them
-    if (isAuthPage) {
-      if (!isProfileCompleted) {
-        return NextResponse.redirect(new URL('/onboarding', request.url))
-      }
-      return NextResponse.redirect(new URL('/student', request.url))
-    }
+    const isModerator = profile?.role === 'moderator'
 
     // Protect Admin Routes
-    if (request.nextUrl.pathname.startsWith('/admin') && !isAdmin) {
+    if (request.nextUrl.pathname.startsWith('/admin') && !isAdmin && !isModerator) {
       return NextResponse.redirect(new URL('/student', request.url))
     }
 

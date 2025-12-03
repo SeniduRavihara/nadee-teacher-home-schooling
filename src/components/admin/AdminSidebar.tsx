@@ -1,16 +1,18 @@
 'use client';
 
+import { useData } from '@/context/DataContext';
+
 import {
-    BarChart3,
-    BookOpen,
-    CreditCard,
-    GraduationCap,
-    LayoutDashboard,
-    LogOut,
-    Settings,
-    Shield,
-    Users,
-    Video
+  BarChart3,
+  BookOpen,
+  CreditCard,
+  GraduationCap,
+  LayoutDashboard,
+  LogOut,
+  Settings,
+  Shield,
+  Users,
+  Video
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -30,6 +32,15 @@ const menuItems = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const { profile } = useData();
+
+  const filteredMenuItems = menuItems.filter(item => {
+    if (profile?.role === 'admin' || profile?.role === 'superadmin') return true;
+    if (profile?.role === 'moderator') {
+      return ['Dashboard', 'Students', 'Payments'].includes(item.name);
+    }
+    return false;
+  });
 
   return (
     <aside className="w-64 bg-[#0a0a4a] text-white h-screen fixed left-0 top-0 flex flex-col">
@@ -43,7 +54,7 @@ export default function AdminSidebar() {
       </div>
 
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-        {menuItems.map((item) => {
+        {filteredMenuItems.map((item) => {
           const isActive = pathname === item.href;
           return (
             <Link
