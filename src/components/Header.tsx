@@ -96,7 +96,7 @@ export function Header() {
               </div>
             ) : (
               <>
-                <Link href="/login" className="text-blue-600 font-bold hover:text-blue-700 text-sm sm:text-base whitespace-nowrap">
+                <Link href="/login" className="bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition-colors text-sm sm:text-base whitespace-nowrap">
                   Log In
                 </Link>
                 <Link
