@@ -174,11 +174,7 @@ export default function SignupForm() {
         </button>
       </form>
 
-      <div className="text-center mt-6">
-        <Link href="#" className="text-[#5B5FC7] hover:underline text-sm font-medium">
-          Teachers, click here to sign up
-        </Link>
-      </div>
+
 
       <div className="text-center mt-8 text-xs text-gray-500">
         By Signing up, you agree to our{' '}

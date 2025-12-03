@@ -74,34 +74,34 @@ export function Header() {
           </nav>
 
           {/* Auth Buttons */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {user ? (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 sm:gap-4">
                   {profile?.role === 'admin' && (
                     <Link
                       href="/admin"
-                      className="bg-gray-100 text-gray-700 px-6 py-2 rounded-full font-bold hover:bg-gray-200 transition-colors flex items-center gap-2"
+                      className="bg-gray-100 text-gray-700 px-3 sm:px-6 py-2 rounded-full font-bold hover:bg-gray-200 transition-colors flex items-center gap-2 text-sm sm:text-base"
                     >
-                      <LayoutDashboard size={18} />
-                      Admin
+                      <LayoutDashboard size={16} className="sm:w-[18px] sm:h-[18px]" />
+                      <span className="hidden sm:inline">Admin</span>
                     </Link>
                   )}
                   <Link
                     href="/student"
-                    className="bg-blue-600 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition-colors flex items-center gap-2"
+                    className="bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm sm:text-base"
                   >
-                    <LayoutDashboard size={18} />
-                    Dashboard
+                    <LayoutDashboard size={16} className="sm:w-[18px] sm:h-[18px]" />
+                    <span className="hidden sm:inline">Dashboard</span>
                   </Link>
               </div>
             ) : (
               <>
-                <Link href="/login" className="text-blue-600 font-bold hover:text-blue-700">
+                <Link href="/login" className="text-blue-600 font-bold hover:text-blue-700 text-sm sm:text-base whitespace-nowrap">
                   Log In
                 </Link>
                 <Link
                   href="/signup"
-                  className="bg-blue-600 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition-colors"
+                  className="bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition-colors text-sm sm:text-base whitespace-nowrap hidden sm:block"
                 >
                   Sign Up
                 </Link>
