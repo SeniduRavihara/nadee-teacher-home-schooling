@@ -8,6 +8,7 @@ import {
     LayoutDashboard,
     LogOut,
     Settings,
+    Shield,
     Users,
     Video
 } from 'lucide-react';
@@ -23,6 +24,7 @@ const menuItems = [
   { icon: Video, name: 'Video Classes', href: '/admin/videos' },
   { icon: CreditCard, name: 'Payments', href: '/admin/payments' },
   { icon: BarChart3, name: 'Reports', href: '/admin/reports' },
+  { icon: Shield, name: 'Admin Management', href: '/admin/management' },
   { icon: Settings, name: 'Settings', href: '/admin/settings' },
 ];
 
