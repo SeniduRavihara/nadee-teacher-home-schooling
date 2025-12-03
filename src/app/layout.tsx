@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "NadeeTeacher - Fun & Effective Online Learning for Kids",
     description: "Interactive online classes, quizzes, and video lessons for kids.",
-    url: "https://nadeeteacher.com", // Assuming this is the URL, or I can leave it out or use a placeholder
+    url: "https://nadeeteacher.online", // Assuming this is the URL, or I can leave it out or use a placeholder
     siteName: "NadeeTeacher",
     locale: "en_US",
     type: "website",
