@@ -22,12 +22,24 @@ export default function Hero() {
   return (
     <section className="relative bg-[#0a0a4a] text-white pt-32 pb-20 overflow-hidden lg:aspect-[16/9] lg:h-auto flex items-center">
       {/* Background Image */}
-      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0">
+        {/* Mobile Video */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover block md:hidden"
+        >
+          <source src="/mobile-video.mp4" type="video/mp4" />
+        </video>
+
+        {/* Desktop Background Image */}
         <Image
           src="/new gem.png"
           alt="Background"
           fill
-          className="object-cover object-[calc(50%+100px)_top] md:object-top"
+          className="object-cover object-[calc(50%+100px)_top] md:object-top hidden md:block"
           priority
         />
         {/* Overlay */}
