@@ -20,7 +20,7 @@ export default function Hero() {
   }, [supabase]);
 
   return (
-    <section className="relative bg-[#0a0a4a] text-white pt-32 pb-20 overflow-hidden lg:aspect-[16/9] lg:h-auto flex items-center">
+    <section className="relative bg-[#0a0a4a] text-white pt-32 pb-20 overflow-hidden min-h-[600px] lg:min-h-[800px] flex items-center">
       {/* Background Image */}
         <div className="absolute inset-0 z-0">
         {/* Mobile Video */}
