@@ -164,7 +164,7 @@ export default function CoursePlayerPage({
     course?.category !== "yt_video";
 
   return (
-    <div className="space-y-6 h-[calc(100vh-8rem)] flex flex-col pb-8">
+    <div className="space-y-6 pb-8 min-h-screen">
       {/* Colorful Header */}
       <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 rounded-3xl p-6 text-white relative overflow-hidden shadow-xl border-4 border-white">
         <div className="relative z-10 flex items-center gap-4">
@@ -200,7 +200,7 @@ export default function CoursePlayerPage({
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Video Player Area */}
         <div
           className={`${
@@ -262,8 +262,8 @@ export default function CoursePlayerPage({
 
         {/* Playlist Sidebar - Only show if NOT a single video course */}
         {!course.is_single_video && (
-          <div className="h-full min-h-[400px]">
-            <div className="bg-white rounded-3xl shadow-lg border-4 border-blue-200 p-6 h-full">
+          <div className="lg:sticky lg:top-6 lg:h-fit">
+            <div className="bg-white rounded-3xl shadow-lg border-4 border-blue-200 p-6 max-h-[600px] flex flex-col">
               <h3 className="text-xl font-black text-gray-900 mb-4 flex items-center gap-2">
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full flex items-center justify-center">
                   <span className="text-white text-sm">📚</span>

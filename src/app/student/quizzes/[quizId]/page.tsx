@@ -1,5 +1,7 @@
 'use client';
 
+import { BalloonSVG } from '@/components/student/decorations/BalloonSVG';
+import { BirdSVG, ButterflySVG } from '@/components/student/decorations/ButterflyBirdSVG';
 import { createClient } from '@/utils/supabase/client';
 import { ArrowRight, CheckCircle, ChevronLeft, RefreshCw, XCircle } from 'lucide-react';
 import Link from 'next/link';
@@ -161,16 +163,26 @@ export default function QuizPlayerPage({ params }: { params: Promise<{ quizId: s
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading quiz...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full mx-auto mb-4 animate-bounce flex items-center justify-center shadow-xl">
+            <span className="text-4xl">📝</span>
+          </div>
+          <p className="text-purple-600 font-black text-xl">Loading quiz... ✨</p>
+        </div>
+      </div>
+    );
   }
 
   if (!quiz || quiz.questions.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-[60vh] text-center px-4">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Quiz not found</h2>
-        <p className="text-gray-500 mb-6">This quiz might have been deleted or has no questions.</p>
-        <Link href="/student/quizzes" className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700">
-          Back to Quizzes
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+        <div className="text-8xl mb-6">🤔</div>
+        <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-3">Quiz not found</h2>
+        <p className="text-purple-600 font-bold mb-8">This quiz might have been deleted or has no questions.</p>
+        <Link href="/student/quizzes" className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-black hover:scale-110 transition-all shadow-xl">
+          Back to Quizzes 🏠
         </Link>
       </div>
     );
@@ -181,64 +193,71 @@ export default function QuizPlayerPage({ params }: { params: Promise<{ quizId: s
     const percentage = Math.round((score / totalQuestions) * 100);
 
     return (
-      <div className="max-w-2xl mx-auto py-12 px-4">
-        <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-8 text-center">
-          <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <span className="text-4xl">🎉</span>
-          </div>
+      <div className="max-w-3xl mx-auto py-12 px-4">
+        <div className="bg-gradient-to-br from-yellow-50 via-pink-50 to-purple-50 rounded-3xl shadow-2xl border-4 border-purple-300 p-8 text-center relative overflow-hidden">
+          {/* Decorative elements */}
+          <BalloonSVG className="absolute top-4 right-8 w-16 h-20 opacity-40 animate-bounce" color="#FF6B9D" />
+          <BalloonSVG className="absolute top-8 right-24 w-12 h-16 opacity-30 animate-bounce" color="#C084FC" style={{ animationDelay: '0.5s' }} />
+          <ButterflySVG className="absolute top-12 left-8 w-12 h-12 opacity-50" />
           
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Quiz Completed!</h1>
-          <p className="text-gray-500 mb-8">You did a great job on {quiz.title}</p>
+          <div className="relative z-10">
+            <div className="w-32 h-32 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl border-4 border-white animate-bounce">
+              <span className="text-6xl">🎉</span>
+            </div>
+            
+            <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-3">Quiz Completed!</h1>
+            <p className="text-purple-600 font-bold text-lg mb-8">You did an amazing job on {quiz.title}! ⭐</p>
           
-          <div className="flex justify-center gap-8 mb-8">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-1">{score}/{totalQuestions}</div>
-              <div className="text-sm text-gray-500 font-medium">Score</div>
+            <div className="flex justify-center gap-6 mb-10">
+              <div className="bg-white rounded-3xl p-6 shadow-xl border-4 border-purple-300 min-w-[140px]">
+                <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 mb-2">{score}/{totalQuestions}</div>
+                <div className="text-sm text-purple-600 font-black uppercase">Score 🎯</div>
+              </div>
+              <div className="bg-white rounded-3xl p-6 shadow-xl border-4 border-green-300 min-w-[140px]">
+                <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-emerald-500 mb-2">{percentage}%</div>
+                <div className="text-sm text-green-600 font-black uppercase">Accuracy ✨</div>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-green-600 mb-1">{percentage}%</div>
-              <div className="text-sm text-gray-500 font-medium">Accuracy</div>
-            </div>
-          </div>
 
-          <div className="space-y-4 text-left mb-8 max-h-96 overflow-y-auto pr-2">
-            {quiz.questions.map((q, index) => {
-              const userAnswer = answers[q.id];
-              const isCorrect = userAnswer === q.correct_answer;
-              
-              return (
-                <div key={q.id} className={`p-4 rounded-xl border ${isCorrect ? 'border-green-100 bg-green-50' : 'border-red-100 bg-red-50'}`}>
-                  <p className="font-bold text-gray-900 mb-2">{index + 1}. {q.question_text}</p>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className={isCorrect ? 'text-green-700' : 'text-red-700'}>
-                      Your answer: <strong>{userAnswer}</strong>
-                    </span>
-                    {!isCorrect && (
-                      <span className="text-green-700">
-                        Correct: <strong>{q.correct_answer}</strong>
+            <div className="space-y-4 text-left mb-8 max-h-[500px] overflow-y-auto pr-2">
+              {quiz.questions.map((q, index) => {
+                const userAnswer = answers[q.id];
+                const isCorrect = userAnswer === q.correct_answer;
+                
+                return (
+                  <div key={q.id} className={`p-5 rounded-2xl border-4 shadow-lg ${isCorrect ? 'border-green-300 bg-gradient-to-r from-green-50 to-emerald-50' : 'border-red-300 bg-gradient-to-r from-red-50 to-pink-50'}`}>
+                    <p className="font-black text-gray-900 mb-3 text-lg">{index + 1}. {q.question_text}</p>
+                    <div className="flex justify-between items-center text-sm gap-4">
+                      <span className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                        Your answer: <strong className="text-base">{userAnswer}</strong>
                       </span>
-                    )}
-                    {isCorrect ? <CheckCircle size={20} className="text-green-600" /> : <XCircle size={20} className="text-red-600" />}
+                      {!isCorrect && (
+                        <span className="text-green-700 font-bold">
+                          Correct: <strong className="text-base">{q.correct_answer}</strong>
+                        </span>
+                      )}
+                      {isCorrect ? <CheckCircle size={24} className="text-green-600 flex-shrink-0" /> : <XCircle size={24} className="text-red-600 flex-shrink-0" />}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
 
-          <div className="flex gap-4 justify-center">
-            <button 
-              onClick={resetQuiz}
-              className="px-6 py-3 rounded-xl font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors flex items-center gap-2"
-            >
-              <RefreshCw size={20} />
-              Try Again
-            </button>
-            <Link 
-              href="/student/quizzes"
-              className="px-6 py-3 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
-            >
-              Back to Quizzes
-            </Link>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <button 
+                onClick={resetQuiz}
+                className="px-8 py-4 rounded-full font-black text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:scale-110 transition-all shadow-xl flex items-center gap-2 border-2 border-white"
+              >
+                <RefreshCw size={22} />
+                Try Again 🔄
+              </button>
+              <Link 
+                href="/student/quizzes"
+                className="px-8 py-4 rounded-full font-black text-white bg-gradient-to-r from-orange-500 to-pink-500 hover:scale-110 transition-all shadow-xl border-2 border-white"
+              >
+                Back to Quizzes 🏠
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -246,60 +265,72 @@ export default function QuizPlayerPage({ params }: { params: Promise<{ quizId: s
   }
 
   return (
-    <div className="max-w-3xl mx-auto py-8 px-4 h-[calc(100vh-8rem)] flex flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <Link href="/student/quizzes" className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-          <ChevronLeft size={24} className="text-gray-600" />
-        </Link>
-        <div className="text-center">
-          <h1 className="text-xl font-bold text-gray-900">{quiz.title}</h1>
-          <p className="text-sm text-gray-500">Question {currentQuestionIndex + 1} of {totalQuestions}</p>
+    <div className="max-w-4xl mx-auto py-8 px-4 min-h-screen pb-20">
+      {/* Colorful Header */}
+      <div className="bg-gradient-to-r from-purple-100 via-pink-100 to-blue-100 rounded-3xl p-6 mb-8 shadow-lg border-4 border-purple-200 relative overflow-hidden">
+        <BalloonSVG className="absolute top-2 right-8 w-12 h-16 opacity-30" color="#FFD93D" />
+        <BirdSVG className="absolute top-4 right-24 w-10 h-10 opacity-40" />
+        
+        <div className="flex items-center justify-between relative z-10">
+          <Link href="/student/quizzes" className="p-3 hover:bg-white/60 rounded-full transition-all hover:scale-110 border-2 border-purple-300 bg-white/40">
+            <ChevronLeft size={24} className="text-purple-600" />
+          </Link>
+          <div className="text-center flex-1">
+            <h1 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">{quiz.title} 📝</h1>
+            <p className="text-base text-purple-600 font-bold mt-1">Question {currentQuestionIndex + 1} of {totalQuestions} ✨</p>
+          </div>
+          <div className="w-10"></div>
         </div>
-        <div className="w-10"></div> {/* Spacer for centering */}
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full bg-gray-100 h-3 rounded-full overflow-hidden mb-8">
+      <div className="w-full bg-purple-100 h-4 rounded-full overflow-hidden mb-8 border-2 border-purple-200 shadow-inner">
         <div 
-          className="bg-blue-600 h-full rounded-full transition-all duration-500 ease-out"
+          className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 h-full rounded-full transition-all duration-500 ease-out shadow-lg"
           style={{ width: `${progress}%` }}
         ></div>
       </div>
 
       {/* Question Card */}
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 flex-1 flex flex-col">
-        <h2 className="text-2xl font-bold text-gray-900 mb-8">{currentQuestion?.question_text}</h2>
+      <div className="bg-gradient-to-br from-white via-purple-50 to-pink-50 rounded-3xl shadow-2xl border-4 border-purple-200 p-8 md:p-10 relative overflow-hidden">
+        {/* Decorative elements */}
+        <BalloonSVG className="absolute bottom-8 right-8 w-16 h-20 opacity-20" color="#A78BFA" />
+        <ButterflySVG className="absolute bottom-12 left-8 w-14 h-14 opacity-20" />
+        
+        <div className="relative z-10">
+          <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-10">{currentQuestion?.question_text}</h2>
 
-        <div className="space-y-4 mb-8">
-          {currentQuestion?.options.map((option) => (
+          <div className="space-y-4 mb-10">
+            {currentQuestion?.options.map((option, index) => (
+              <button
+                key={option}
+                onClick={() => handleOptionSelect(option)}
+                className={`w-full p-5 rounded-2xl border-4 text-left font-bold text-lg transition-all hover:scale-105 shadow-lg ${
+                  selectedOption === option
+                    ? 'border-purple-500 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 shadow-purple-200'
+                    : 'border-purple-200 hover:border-purple-300 bg-white hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 text-gray-700'
+                }`}
+              >
+                <span className="font-black text-purple-500 mr-3">{String.fromCharCode(65 + index)}.</span>
+                {option}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex justify-end">
             <button
-              key={option}
-              onClick={() => handleOptionSelect(option)}
-              className={`w-full p-4 rounded-xl border-2 text-left font-medium transition-all ${
-                selectedOption === option
-                  ? 'border-blue-600 bg-blue-50 text-blue-700'
-                  : 'border-gray-100 hover:border-blue-200 hover:bg-gray-50 text-gray-700'
+              onClick={handleNext}
+              disabled={!selectedOption || saving}
+              className={`px-10 py-4 rounded-full font-black text-xl flex items-center gap-3 transition-all border-4 ${
+                selectedOption && !saving
+                  ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:scale-110 shadow-2xl border-white hover:shadow-green-300'
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
               }`}
             >
-              {option}
+              {saving ? '💾 Saving...' : currentQuestionIndex === totalQuestions - 1 ? '🏁 Finish Quiz' : 'Next Question ➡️'}
+              {!saving && <ArrowRight size={24} />}
             </button>
-          ))}
-        </div>
-
-        <div className="mt-auto flex justify-end">
-          <button
-            onClick={handleNext}
-            disabled={!selectedOption || saving}
-            className={`px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all ${
-              selectedOption && !saving
-                ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
-                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-            }`}
-          >
-            {saving ? 'Saving...' : currentQuestionIndex === totalQuestions - 1 ? 'Finish Quiz' : 'Next Question'}
-            <ArrowRight size={20} />
-          </button>
+          </div>
         </div>
       </div>
     </div>
