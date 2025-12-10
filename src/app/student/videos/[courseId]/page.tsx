@@ -166,7 +166,7 @@ export default function CoursePlayerPage({
   return (
     <div className="space-y-6 pb-8 min-h-screen">
       {/* Colorful Header */}
-      <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 rounded-3xl p-6 text-white relative overflow-hidden shadow-xl border-4 border-white">
+      <div className="bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400 rounded-3xl p-6 text-white relative overflow-hidden shadow-xl border-4 border-white">
         <div className="relative z-10 flex items-center gap-4">
           <Link
             href="/student/videos"

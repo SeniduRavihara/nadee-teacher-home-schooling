@@ -79,7 +79,7 @@ export default function StudentDashboard() {
   return (
     <div className="space-y-8 pb-12">
       {/* Welcome Section with colorful gradient */}
-      <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 rounded-3xl p-8 md:p-10 text-white relative overflow-hidden shadow-2xl border-4 border-white">
+      <div className="bg-gradient-to-r from-blue-500 via-cyan-500 to-purple-500 rounded-3xl p-8 md:p-10 text-white relative overflow-hidden shadow-2xl border-4 border-white">
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-3">
             <Rocket className="animate-bounce" size={36} />

@@ -79,7 +79,7 @@ export default function StudentSidebar({
 
       <aside
         className={`
-        w-64 bg-gradient-to-b from-sky-100 via-blue-50 to-green-50 text-gray-900 h-screen fixed left-0 top-0 flex flex-col z-50 transition-transform duration-300 border-r-4 border-purple-200 shadow-xl overflow-hidden
+        w-64 bg-gradient-to-b from-sky-100 via-blue-100 to-cyan-50 text-gray-900 h-screen fixed left-0 top-0 flex flex-col z-50 transition-transform duration-300 border-r-4 border-blue-300 shadow-xl overflow-hidden
         ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
       `}
       >

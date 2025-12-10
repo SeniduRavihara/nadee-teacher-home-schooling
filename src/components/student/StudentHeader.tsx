@@ -12,7 +12,7 @@ export default function StudentHeader({ onMenuClick }: StudentHeaderProps) {
   const { profile } = useData();
 
   return (
-    <header className="bg-gradient-to-r from-purple-100 via-pink-100 to-blue-100 backdrop-blur-md border-b-4 border-purple-200 h-20 flex items-center justify-between px-4 md:px-8 fixed top-0 right-0 left-0 md:left-64 z-40 transition-all duration-300 shadow-lg overflow-hidden">
+    <header className="bg-gradient-to-r from-blue-100 via-cyan-100 to-purple-100 backdrop-blur-md border-b-4 border-blue-300 h-20 flex items-center justify-between px-4 md:px-8 fixed top-0 right-0 left-0 md:left-64 z-40 transition-all duration-300 shadow-lg overflow-hidden">
       {/* Decorative elements */}
       <CloudSVG
         className="absolute top-2 right-20 w-16 h-8 opacity-40"

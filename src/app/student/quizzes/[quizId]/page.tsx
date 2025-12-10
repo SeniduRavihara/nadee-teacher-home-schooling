@@ -218,7 +218,7 @@ export default function QuizPlayerPage({
 
     return (
       <div className="max-w-3xl mx-auto py-12 px-4">
-        <div className="bg-gradient-to-br from-yellow-50 via-pink-50 to-purple-50 rounded-3xl shadow-2xl border-4 border-purple-300 p-8 text-center relative overflow-hidden">
+        <div className="bg-gradient-to-br from-yellow-50 via-blue-50 to-cyan-50 rounded-3xl shadow-2xl border-4 border-blue-300 p-8 text-center relative overflow-hidden">
           {/* Decorative elements */}
           <BalloonSVG
             className="absolute top-4 right-8 w-16 h-20 opacity-40 animate-bounce"
@@ -240,7 +240,7 @@ export default function QuizPlayerPage({
               <span className="text-6xl">🎉</span>
             </div>
 
-            <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-3">
+            <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 mb-3">
               Quiz Completed!
             </h1>
             <p className="text-purple-600 font-bold text-lg mb-8">
@@ -341,7 +341,7 @@ export default function QuizPlayerPage({
   return (
     <div className="max-w-4xl mx-auto py-8 px-4 min-h-screen pb-20">
       {/* Colorful Header */}
-      <div className="bg-gradient-to-r from-purple-100 via-pink-100 to-blue-100 rounded-3xl p-6 mb-8 shadow-lg border-4 border-purple-200 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-blue-100 via-cyan-100 to-purple-100 rounded-3xl p-6 mb-8 shadow-lg border-4 border-blue-300 relative overflow-hidden">
         <BalloonSVG
           className="absolute top-2 right-8 w-12 h-16 opacity-30"
           color="#FFD93D"
@@ -356,7 +356,7 @@ export default function QuizPlayerPage({
             <ChevronLeft size={24} className="text-purple-600" />
           </Link>
           <div className="text-center flex-1">
-            <h1 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+            <h1 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
               {quiz.title} 📝
             </h1>
             <p className="text-base text-purple-600 font-bold mt-1">
@@ -370,13 +370,13 @@ export default function QuizPlayerPage({
       {/* Progress Bar */}
       <div className="w-full bg-purple-100 h-4 rounded-full overflow-hidden mb-8 border-2 border-purple-200 shadow-inner">
         <div
-          className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 h-full rounded-full transition-all duration-500 ease-out shadow-lg"
+          className="bg-gradient-to-r from-blue-500 via-cyan-500 to-purple-500 h-full rounded-full transition-all duration-500 ease-out shadow-lg"
           style={{ width: `${progress}%` }}
         ></div>
       </div>
 
       {/* Question Card */}
-      <div className="bg-gradient-to-br from-white via-purple-50 to-pink-50 rounded-3xl shadow-2xl border-4 border-purple-200 p-8 md:p-10 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-white via-blue-50 to-cyan-50 rounded-3xl shadow-2xl border-4 border-blue-300 p-8 md:p-10 relative overflow-hidden">
         {/* Decorative elements */}
         <BalloonSVG
           className="absolute bottom-8 right-8 w-16 h-20 opacity-20"
@@ -396,7 +396,7 @@ export default function QuizPlayerPage({
                 onClick={() => handleOptionSelect(option)}
                 className={`w-full p-5 rounded-2xl border-4 text-left font-bold text-lg transition-all hover:scale-105 shadow-lg ${
                   selectedOption === option
-                    ? "border-purple-500 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 shadow-purple-200"
+                    ? "border-blue-500 bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 shadow-blue-200"
                     : "border-purple-200 hover:border-purple-300 bg-white hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 text-gray-700"
                 }`}
               >
