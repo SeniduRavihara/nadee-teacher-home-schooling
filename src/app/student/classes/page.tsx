@@ -28,11 +28,14 @@ export default function ClassesPage() {
       if (profile?.grade) {
         setUserGrade(profile.grade);
         fetchClasses(profile.grade);
+        checkPaymentStatus(profile.grade);
       } else {
         setLoading(false);
+        checkPaymentStatus();
       }
     } else {
       setLoading(false);
+      checkPaymentStatus();
     }
   };
 
@@ -199,6 +202,7 @@ export default function ClassesPage() {
           checkPaymentStatus();
           setIsModalOpen(false);
         }}
+        defaultGrade={userGrade}
       />
     </div>
   );

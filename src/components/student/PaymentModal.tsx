@@ -1,5 +1,6 @@
 'use client';
 
+import { GRADES } from '@/constants/grades';
 import { useDialog } from '@/context/DialogContext';
 import { createClient } from '@/utils/supabase/client';
 import { Check, Upload, X } from 'lucide-react';
@@ -10,11 +11,13 @@ interface PaymentModalProps {
   onClose: () => void;
   onSuccess: () => void;
   billingMonth?: Date; // Optional: Pre-fill month if opened from a locked content
+  defaultGrade?: string;
 }
 
-export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth }: PaymentModalProps) {
+export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth, defaultGrade = 'Grade 1' }: PaymentModalProps) {
   const [file, setFile] = useState<File | null>(null);
   const [amount, setAmount] = useState('1000');
+  const [grade, setGrade] = useState(defaultGrade);
   const [month, setMonth] = useState(
     billingMonth ? billingMonth.toISOString().slice(0, 7) : new Date().toISOString().slice(0, 7)
   );
@@ -32,7 +35,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file || !amount || !month) return;
+    if (!file || !amount || !month || !grade) return;
 
     setUploading(true);
     try {
@@ -62,9 +65,10 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth 
           amount: parseFloat(amount),
           slip_url: publicUrl,
           status: 'pending',
+          grade: grade,
           admin_note: null // Clear any previous rejection notes
         }, {
-          onConflict: 'user_id, billing_month'
+          onConflict: 'user_id, billing_month, grade'
         });
 
       if (dbError) throw dbError;
@@ -93,6 +97,29 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth 
         <h2 className="text-xl font-bold text-gray-900 mb-6">Upload Payment Slip</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Grade
+            </label>
+            <div className="relative">
+              <select
+                value={grade}
+                onChange={(e) => setGrade(e.target.value)}
+                className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none appearance-none bg-white"
+                required
+              >
+                {GRADES.map((g) => (
+                  <option key={g} value={g}>{g}</option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Billing Month

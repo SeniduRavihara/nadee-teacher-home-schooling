@@ -30,6 +30,7 @@ export default function VideosPage() {
         .single();
       if (profile?.grade) {
         setUserGrade(profile.grade);
+        checkPaymentStatus(profile.grade);
         fetchCourses(profile.grade);
       } else {
         setLoading(false);
@@ -265,9 +266,10 @@ export default function VideosPage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={() => {
-          checkPaymentStatus();
+          checkPaymentStatus(userGrade);
           setIsModalOpen(false);
         }}
+        defaultGrade={userGrade}
       />
     </div>
   );

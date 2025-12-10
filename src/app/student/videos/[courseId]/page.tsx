@@ -55,6 +55,7 @@ export default function CoursePlayerPage({ params }: { params: Promise<{ courseI
 
       if (courseError) throw courseError;
       setCourse(courseData);
+      checkPaymentStatus(courseData.target_grade);
 
       // 2. Fetch Videos
       const { data: videosData, error: videosError } = await supabase
@@ -85,6 +86,7 @@ export default function CoursePlayerPage({ params }: { params: Promise<{ courseI
 
     } catch (error) {
       console.error('Error fetching course data:', error);
+      checkPaymentStatus();
     } finally {
       setLoading(false);
     }
@@ -191,6 +193,7 @@ export default function CoursePlayerPage({ params }: { params: Promise<{ courseI
           checkPaymentStatus();
           setIsModalOpen(false);
         }}
+        defaultGrade={course?.target_grade}
       />
     </div>
   );

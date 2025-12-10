@@ -19,6 +19,7 @@ interface Profile {
   parent_name: string;
   child_name: string;
   special_note: string;
+  student_id: string;
 }
 
 export default function StudentProfilePage() {
@@ -37,7 +38,8 @@ export default function StudentProfilePage() {
     contactNumber: '',
     parentName: '',
     childName: '',
-    specialNote: ''
+    specialNote: '',
+    studentId: ''
   });
 
   useEffect(() => {
@@ -66,7 +68,8 @@ export default function StudentProfilePage() {
         contactNumber: data.contact_number || '',
         parentName: data.parent_name || '',
         childName: data.child_name || '',
-        specialNote: data.special_note || ''
+        specialNote: data.special_note || '',
+        studentId: data.student_id || ''
       });
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -170,6 +173,17 @@ export default function StudentProfilePage() {
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Student ID</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-500 focus:outline-none cursor-not-allowed"
+                  value={formData.studentId}
+                  readOnly
+                  placeholder="Student ID"
+                />
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Child's Name</label>
                 <input
