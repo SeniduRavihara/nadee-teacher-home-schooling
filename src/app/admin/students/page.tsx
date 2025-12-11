@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 
 interface Student {
   id: string;
+  student_id: string;
   full_name: string;
   email: string;
   grade: string;
@@ -68,6 +69,7 @@ export default function AdminStudentsPage() {
       const studentsToExport = filteredStudents.length > 0 ? filteredStudents : students;
 
       const excelData = studentsToExport.map(student => ({
+        'Student ID': student.student_id || 'N/A',
         'Student Name': student.full_name || '',
         'Email': student.email || '',
         'Grade': student.grade || '',
@@ -155,7 +157,9 @@ export default function AdminStudentsPage() {
           <table className="w-full text-left">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                <th className="px-6 py-4 font-semibold text-gray-700">Student</th>
+                <th className="px-6 py-4 font-semibold text-gray-700">Student ID</th>
+                <th className="px-6 py-4 font-semibold text-gray-700">Student Name</th>
+                <th className="px-6 py-4 font-semibold text-gray-700">Email</th>
                 <th className="px-6 py-4 font-semibold text-gray-700">Grade</th>
                 <th className="px-6 py-4 font-semibold text-gray-700">Parent Details</th>
                 <th className="px-6 py-4 font-semibold text-gray-700">Joined Date</th>
@@ -164,25 +168,30 @@ export default function AdminStudentsPage() {
             <tbody className="divide-y divide-gray-100">
               {loading ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-gray-500">Loading students...</td>
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-500">Loading students...</td>
                 </tr>
               ) : filteredStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-gray-500">No students found matching your filters.</td>
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-500">No students found matching your filters.</td>
                 </tr>
               ) : (
                 filteredStudents.map((student) => (
                   <tr key={student.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
+                      <span className="font-mono text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
+                        {student.student_id || 'N/A'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
                           {student.full_name?.[0]?.toUpperCase() || <User size={18} />}
                         </div>
-                        <div>
-                          <div className="font-medium text-gray-900">{student.full_name || 'Unnamed Student'}</div>
-                          <div className="text-sm text-gray-500">{student.email}</div>
-                        </div>
+                        <div className="font-medium text-gray-900">{student.full_name || 'Unnamed Student'}</div>
                       </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-500">{student.email}</div>
                     </td>
                     <td className="px-6 py-4">
                       <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
