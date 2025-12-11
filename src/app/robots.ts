@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin/', '/student/'],
     },
-    sitemap: 'https://nadeeteacher.com/sitemap.xml',
+    sitemap: 'https://nadeeteacher.online/sitemap.xml',
   }
 }
