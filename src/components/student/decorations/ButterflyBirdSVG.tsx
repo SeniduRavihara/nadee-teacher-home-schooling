@@ -1,8 +1,16 @@
 interface ButterflyBirdSVGProps {
   className?: string;
+  bodyColor?: string;
+  wingPrimary?: string;
+  wingSecondary?: string;
 }
 
-export function ButterflySVG({ className = "" }: ButterflyBirdSVGProps) {
+export function ButterflySVG({
+  className = "",
+  bodyColor = "#333",
+  wingPrimary = "#FF6B6B",
+  wingSecondary = "#FFA94D",
+}: ButterflyBirdSVGProps) {
   return (
     <svg
       className={className}
@@ -16,7 +24,7 @@ export function ButterflySVG({ className = "" }: ButterflyBirdSVGProps) {
         cy="35"
         rx="18"
         ry="25"
-        fill="#FF6B6B"
+        fill={wingPrimary}
         transform="rotate(-20 25 35)"
       />
       <ellipse
@@ -24,7 +32,7 @@ export function ButterflySVG({ className = "" }: ButterflyBirdSVGProps) {
         cy="50"
         rx="15"
         ry="20"
-        fill="#FFA94D"
+        fill={wingSecondary}
         transform="rotate(-10 20 50)"
       />
 
@@ -34,7 +42,7 @@ export function ButterflySVG({ className = "" }: ButterflyBirdSVGProps) {
         cy="35"
         rx="18"
         ry="25"
-        fill="#FF6B6B"
+        fill={wingPrimary}
         transform="rotate(20 75 35)"
       />
       <ellipse
@@ -42,15 +50,15 @@ export function ButterflySVG({ className = "" }: ButterflyBirdSVGProps) {
         cy="50"
         rx="15"
         ry="20"
-        fill="#FFA94D"
+        fill={wingSecondary}
         transform="rotate(10 80 50)"
       />
 
       {/* Body */}
-      <ellipse cx="50" cy="40" rx="8" ry="30" fill="#333" />
+      <ellipse cx="50" cy="40" rx="8" ry="30" fill={bodyColor} />
 
       {/* Head */}
-      <circle cx="50" cy="20" r="7" fill="#333" />
+      <circle cx="50" cy="20" r="7" fill={bodyColor} />
 
       {/* Antennae */}
       <path

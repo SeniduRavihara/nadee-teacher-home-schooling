@@ -98,12 +98,12 @@ export default function StudentSidebar({
         />
 
         {/* Logo Section */}
-        <div className="p-6 flex items-center gap-3 relative z-10 bg-white/40 backdrop-blur-sm border-b-2 border-purple-200">
+        <div className="p-6 flex items-center gap-3 relative z-10 bg-white/40 backdrop-blur-sm border-b-2 border-blue-200">
           <Link href="/" onClick={onClose} className="flex items-center gap-3">
-            <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-md bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center">
-              <Image src="/logo.png" alt="Logo" fill className="object-cover" />
+            <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-none bg-transparent flex items-center justify-center">
+              <Image src="/logo.png" alt="Logo" fill className="object-contain" />
             </div>
-            <span className="text-xl font-black text-purple-700">
+            <span className="text-xl font-black text-blue-800">
               NadeeTeacher
             </span>
           </Link>
