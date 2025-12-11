@@ -15,7 +15,7 @@ export default function Footer() {
               </Link>
             </div>
             <p className="text-blue-200 text-sm max-w-xs mb-4">
-              Empowering students with interactive quizzes and expert-led classes.
+              The beautiful thing about learning is that no one can take it away from you.
             </p>
             <div className="flex items-center justify-center md:justify-start gap-2 text-blue-200">
               <Phone size={16} />
