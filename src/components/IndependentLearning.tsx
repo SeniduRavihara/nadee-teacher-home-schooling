@@ -3,7 +3,7 @@ import FadeIn from './animations/FadeIn';
 
 export default function IndependentLearning() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-gradient-to-br from-yellow-100 to-orange-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn direction="up">
           <div className="text-center mb-16">
@@ -72,17 +72,6 @@ export default function IndependentLearning() {
           </div>
         </div>
         
-        <FadeIn delay={0.8} direction="up">
-          <div className="text-center mt-16">
-              <p className="text-sm text-gray-500">
-                  Trusted by over <span className="font-bold text-green-600">40 million</span> learners worldwide
-              </p>
-              <div className="flex justify-center gap-2 mt-2">
-                  <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">COPPA Certified</span>
-                  <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">kidSAFE Listed</span>
-              </div>
-          </div>
-        </FadeIn>
       </div>
     </section>
   );

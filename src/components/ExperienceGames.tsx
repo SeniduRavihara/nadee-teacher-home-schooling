@@ -4,7 +4,7 @@ import FadeIn from './animations/FadeIn';
 
 export default function ExperienceGames() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-gradient-to-br from-purple-100 to-pink-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn direction="up">
           <div className="text-center mb-16">
