@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 interface Student {
   id: string;
   student_id: string;
-  full_name: string;
+  child_name: string;
   email: string;
   grade: string;
   parent_name: string;
@@ -70,7 +70,7 @@ export default function AdminStudentsPage() {
 
       const excelData = studentsToExport.map(student => ({
         'Student ID': student.student_id || 'N/A',
-        'Student Name': student.full_name || '',
+        'Student Name': student.child_name || '',
         'Email': student.email || '',
         'Grade': student.grade || '',
         'Parent Name': student.parent_name || '',
@@ -96,7 +96,7 @@ export default function AdminStudentsPage() {
   };
 
   const filteredStudents = students.filter(student => {
-    const matchesSearch = (student.full_name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = (student.child_name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
                           (student.email?.toLowerCase() || '').includes(searchTerm.toLowerCase());
     const matchesGrade = selectedGrade === 'All' || student.grade === selectedGrade;
     return matchesSearch && matchesGrade;
@@ -185,9 +185,9 @@ export default function AdminStudentsPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
-                          {student.full_name?.[0]?.toUpperCase() || <User size={18} />}
+                          {student.child_name?.[0]?.toUpperCase() || <User size={18} />}
                         </div>
-                        <div className="font-medium text-gray-900">{student.full_name || 'Unnamed Student'}</div>
+                        <div className="font-medium text-gray-900">{student.child_name || 'Unnamed Student'}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4">

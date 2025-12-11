@@ -16,6 +16,7 @@ interface Payment {
   admin_note: string | null;
   created_at: string;
   profiles: {
+    student_id: string;
     full_name: string;
     email: string;
     grade: string;
@@ -64,7 +65,7 @@ export default function AdminPaymentsPage() {
     if (userIds.length > 0) {
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
-        .select('id, full_name, email, grade')
+        .select('id, student_id, full_name, email, grade')
         .in('id', userIds);
         
       if (!profilesError && profilesData) {
@@ -78,7 +79,7 @@ export default function AdminPaymentsPage() {
     // 3. Merge Data
     const mergedPayments = (paymentsData || []).map(payment => ({
       ...payment,
-      profiles: profilesMap[payment.user_id] || { full_name: 'Unknown', email: '', grade: '-' }
+      profiles: profilesMap[payment.user_id] || { student_id: 'N/A', full_name: 'Unknown', email: '', grade: '-' }
     }));
 
     setPayments(mergedPayments);
@@ -132,6 +133,7 @@ export default function AdminPaymentsPage() {
           <table className="w-full text-left">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
+                <th className="p-4 text-sm font-semibold text-gray-600">Student ID</th>
                 <th className="p-4 text-sm font-semibold text-gray-600">Student</th>
                 <th className="p-4 text-sm font-semibold text-gray-600">Month</th>
                 <th className="p-4 text-sm font-semibold text-gray-600">Amount</th>
@@ -143,6 +145,11 @@ export default function AdminPaymentsPage() {
             <tbody className="divide-y divide-gray-100">
               {payments.map((payment) => (
                 <tr key={payment.id} className="hover:bg-gray-50">
+                  <td className="p-4">
+                    <span className="inline-block px-2 py-1 bg-gray-100 text-gray-700 text-xs font-mono rounded">
+                      {payment.profiles?.student_id || 'N/A'}
+                    </span>
+                  </td>
                   <td className="p-4">
                     <div className="font-medium text-gray-900">{payment.profiles?.full_name || 'Unknown'}</div>
                     <div className="text-xs text-gray-500">{payment.profiles?.grade}</div>
@@ -200,6 +207,10 @@ export default function AdminPaymentsPage() {
             
             <div className="p-6 space-y-6">
               <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <label className="block text-gray-500 mb-1">Student ID</label>
+                  <div className="font-mono text-xs bg-gray-100 px-2 py-1 rounded inline-block">{selectedPayment.profiles?.student_id || 'N/A'}</div>
+                </div>
                 <div>
                   <label className="block text-gray-500 mb-1">Student</label>
                   <div className="font-medium">{selectedPayment.profiles?.full_name}</div>
