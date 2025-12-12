@@ -119,7 +119,7 @@ export default function VideosPage() {
   return (
     <div className="space-y-8 pb-12">
       {/* Header Section with Colorful Design */}
-      <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl border-4 border-white">
+      <div className="bg-linear-to-r from-blue-500 via-purple-500 to-pink-500 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl border-4 border-white">
         <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
           <div>
             <div className="flex items-center gap-3 mb-2">
@@ -135,7 +135,7 @@ export default function VideosPage() {
           </div>
 
           {/* Introductory Video - Enhanced */}
-          <div className="relative w-48 h-28 bg-gray-900 rounded-2xl overflow-hidden shadow-2xl border-4 border-white transition-all duration-300 hover:scale-[2.2] hover:shadow-2xl hover:z-50 origin-top-right group cursor-pointer">
+          {/* <div className="relative w-48 h-28 bg-gray-900 rounded-2xl overflow-hidden shadow-2xl border-4 border-white transition-all duration-300 hover:scale-[2.2] hover:shadow-2xl hover:z-50 origin-top-right group cursor-pointer">
             <iframe
               src="https://www.youtube.com/embed/jfKfPfyJRdk?controls=0&mute=1"
               className="w-full h-full object-cover"
@@ -145,8 +145,8 @@ export default function VideosPage() {
             <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors pointer-events-none" />
             <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-black px-2 py-1 rounded-full animate-pulse">
               WATCH ME!
-            </div>
-          </div>
+            </div>  
+          </div> */}
         </div>
 
         {/* Decorative circles */}
@@ -164,7 +164,7 @@ export default function VideosPage() {
           onClick={() => setActiveTab("recording")}
           className={`pb-3 px-6 py-3 font-black transition-all relative whitespace-nowrap flex items-center gap-2 rounded-xl ${
             activeTab === "recording"
-              ? "text-white bg-gradient-to-r from-blue-500 to-cyan-400 shadow-lg scale-105"
+              ? "text-white bg-linear-to-r from-blue-500 to-cyan-400 shadow-lg scale-105"
               : "text-gray-600 hover:text-gray-900 hover:bg-white"
           }`}
         >
@@ -176,7 +176,7 @@ export default function VideosPage() {
           onClick={() => setActiveTab("movie")}
           className={`pb-3 px-6 py-3 font-black transition-all relative whitespace-nowrap flex items-center gap-2 rounded-xl ${
             activeTab === "movie"
-              ? "text-white bg-gradient-to-r from-purple-500 to-pink-400 shadow-lg scale-105"
+              ? "text-white bg-linear-to-r from-purple-500 to-pink-400 shadow-lg scale-105"
               : "text-gray-600 hover:text-gray-900 hover:bg-white"
           }`}
         >
@@ -188,7 +188,7 @@ export default function VideosPage() {
           onClick={() => setActiveTab("yt_video")}
           className={`pb-3 px-6 py-3 font-black transition-all relative whitespace-nowrap flex items-center gap-2 rounded-xl ${
             activeTab === "yt_video"
-              ? "text-white bg-gradient-to-r from-orange-500 to-red-400 shadow-lg scale-105"
+              ? "text-white bg-linear-to-r from-orange-500 to-red-400 shadow-lg scale-105"
               : "text-gray-600 hover:text-gray-900 hover:bg-white"
           }`}
         >
@@ -220,7 +220,7 @@ export default function VideosPage() {
                   activeTab !== "yt_video" &&
                   !course.hasFreeVideo && (
                     <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center text-center p-4">
-                      <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-3 shadow-md border-4 border-white">
+                      <div className="w-16 h-16 bg-linear-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-3 shadow-md border-4 border-white">
                         <Lock className="text-gray-500" size={28} />
                       </div>
                       <h3 className="font-black text-gray-900 mb-1 text-lg">
@@ -231,7 +231,7 @@ export default function VideosPage() {
                       </p>
                       <button
                         onClick={() => setIsModalOpen(true)}
-                        className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white text-sm font-black rounded-full hover:scale-105 transition-all shadow-lg border-2 border-white"
+                        className="px-6 py-3 bg-linear-to-r from-orange-500 to-red-500 text-white text-sm font-black rounded-full hover:scale-105 transition-all shadow-lg border-2 border-white"
                       >
                         Unlock Now! 🔓
                       </button>
@@ -247,7 +247,7 @@ export default function VideosPage() {
                   className="block"
                 >
                   <div
-                    className={`h-48 bg-gradient-to-br ${colorGradient} relative flex items-center justify-center`}
+                    className={`h-48 bg-linear-to-br ${colorGradient} relative flex items-center justify-center`}
                   >
                     <div className="w-20 h-20 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white group-hover:scale-125 transition-transform shadow-xl border-4 border-white/50">
                       <PlayCircle size={40} fill="currentColor" />
@@ -257,14 +257,14 @@ export default function VideosPage() {
                     {!isPaid &&
                       activeTab !== "yt_video" &&
                       course.hasFreeVideo && (
-                        <div className="absolute top-4 left-4 bg-gradient-to-r from-green-400 to-emerald-500 text-white text-xs font-black px-3 py-2 rounded-full shadow-lg flex items-center gap-1 animate-pulse border-2 border-white">
+                        <div className="absolute top-4 left-4 bg-linear-to-r from-green-400 to-emerald-500 text-white text-xs font-black px-3 py-2 rounded-full shadow-lg flex items-center gap-1 animate-pulse border-2 border-white">
                           <PlayCircle size={14} fill="currentColor" />
                           FREE! 🎁
                         </div>
                       )}
 
                     {course.isSingleVideo && (
-                      <div className="absolute top-4 right-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-black px-3 py-2 rounded-full shadow-lg border-2 border-white">
+                      <div className="absolute top-4 right-4 bg-linear-to-r from-purple-500 to-pink-500 text-white text-xs font-black px-3 py-2 rounded-full shadow-lg border-2 border-white">
                         Single Video 🎬
                       </div>
                     )}
@@ -307,7 +307,7 @@ export default function VideosPage() {
 
                     <div className="h-3 bg-gray-100 rounded-full overflow-hidden border-2 border-gray-200">
                       <div
-                        className="h-full bg-gradient-to-r from-green-400 to-emerald-500 rounded-full transition-all duration-500"
+                        className="h-full bg-linear-to-r from-green-400 to-emerald-500 rounded-full transition-all duration-500"
                         style={{ width: `${course.progress}%` }}
                       ></div>
                     </div>
@@ -317,7 +317,7 @@ export default function VideosPage() {
                       activeTab !== "yt_video" &&
                       course.hasFreeVideo && (
                         <div className="mt-4 pt-4 border-t-2 border-purple-100">
-                          <span className="block w-full text-center py-3 bg-gradient-to-r from-green-400 to-emerald-500 text-white font-black rounded-2xl hover:scale-105 transition-all shadow-md border-2 border-white">
+                          <span className="block w-full text-center py-3 bg-linear-to-r from-green-400 to-emerald-500 text-white font-black rounded-2xl hover:scale-105 transition-all shadow-md border-2 border-white">
                             Watch Free! 🎁
                           </span>
                         </div>
@@ -328,7 +328,7 @@ export default function VideosPage() {
             );
           })
         ) : (
-          <div className="col-span-full bg-gradient-to-br from-purple-100 to-pink-100 p-12 rounded-3xl text-center border-4 border-purple-200">
+          <div className="col-span-full bg-linear-to-br from-purple-100 to-pink-100 p-12 rounded-3xl text-center border-4 border-purple-200">
             <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 text-purple-600 shadow-lg border-4 border-purple-300">
               {activeTab === "recording" && <Video size={36} />}
               {activeTab === "movie" && <Film size={36} />}
