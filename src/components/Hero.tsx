@@ -36,7 +36,7 @@ export default function Hero() {
 
         {/* Desktop Background Image */}
         <Image
-          src="/new gem.png"
+          src="/new gem2.png"
           alt="Background"
           fill
           className="object-cover object-[calc(50%+100px)_top] md:object-top hidden md:block"
