@@ -85,16 +85,16 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth,
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-md w-full p-6 relative">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4 overflow-y-auto">
+      <div className="bg-white rounded-2xl max-w-md w-full p-6 relative my-8 max-h-[90vh] overflow-y-auto">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+          className="sticky top-0 right-0 float-right text-gray-400 hover:text-gray-600 bg-white z-10 p-1 rounded-full"
         >
           <X size={24} />
         </button>
 
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Upload Payment Slip</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-6 clear-both">Upload Payment Slip</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
