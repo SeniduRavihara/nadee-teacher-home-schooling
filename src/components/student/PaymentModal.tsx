@@ -4,7 +4,8 @@ import { GRADES } from '@/constants/grades';
 import { useDialog } from '@/context/DialogContext';
 import { createClient } from '@/utils/supabase/client';
 import { Check, Upload, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -24,8 +25,13 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth,
   const [uploading, setUploading] = useState(false);
   const supabase = createClient();
   const { showAlert } = useDialog();
+  const [mounted, setMounted] = useState(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -84,7 +90,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth,
     }
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4 overflow-y-auto">
       <div className="bg-white rounded-2xl max-w-md w-full p-6 relative my-8 max-h-[90vh] overflow-y-auto">
         <button
@@ -183,6 +189,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth,
           </button>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

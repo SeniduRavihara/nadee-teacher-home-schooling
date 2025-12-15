@@ -3,7 +3,8 @@
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import FadeIn from '@/components/animations/FadeIn';
-import { Award, Beaker, BookOpen, Calculator, Clock, Globe, Music, Star } from 'lucide-react';
+import { Award, BookOpen, Clock, Globe, Music, Star } from 'lucide-react';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
 
 // Syllabus Data
@@ -11,72 +12,76 @@ const syllabusData: Record<string, {
   title: string;
   description: string;
   color: string;
+  image?: string;
   modules: { title: string; description: string; icon: any }[];
 }> = {
   'preschool': {
     title: 'Preschool',
-    description: 'Fun basics & discovery',
+    description: 'ABC & First Words',
     color: 'from-pink-400 to-rose-500',
+    image: '/pre.jpg',
     modules: [
-      { title: 'Colors & Shapes', description: 'Identify and sort colors and shapes.', icon: <Star size={24} /> },
-      { title: 'Numbers 1-10', description: 'Counting and recognizing numbers.', icon: <Calculator size={24} /> },
-      { title: 'Alphabet Fun', description: 'Learning ABCs with songs and games.', icon: <Music size={24} /> },
-      { title: 'My World', description: 'Learning about family, friends, and nature.', icon: <Globe size={24} /> },
+      { title: 'Phonics Fun', description: 'Learning letter sounds and simple blends.', icon: <Music size={24} /> },
+      { title: 'My First Words', description: 'Building essential vocabulary.', icon: <Star size={24} /> },
+      { title: 'Nursery Rhymes', description: 'Singing and learning rhythm.', icon: <Music size={24} /> },
+      { title: 'Speaking Basics', description: 'Simple greetings and introductions.', icon: <Globe size={24} /> },
     ]
   },
   'grade-1': {
     title: 'Grade 1',
-    description: 'Reading & counting',
+    description: 'Phonics & Reading Begins',
     color: 'from-orange-400 to-amber-500',
+    image: '/grade1.jpg',
     modules: [
-      { title: 'Phonics & Reading', description: 'Building words and reading simple sentences.', icon: <BookOpen size={24} /> },
-      { title: 'Addition & Subtraction', description: 'Basic math operations up to 20.', icon: <Calculator size={24} /> },
-      { title: 'Living Things', description: 'Plants, animals, and us.', icon: <Beaker size={24} /> },
-      { title: 'Time & Calendar', description: 'Days of the week and reading the clock.', icon: <Clock size={24} /> },
+      { title: 'Advanced Phonics', description: 'Digraphs, blends, and reading rules.', icon: <BookOpen size={24} /> },
+      { title: 'Sight Words', description: 'Recognizing common words instantly.', icon: <Star size={24} /> },
+      { title: 'Simple Sentences', description: 'Reading and framing basic sentences.', icon: <BookOpen size={24} /> },
+      { title: 'Story Time', description: 'Listening to and understanding stories.', icon: <Music size={24} /> },
     ]
   },
   'grade-2': {
     title: 'Grade 2',
-    description: 'Math & storytelling',
+    description: 'Grammar & Storytelling',
     color: 'from-green-400 to-emerald-500',
+    image: '/grade2.jpg',
     modules: [
-      { title: 'Story Writing', description: 'Creating short stories and understanding plot.', icon: <BookOpen size={24} /> },
-      { title: 'Multiplication Basics', description: 'Introduction to times tables.', icon: <Calculator size={24} /> },
-      { title: 'Earth & Space', description: 'Our planet and the solar system.', icon: <Globe size={24} /> },
-      { title: 'Measurements', description: 'Length, weight, and capacity.', icon: <Beaker size={24} /> },
+      { title: 'Grammar Starter', description: 'Nouns, verbs, and adjectives.', icon: <BookOpen size={24} /> },
+      { title: 'Reading Fluency', description: 'Reading with expression and speed.', icon: <BookOpen size={24} /> },
+      { title: 'Creative Writing', description: 'Writing short paragraphs and stories.', icon: <Star size={24} /> },
+      { title: 'Conversation', description: 'Asking questions and answering.', icon: <Globe size={24} /> },
     ]
   },
   'grade-3': {
     title: 'Grade 3',
-    description: 'Science & nature',
+    description: 'Reading & Comprehension',
     color: 'from-cyan-400 to-blue-500',
     modules: [
-      { title: 'Grammar & Usage', description: 'Nouns, verbs, and sentence structure.', icon: <BookOpen size={24} /> },
-      { title: 'Fractions & Division', description: 'Understanding parts of a whole.', icon: <Calculator size={24} /> },
-      { title: 'Forces & Motion', description: 'How things move and work.', icon: <Beaker size={24} /> },
-      { title: 'World Geography', description: 'Continents, oceans, and cultures.', icon: <Globe size={24} /> },
+      { title: 'Comprehension', description: 'Understanding texts and answering questions.', icon: <BookOpen size={24} /> },
+      { title: 'Parts of Speech', description: 'Deep dive into grammar rules.', icon: <BookOpen size={24} /> },
+      { title: 'Vocabulary Builder', description: 'Synonyms, antonyms, and new words.', icon: <Star size={24} /> },
+      { title: 'Public Speaking', description: 'Presenting ideas confidently.', icon: <Globe size={24} /> },
     ]
   },
   'grade-4': {
     title: 'Grade 4',
-    description: 'History & art',
+    description: 'Writing & Expression',
     color: 'from-purple-400 to-violet-500',
     modules: [
-      { title: 'Creative Writing', description: 'Poetry, essays, and advanced storytelling.', icon: <BookOpen size={24} /> },
-      { title: 'Decimals & Geometry', description: 'Angles, shapes, and decimal numbers.', icon: <Calculator size={24} /> },
-      { title: 'History of the World', description: 'Ancient civilizations and events.', icon: <Globe size={24} /> },
-      { title: 'Energy & Matter', description: 'States of matter and energy forms.', icon: <Beaker size={24} /> },
+      { title: 'Essay Writing', description: 'Structuring essays and letters.', icon: <BookOpen size={24} /> },
+      { title: 'Tenses Masterclass', description: 'Past, present, and future tenses.', icon: <Clock size={24} /> },
+      { title: 'Poetry & Prose', description: 'Appreciating different forms of text.', icon: <Music size={24} /> },
+      { title: 'Debating Skills', description: 'Expressing opinions and arguments.', icon: <Award size={24} /> },
     ]
   },
   'grade-5': {
     title: 'Grade 5',
-    description: 'Logic & reasoning',
+    description: 'Scholarship & Advanced',
     color: 'from-indigo-400 to-blue-600',
     modules: [
-      { title: 'Advanced Reading', description: 'Analyzing texts and literature.', icon: <BookOpen size={24} /> },
-      { title: 'Algebra Prep', description: 'Variables, equations, and logic.', icon: <Calculator size={24} /> },
-      { title: 'Human Body', description: 'Systems of the body and health.', icon: <Beaker size={24} /> },
-      { title: 'Data & Graphs', description: 'Interpreting data and statistics.', icon: <Award size={24} /> },
+      { title: 'Scholarship Prep', description: 'Targeted practice for exams.', icon: <Award size={24} /> },
+      { title: 'Advanced Grammar', description: 'Complex sentences and active/passive voice.', icon: <BookOpen size={24} /> },
+      { title: 'Reading Analysis', description: 'Critical thinking and textual analysis.', icon: <Globe size={24} /> },
+      { title: 'Effective Communication', description: 'Professional speaking and writing.', icon: <Star size={24} /> },
     ]
   },
 };
@@ -108,8 +113,21 @@ export default function GradePage() {
          <div className="absolute inset-0 bg-white/10 pattern-grid-lg opacity-20"></div>
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
             <FadeIn direction="up">
-              <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">{data.title}</h1>
-              <p className="text-xl md:text-2xl font-medium opacity-90 max-w-2xl mx-auto">{data.description}</p>
+              {data.image && (
+                <div className="mb-8 flex justify-center">
+                  <div className="relative w-80 h-80 md:w-[500px] md:h-[500px] rounded-3xl border-8 border-white/30 shadow-2xl overflow-hidden transform hover:scale-105 transition-transform duration-500">
+                    <Image 
+                      src={data.image} 
+                      alt={`${data.title} Syllabus`} 
+                      fill 
+                      className="object-cover"
+                      priority
+                    />
+                  </div>
+                </div>
+              )}
+              <h1 className="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight drop-shadow-lg">{data.title}</h1>
+              <p className="text-lg md:text-xl font-medium opacity-90 max-w-2xl mx-auto drop-shadow-md">{data.description}</p>
             </FadeIn>
          </div>
          

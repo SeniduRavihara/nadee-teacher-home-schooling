@@ -6,7 +6,7 @@ const gradeCards = [
   {
     grade: 'Preschool',
     slug: 'preschool',
-    description: 'Fun basics & discovery',
+    description: 'ABC & First Words',
     icon: <Image src="/images/preschool-icon.png" alt="Preschool" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-pink-400 to-rose-500',
     shadow: 'shadow-pink-200',
@@ -15,7 +15,7 @@ const gradeCards = [
   {
     grade: 'Grade 1',
     slug: 'grade-1',
-    description: 'Reading & counting',
+    description: 'Phonics & Reading Begins',
     icon: <Image src="/images/grade1-icon.png" alt="Grade 1" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-orange-400 to-amber-500',
     shadow: 'shadow-orange-200',
@@ -24,7 +24,7 @@ const gradeCards = [
   {
     grade: 'Grade 2',
     slug: 'grade-2',
-    description: 'Math & storytelling',
+    description: 'Grammar & Storytelling',
     icon: <Image src="/images/grade2-icon.png" alt="Grade 2" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-green-400 to-emerald-500',
     shadow: 'shadow-green-200',
@@ -33,7 +33,7 @@ const gradeCards = [
   {
     grade: 'Grade 3',
     slug: 'grade-3',
-    description: 'Science & nature',
+    description: 'Reading & Comprehension',
     icon: <Image src="/images/grade2-icon.png" alt="Grade 3" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-cyan-400 to-blue-500',
     shadow: 'shadow-cyan-200',
@@ -42,7 +42,7 @@ const gradeCards = [
   {
     grade: 'Grade 4',
     slug: 'grade-4',
-    description: 'History & art',
+    description: 'Writing & Expression',
     icon: <Image src="/images/grade2-icon.png" alt="Grade 4" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-purple-400 to-violet-500',
     shadow: 'shadow-purple-200',
@@ -51,7 +51,7 @@ const gradeCards = [
   {
     grade: 'Grade 5',
     slug: 'grade-5',
-    description: 'Logic & reasoning',
+    description: 'Scholarship English',
     icon: <Image src="/images/grade2-icon.png" alt="Grade 5" width={48} height={48} className="object-contain rounded-xl" />,
     color: 'bg-gradient-to-br from-indigo-400 to-blue-600',
     shadow: 'shadow-indigo-200',
