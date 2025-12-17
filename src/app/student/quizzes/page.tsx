@@ -1,51 +1,90 @@
-import { createClient } from "@/utils/supabase/server";
+"use client";
+
+import { useData } from "@/context/DataContext";
+import { createClient } from "@/utils/supabase/client";
 import {
-  BookOpen,
-  Brain,
-  Clock,
-  PlayCircle,
-  Sparkles,
-  Trophy,
+    BookOpen,
+    Brain,
+    Clock,
+    PlayCircle,
+    Sparkles,
+    Trophy,
 } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-export default async function QuizzesPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+export default function QuizzesPage() {
+  const { activeStudent } = useData();
+  const [quizzes, setQuizzes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const supabase = createClient();
 
-  let userGrade = "Grade 1";
-  if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("grade")
-      .eq("id", user.id)
-      .single();
-    if (profile?.grade) {
-      userGrade = profile.grade;
+  useEffect(() => {
+    if (activeStudent) {
+      fetchQuizzes(activeStudent.grade);
+    } else {
+      setLoading(false);
     }
-  }
+  }, [activeStudent]);
 
-  // Fetch quizzes for the user's grade
-  const { data: quizzesData } = await supabase
-    .from("quizzes")
-    .select(
-      `
-      *,
-      questions (count),
-      quiz_attempts (
-        score,
-        completed_at
-      )
-    `
-    )
-    .eq("target_grade", userGrade)
-    .order("created_at", { ascending: false });
+  const fetchQuizzes = async (grade: string) => {
+    try {
+      setLoading(true);
+      const { data: quizzesData, error } = await supabase
+        .from("quizzes")
+        .select(
+          `
+          *,
+          questions (count),
+          quiz_attempts (
+            score,
+            completed_at
+          )
+        `
+        )
+        .eq("target_grade", grade)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
+      const formattedQuizzes = (quizzesData || []).map((quiz) => {
+        // Sort attempts by completed_at desc to get the latest one
+        const sortedAttempts = (quiz.quiz_attempts || []).sort(
+          (a: any, b: any) =>
+            new Date(b.completed_at).getTime() - new Date(a.completed_at).getTime()
+        );
+        const attempt = sortedAttempts[0];
+
+        const status = attempt ? "Completed" : "Not Started";
+        const colors = getSubjectColors(quiz.subject);
+
+        return {
+          id: quiz.id,
+          title: quiz.title,
+          subject: quiz.subject,
+          questions: quiz.questions?.[0]?.count || 0,
+          time: `${quiz.time_limit_minutes} mins`,
+          status,
+          score: attempt?.score,
+          color: colors.color,
+          lightColor: colors.light,
+          textColor: colors.text,
+          borderColor: colors.border,
+          emoji: colors.emoji,
+        };
+      });
+
+      setQuizzes(formattedQuizzes);
+    } catch (error) {
+      console.error("Error fetching quizzes:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Helper to determine colors based on subject - Enhanced with gradients
   const getSubjectColors = (subject: string) => {
-    const s = subject.toLowerCase();
+    const s = (subject || "").toLowerCase();
     if (s.includes("math"))
       return {
         color: "bg-gradient-to-br from-blue-500 to-cyan-400",
@@ -87,32 +126,20 @@ export default async function QuizzesPage() {
     };
   };
 
-  const quizzes = (quizzesData || []).map((quiz) => {
-    // Sort attempts by completed_at desc to get the latest one
-    const sortedAttempts = (quiz.quiz_attempts || []).sort(
-      (a: any, b: any) =>
-        new Date(b.completed_at).getTime() - new Date(a.completed_at).getTime()
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-16">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full mx-auto mb-4 animate-bounce flex items-center justify-center">
+            <Sparkles className="text-white" size={32} />
+          </div>
+          <p className="text-purple-600 font-bold text-lg">
+            Loading your quizzes... 🎯
+          </p>
+        </div>
+      </div>
     );
-    const attempt = sortedAttempts[0];
-
-    const status = attempt ? "Completed" : "Not Started";
-    const colors = getSubjectColors(quiz.subject);
-
-    return {
-      id: quiz.id,
-      title: quiz.title,
-      subject: quiz.subject,
-      questions: quiz.questions?.[0]?.count || 0,
-      time: `${quiz.time_limit_minutes} mins`,
-      status,
-      score: attempt?.score,
-      color: colors.color,
-      lightColor: colors.light,
-      textColor: colors.text,
-      borderColor: colors.border,
-      emoji: colors.emoji,
-    };
-  });
+  }
 
   return (
     <div className="space-y-8 pb-12">
@@ -128,7 +155,7 @@ export default async function QuizzesPage() {
               Test your knowledge and earn awesome stars! ⭐
             </p>
             <p className="text-white/90 text-sm font-medium mt-1">
-              {userGrade} • {quizzes.length} Quizzes Available
+              {activeStudent?.grade || 'Grade 1'} • {quizzes.length} Quizzes Available
             </p>
           </div>
           <Trophy className="text-yellow-300 animate-bounce" size={64} />
@@ -201,7 +228,7 @@ export default async function QuizzesPage() {
               No Quizzes Yet!
             </h3>
             <p className="text-purple-600 font-bold">
-              Exciting quizzes are coming soon for {userGrade}! 🎉
+              Exciting quizzes are coming soon for {activeStudent?.grade}! 🎉
             </p>
           </div>
         )}

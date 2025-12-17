@@ -1,6 +1,7 @@
 'use client';
 
 import PaymentModal from '@/components/student/PaymentModal';
+import { useData } from '@/context/DataContext';
 import { createClient } from '@/utils/supabase/client';
 import { Calendar, Check, Clock, CreditCard, Upload, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -12,9 +13,11 @@ interface Payment {
   status: 'pending' | 'approved' | 'rejected';
   created_at: string;
   admin_note: string | null;
+  grade: string;
 }
 
 export default function PaymentHistory() {
+  const { students } = useData();
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -88,6 +91,7 @@ export default function PaymentHistory() {
               <table className="w-full text-left">
                 <thead className="bg-gray-50 border-b border-gray-100">
                   <tr>
+                    <th className="p-4 text-sm font-semibold text-gray-600">Student</th>
                     <th className="p-4 text-sm font-semibold text-gray-600">Billing Month</th>
                     <th className="p-4 text-sm font-semibold text-gray-600">Amount</th>
                     <th className="p-4 text-sm font-semibold text-gray-600">Status</th>
@@ -98,6 +102,12 @@ export default function PaymentHistory() {
                 <tbody className="divide-y divide-gray-100">
                   {payments.map((payment) => (
                     <tr key={payment.id} className="hover:bg-gray-50">
+                      <td className="p-4 font-bold text-gray-900 whitespace-nowrap">
+                        {(() => {
+                            const student = students.find(s => s.grade === payment.grade);
+                            return student ? `${student.full_name} (${payment.grade})` : payment.grade;
+                        })()}
+                      </td>
                       <td className="p-4 font-medium text-gray-900 flex items-center gap-2 whitespace-nowrap">
                         <Calendar size={16} className="text-gray-400" />
                         {getMonthName(payment.billing_month)}

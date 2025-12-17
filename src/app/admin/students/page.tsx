@@ -7,12 +7,15 @@ import { useEffect, useState } from 'react';
 interface Student {
   id: string;
   student_id: string;
-  child_name: string;
-  email: string;
+  full_name: string; // Changed from child_name
   grade: string;
-  parent_name: string;
-  contact_number: string;
   created_at: string;
+  parent_id: string;
+  profiles: {
+    email: string;
+    parent_name: string;
+    contact_number: string;
+  }
 }
 
 export default function AdminStudentsPage() {
@@ -31,13 +34,19 @@ export default function AdminStudentsPage() {
   const fetchStudents = async () => {
     try {
       const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('role', 'student')
+        .from('students')
+        .select(`
+            *,
+            profiles:parent_id (
+                email,
+                parent_name,
+                contact_number
+            )
+        `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setStudents(data || []);
+      setStudents((data as any) || []);
     } catch (error) {
       console.error('Error fetching students:', error);
     } finally {
@@ -54,14 +63,19 @@ export default function AdminStudentsPage() {
       const monthName = now.toLocaleString('default', { month: 'long', year: 'numeric' });
 
       // 2. Fetch payments for this month
+      // Note: Payments are linked to user_id (parent_id), so we check if the PARENT has paid
+      // Ideally payments should be linked to student_id or we check specific grade, 
+      // but for now we check if the parent linked to this student has a payment.
+      
       const { data: payments, error: paymentError } = await supabase
         .from('payments')
-        .select('user_id, status')
+        .select('user_id, status, grade')
         .eq('billing_month', billingMonth);
 
       if (paymentError) throw paymentError;
 
-      // Create a map for quick lookup
+      // Create a map for quick lookup: ParentID -> Status (Simple check)
+      // TODO: Improve this to check specific grade payment if needed
       const paymentMap = new Map();
       payments?.forEach(p => paymentMap.set(p.user_id, p.status));
 
@@ -70,12 +84,12 @@ export default function AdminStudentsPage() {
 
       const excelData = studentsToExport.map(student => ({
         'Student ID': student.student_id || 'N/A',
-        'Student Name': student.child_name || '',
-        'Email': student.email || '',
+        'Student Name': student.full_name || '',
+        'Email': student.profiles?.email || '',
         'Grade': student.grade || '',
-        'Parent Name': student.parent_name || '',
-        'Contact Number': student.contact_number || '',
-        [`Payment Status (${monthName})`]: paymentMap.get(student.id) || 'Not Paid'
+        'Parent Name': student.profiles?.parent_name || '',
+        'Contact Number': student.profiles?.contact_number || '',
+        [`Payment Status (${monthName})`]: paymentMap.get(student.parent_id) || 'Not Paid'
       }));
 
       // 4. Create Workbook and Download
@@ -96,8 +110,12 @@ export default function AdminStudentsPage() {
   };
 
   const filteredStudents = students.filter(student => {
-    const matchesSearch = (student.child_name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-                          (student.email?.toLowerCase() || '').includes(searchTerm.toLowerCase());
+    const parentEmail = student.profiles?.email?.toLowerCase() || '';
+    const studentName = student.full_name?.toLowerCase() || '';
+    const studentId = student.student_id?.toLowerCase() || '';
+    const term = searchTerm.toLowerCase();
+
+    const matchesSearch = studentName.includes(term) || parentEmail.includes(term) || studentId.includes(term);
     const matchesGrade = selectedGrade === 'All' || student.grade === selectedGrade;
     return matchesSearch && matchesGrade;
   });
@@ -130,7 +148,7 @@ export default function AdminStudentsPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
           <input
             type="text"
-            placeholder="Search by name or email..."
+            placeholder="Search by student name, ID or parent email..."
             className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -159,7 +177,7 @@ export default function AdminStudentsPage() {
               <tr>
                 <th className="px-6 py-4 font-semibold text-gray-700">Student ID</th>
                 <th className="px-6 py-4 font-semibold text-gray-700">Student Name</th>
-                <th className="px-6 py-4 font-semibold text-gray-700">Email</th>
+                <th className="px-6 py-4 font-semibold text-gray-700">Email (Parent)</th>
                 <th className="px-6 py-4 font-semibold text-gray-700">Grade</th>
                 <th className="px-6 py-4 font-semibold text-gray-700">Parent Details</th>
                 <th className="px-6 py-4 font-semibold text-gray-700">Joined Date</th>
@@ -185,13 +203,13 @@ export default function AdminStudentsPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
-                          {student.child_name?.[0]?.toUpperCase() || <User size={18} />}
+                          {student.full_name?.[0]?.toUpperCase() || <User size={18} />}
                         </div>
-                        <div className="font-medium text-gray-900">{student.child_name || 'Unnamed Student'}</div>
+                        <div className="font-medium text-gray-900">{student.full_name || 'Unnamed Student'}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-500">{student.email}</div>
+                      <div className="text-sm text-gray-500">{student.profiles?.email || 'N/A'}</div>
                     </td>
                     <td className="px-6 py-4">
                       <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
@@ -200,8 +218,8 @@ export default function AdminStudentsPage() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm">
-                        <div className="font-medium text-gray-900">{student.parent_name || 'N/A'}</div>
-                        <div className="text-gray-500">{student.contact_number || 'N/A'}</div>
+                        <div className="font-medium text-gray-900">{student.profiles?.parent_name || 'N/A'}</div>
+                        <div className="text-gray-500">{student.profiles?.contact_number || 'N/A'}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">

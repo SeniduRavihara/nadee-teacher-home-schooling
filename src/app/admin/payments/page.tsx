@@ -15,11 +15,13 @@ interface Payment {
   status: 'pending' | 'approved' | 'rejected';
   admin_note: string | null;
   created_at: string;
-  profiles: {
+  grade: string;
+  studentDetails?: {
     student_id: string;
     full_name: string;
-    email: string;
     grade: string;
+    parent_email: string;
+    parent_name: string;
   };
 }
 
@@ -57,30 +59,94 @@ export default function AdminPaymentsPage() {
       return;
     }
 
-    // 2. Fetch Profiles for these payments
+    // 2. Fetch Students AND Profiles for these parents
     const userIds = Array.from(new Set((paymentsData || []).map(p => p.user_id)));
     
+    let studentsMap: Record<string, any[]> = {};
     let profilesMap: Record<string, any> = {};
     
     if (userIds.length > 0) {
-      const { data: profilesData, error: profilesError } = await supabase
-        .from('profiles')
-        .select('id, student_id, full_name, email, grade')
-        .in('id', userIds);
+      // Fetch Students
+      const { data: studentsData } = await supabase
+        .from('students')
+        .select(`
+            id, 
+            student_id, 
+            full_name, 
+            grade, 
+            parent_id,
+            profiles:parent_id (
+                email,
+                parent_name
+            )
+        `)
+        .in('parent_id', userIds);
         
-      if (!profilesError && profilesData) {
-        profilesMap = profilesData.reduce((acc, profile) => {
-          acc[profile.id] = profile;
+      if (studentsData) {
+        studentsMap = studentsData.reduce((acc, student) => {
+          const pid = student.parent_id;
+          if (!acc[pid]) acc[pid] = [];
+          acc[pid].push(student);
           return acc;
+        }, {} as Record<string, any[]>);
+      }
+
+      // Fetch Profiles (Legacy/Fallback)
+      const { data: profilesData } = await supabase
+        .from('profiles')
+        .select('id, student_id, full_name, email, parent_name, grade')
+        .in('id', userIds);
+
+      if (profilesData) {
+        profilesMap = profilesData.reduce((acc, profile) => {
+            acc[profile.id] = profile;
+            return acc;
         }, {} as Record<string, any>);
       }
     }
 
     // 3. Merge Data
-    const mergedPayments = (paymentsData || []).map(payment => ({
-      ...payment,
-      profiles: profilesMap[payment.user_id] || { student_id: 'N/A', full_name: 'Unknown', email: '', grade: '-' }
-    }));
+    const mergedPayments = (paymentsData || []).map(payment => {
+        // Find the student(s) that match this payment's parent AND grade
+        const parentStudents = studentsMap[payment.user_id] || [];
+        const parentProfile = profilesMap[payment.user_id];
+        
+        const matchingStudents = parentStudents.filter(s => s.grade === payment.grade);
+
+        let details = {
+            student_id: 'N/A',
+            full_name: 'Unknown Student',
+            grade: payment.grade,
+            parent_email: '',
+            parent_name: ''
+        };
+
+        if (matchingStudents.length > 0) {
+            // BEST CASE: Found specific student in new system
+            const s = matchingStudents[0]; 
+            details.student_id = matchingStudents.map(ms => ms.student_id).join(', ');
+            details.full_name = matchingStudents.map(ms => ms.full_name).join(' & ');
+            details.parent_email = s.profiles?.email || '';
+            details.parent_name = s.profiles?.parent_name || '';
+
+        } else if (parentProfile) {
+            // FALLBACK CASE: Legacy Profile Data
+            // If they are in the profiles table, they might not have migrated to 'students' table yet
+            // OR the grade doesn't match a specific student, so we revert to the main profile info.
+            details.student_id = parentProfile.student_id || 'N/A';
+            
+            // If the profile has a 'child' style name (full_name) use it, otherwise use parent_name
+            details.full_name = parentProfile.full_name || 'Legacy User';
+            
+            details.parent_email = parentProfile.email || '';
+            details.parent_name = parentProfile.parent_name || 'Parent';
+        }
+
+        return {
+            ...payment,
+            studentDetails: details
+        };
+    });
 
     setPayments(mergedPayments);
     setLoading(false);
@@ -147,12 +213,12 @@ export default function AdminPaymentsPage() {
                 <tr key={payment.id} className="hover:bg-gray-50">
                   <td className="p-4">
                     <span className="inline-block px-2 py-1 bg-gray-100 text-gray-700 text-xs font-mono rounded">
-                      {payment.profiles?.student_id || 'N/A'}
+                      {payment.studentDetails?.student_id || 'N/A'}
                     </span>
                   </td>
                   <td className="p-4">
-                    <div className="font-medium text-gray-900">{payment.profiles?.full_name || 'Unknown'}</div>
-                    <div className="text-xs text-gray-500">{payment.profiles?.grade}</div>
+                    <div className="font-medium text-gray-900">{payment.studentDetails?.full_name || 'Unknown'}</div>
+                    <div className="text-xs text-gray-500">{payment.grade} • {payment.studentDetails?.parent_name}</div>
                   </td>
                   <td className="p-4 text-gray-600">{getMonthName(payment.billing_month)}</td>
                   <td className="p-4 font-medium text-gray-900">LKR {payment.amount}</td>
@@ -209,11 +275,11 @@ export default function AdminPaymentsPage() {
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <label className="block text-gray-500 mb-1">Student ID</label>
-                  <div className="font-mono text-xs bg-gray-100 px-2 py-1 rounded inline-block">{selectedPayment.profiles?.student_id || 'N/A'}</div>
+                  <div className="font-mono text-xs bg-gray-100 px-2 py-1 rounded inline-block">{selectedPayment.studentDetails?.student_id || 'N/A'}</div>
                 </div>
                 <div>
                   <label className="block text-gray-500 mb-1">Student</label>
-                  <div className="font-medium">{selectedPayment.profiles?.full_name}</div>
+                  <div className="font-medium">{selectedPayment.studentDetails?.full_name} ({selectedPayment.grade})</div>
                 </div>
                 <div>
                   <label className="block text-gray-500 mb-1">Billing Month</label>

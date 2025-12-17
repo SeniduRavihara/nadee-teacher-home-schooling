@@ -1,6 +1,7 @@
 'use client';
 
 import { GRADES } from '@/constants/grades';
+import { useData } from '@/context/DataContext';
 import { useDialog } from '@/context/DialogContext';
 import { createClient } from '@/utils/supabase/client';
 import { Check, Upload, X } from 'lucide-react';
@@ -16,14 +17,23 @@ interface PaymentModalProps {
 }
 
 export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth, defaultGrade = 'Grade 1' }: PaymentModalProps) {
+  const { activeStudent, students } = useData();
   const [file, setFile] = useState<File | null>(null);
   const [amount, setAmount] = useState('1000');
-  const [grade, setGrade] = useState(defaultGrade);
+  const [grade, setGrade] = useState(activeStudent?.grade || defaultGrade);
+  const [selectedStudentId, setSelectedStudentId] = useState(activeStudent?.id || '');
   const [month, setMonth] = useState(
     billingMonth ? billingMonth.toISOString().slice(0, 7) : new Date().toISOString().slice(0, 7)
   );
   const [uploading, setUploading] = useState(false);
   const supabase = createClient();
+  useEffect(() => {
+    if (activeStudent) {
+        setGrade(activeStudent.grade);
+        setSelectedStudentId(activeStudent.id);
+    }
+  }, [activeStudent]);
+
   const { showAlert } = useDialog();
   const [mounted, setMounted] = useState(false);
 
@@ -38,6 +48,19 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth,
       setFile(e.target.files[0]);
     }
   };
+
+  const handleStudentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const newId = e.target.value;
+      setSelectedStudentId(newId);
+      const student = students.find(s => s.id === newId);
+      if (student) {
+          setGrade(student.grade);
+      } else {
+          // Fallback if selecting a raw grade from legacy list
+          setGrade(newId); 
+      }
+  };
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,6 +100,9 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth,
           onConflict: 'user_id, billing_month, grade'
         });
 
+      console.log(user.id, publicUrl, grade);
+      
+
       if (dbError) throw dbError;
 
       onSuccess();
@@ -105,18 +131,26 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth,
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Grade
+              Student
             </label>
             <div className="relative">
               <select
-                value={grade}
-                onChange={(e) => setGrade(e.target.value)}
-                className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none appearance-none bg-white"
+                value={selectedStudentId}
+                onChange={handleStudentChange}
+                className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none appearance-none bg-white font-medium"
                 required
               >
-                {GRADES.map((g) => (
-                  <option key={g} value={g}>{g}</option>
-                ))}
+                {students.length > 0 ? (
+                    students.map((s) => (
+                        <option key={s.id} value={s.id}>
+                            {s.full_name} ({s.grade})
+                        </option>
+                    ))
+                ) : (
+                    GRADES.map((g) => (
+                        <option key={g} value={g}>{g}</option>
+                    ))
+                )}
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -1,9 +1,11 @@
 "use client";
 
+import AddChildModal from "@/components/student/AddChildModal";
 import PaymentHistory from "@/components/student/PaymentHistory";
+import { useData } from "@/context/DataContext";
 import { useDialog } from "@/context/DialogContext";
 import { createClient } from "@/utils/supabase/client";
-import { CreditCard, Heart, Save, Sparkles, User } from "lucide-react";
+import { CreditCard, Heart, Plus, Save, Sparkles, User } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface Profile {
@@ -23,10 +25,11 @@ interface Profile {
 }
 
 export default function StudentProfilePage() {
-  const [loading, setLoading] = useState(true);
+  const { profile, students, activeStudent, switchStudent, refreshProfile } = useData();
+  const [loading, setLoading] = useState(false); // Managed by context mostly, but local loading state
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<"details" | "payments">("details");
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [isAddChildOpen, setIsAddChildOpen] = useState(false);
   const supabase = createClient();
   const { showAlert } = useDialog();
 
@@ -43,71 +46,73 @@ export default function StudentProfilePage() {
   });
 
   useEffect(() => {
-    fetchProfile();
-  }, []);
+    if (profile) {
+      // Parent Data from 'profiles'
+      const parentData = {
+        address: profile.address || "",
+        contactNumber: profile.contact_number || "",
+        parentName: profile.parent_name || "",
+        specialNote: profile.special_note || "",
+      };
 
-  const fetchProfile = async () => {
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
+      // Child Data from 'activeStudent'
+      const childData = activeStudent ? {
+        childName: activeStudent.full_name || "",
+        grade: activeStudent.grade || "Grade 1",
+        age: activeStudent.age?.toString() || "",
+        studentId: activeStudent.student_id || "",
+        fullName: activeStudent.full_name || "", // Legacy field sync
+      } : {
+        childName: "",
+        grade: "Grade 1",
+        age: "",
+        studentId: "",
+        fullName: "",
+      };
 
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-
-      if (error) throw error;
-
-      setProfile(data);
       setFormData({
-        fullName: data.full_name || "",
-        grade: data.grade || "Grade 1",
-        age: data.age?.toString() || "",
-        address: data.address || "",
-        contactNumber: data.contact_number || "",
-        parentName: data.parent_name || "",
-        childName: data.child_name || "",
-        specialNote: data.special_note || "",
-        studentId: data.student_id || "",
+        ...parentData,
+        ...childData
       });
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [profile, activeStudent]);
+
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!profile) return;
     setSaving(true);
 
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) throw new Error("No user found");
-
-      const { error } = await supabase
+      // 1. Update Parent Profile
+      const { error: profileError } = await supabase
         .from("profiles")
         .update({
-          full_name: formData.childName, // Sync full_name with child_name
-          grade: formData.grade,
-          age: parseInt(formData.age) || null,
           address: formData.address,
           contact_number: formData.contactNumber,
           parent_name: formData.parentName,
-          child_name: formData.childName,
           special_note: formData.specialNote,
-          is_profile_completed: true,
         })
-        .eq("id", user.id);
+        .eq("id", profile.id);
 
-      if (error) throw error;
+      if (profileError) throw profileError;
+
+      // 2. Update Active Student (if selected)
+      if (activeStudent) {
+         const { error: studentError } = await supabase
+            .from("students")
+            .update({
+                full_name: formData.childName,
+                grade: formData.grade,
+                age: parseInt(formData.age) || null,
+            })
+            .eq("id", activeStudent.id);
+            
+         if (studentError) throw studentError;
+      }
+
       await showAlert("Profile updated successfully!", "Success");
-      fetchProfile();
+      refreshProfile();
     } catch (error) {
       console.error("Error updating profile:", error);
       await showAlert("Failed to update profile", "Error");
@@ -116,7 +121,7 @@ export default function StudentProfilePage() {
     }
   };
 
-  if (loading)
+  if (!profile && !activeStudent)
     return (
       <div className="flex items-center justify-center p-16">
         <div className="text-center">
@@ -141,7 +146,7 @@ export default function StudentProfilePage() {
           <div className="flex-1">
             <h1 className="text-4xl font-black mb-2">My Profile! 👤</h1>
             <p className="text-white/95 font-bold text-lg">
-              Manage your info and check payment history! 💳
+              Manage your info for {activeStudent?.full_name || 'your child'}! 💳
             </p>
           </div>
           <Heart
@@ -195,6 +200,58 @@ export default function StudentProfilePage() {
           onSubmit={handleUpdateProfile}
           className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500"
         >
+          {/* Children Section */}
+          <div className="bg-white rounded-3xl p-8 shadow-lg border-4 border-pink-200">
+             <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
+               <div className="w-10 h-10 bg-gradient-to-br from-pink-400 to-rose-400 rounded-full flex items-center justify-center">
+                 <User size={20} className="text-white" />
+               </div>
+               My Children 🧸
+             </h2>
+
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {students.map((student) => (
+                    <div 
+                        key={student.id}
+                        onClick={() => switchStudent(student.id)}
+                        className={`p-6 rounded-2xl border-4 transition-all cursor-pointer relative group ${activeStudent?.id === student.id ? 'border-purple-400 bg-purple-50 shadow-md ring-2 ring-purple-200 ring-offset-2' : 'border-gray-100 bg-white hover:border-purple-200'}`}
+                    >
+                        {activeStudent?.id === student.id && (
+                            <div className="absolute top-4 right-4 bg-green-100 text-green-700 font-bold px-3 py-1 rounded-full text-xs flex items-center gap-1 shadow-sm">
+                                <Sparkles size={12} />
+                                Active
+                            </div>
+                        )}
+                        <div className="flex items-center gap-4 mb-4">
+                            <div className="w-16 h-16 bg-white rounded-full border-2 border-purple-200 p-1">
+                                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${student.full_name}`} alt="avatar" className="w-full h-full rounded-full" />
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-lg text-gray-800">{student.full_name}</h3>
+                                <p className="text-purple-600 font-bold text-sm">{student.grade}</p>
+                            </div>
+                        </div>
+                        <div className="text-sm text-gray-500 font-medium">
+                            Student ID: <span className="text-gray-700">{student.student_id}</span>
+                        </div>
+                    </div>
+                ))}
+
+                {/* Add New Child Button */}
+                <button
+                    type="button"
+                    onClick={() => setIsAddChildOpen(true)}
+                    className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 hover:border-purple-300 transition-all group min-h-[160px]"
+                >
+                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm mb-3 group-hover:scale-110 transition-transform">
+                        <Plus className="text-purple-500" size={24} />
+                    </div>
+                    <p className="font-bold text-gray-600 group-hover:text-purple-600">Add Another Child</p>
+                    <p className="text-xs text-center text-gray-400 mt-1">Register a sibling for classes</p>
+                </button>
+             </div>
+          </div>
+
           {/* Personal Information */}
           <div className="bg-white rounded-3xl p-8 shadow-lg border-4 border-purple-200">
             <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
@@ -358,6 +415,14 @@ export default function StudentProfilePage() {
           <PaymentHistory />
         </div>
       )}
+      <AddChildModal
+        isOpen={isAddChildOpen}
+        onClose={() => setIsAddChildOpen(false)}
+        onSuccess={() => {
+            // Re-fetch profile or update list
+            refreshProfile();
+        }}
+      />
     </div>
   );
 }

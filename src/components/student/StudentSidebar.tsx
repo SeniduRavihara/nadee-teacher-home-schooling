@@ -3,12 +3,12 @@
 import { useData } from "@/context/DataContext";
 import { createClient } from "@/utils/supabase/client";
 import {
-  BookOpen,
-  LayoutDashboard,
-  Star,
-  User,
-  Users,
-  Video,
+    BookOpen,
+    LayoutDashboard,
+    Star,
+    User,
+    Users,
+    Video,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -202,12 +202,12 @@ export default function StudentSidebar({
         <TreeSVG className="absolute bottom-16 right-16 w-10 h-16 z-10" />
 
         {/* Logout */}
-        <div className="p-4 border-t-2 border-purple-200 bg-white/60 backdrop-blur-sm relative z-10">
+        <div className="p-2 border-t-2 border-purple-200 bg-white/60 backdrop-blur-sm relative z-10">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:text-gray-900 w-full rounded-2xl hover:bg-white/80 transition-all font-bold shadow-sm hover:shadow-md border-2 border-transparent hover:border-gray-200"
+            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:text-gray-900 w-full rounded-2xl hover:bg-white/80 transition-all font-bold shadow-sm hover:shadow-md border-2 border-transparent hover:border-gray-200 text-sm"
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white text-sm font-black shadow-md">
+            <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white text-xs font-black shadow-md">
               {profile?.full_name?.charAt(0) || "N"}
             </div>
             <span>Logout 👋</span>

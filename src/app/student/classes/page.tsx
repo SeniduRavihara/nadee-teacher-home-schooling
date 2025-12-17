@@ -1,13 +1,14 @@
 "use client";
 
 import PaymentModal from "@/components/student/PaymentModal";
+import { useData } from "@/context/DataContext";
 import { usePaymentStatus } from "@/hooks/usePaymentStatus";
 import { createClient } from "@/utils/supabase/client";
 import { Calendar, Clock, Lock, Sparkles, Tv, User, Video } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function ClassesPage() {
-  const [userGrade, setUserGrade] = useState<string>("Grade 1");
+  const { activeStudent } = useData();
   const [loading, setLoading] = useState(true);
   const {
     isPaid,
@@ -18,32 +19,13 @@ export default function ClassesPage() {
   const supabase = createClient();
 
   useEffect(() => {
-    fetchUserProfile();
-  }, []);
-
-  const fetchUserProfile = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (user) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("grade")
-        .eq("id", user.id)
-        .single();
-      if (profile?.grade) {
-        setUserGrade(profile.grade);
-        fetchClasses(profile.grade);
-        checkPaymentStatus(profile.grade);
-      } else {
-        setLoading(false);
-        checkPaymentStatus();
-      }
+    if (activeStudent) {
+      checkPaymentStatus(activeStudent.grade);
+      fetchClasses(activeStudent.grade);
     } else {
       setLoading(false);
-      checkPaymentStatus();
     }
-  };
+  }, [activeStudent]);
 
   const fetchClasses = async (grade: string) => {
     try {
@@ -171,7 +153,7 @@ export default function ClassesPage() {
               Join fun live sessions with your friends! 🎉
             </p>
             <p className="text-white/90 text-sm font-medium mt-1">
-              {userGrade} • {classes.length} Classes
+              {activeStudent?.grade || 'Grade 1'} • {classes.length} Classes
             </p>
           </div>
           <Video className="text-yellow-300 animate-bounce" size={64} />
@@ -316,7 +298,7 @@ export default function ClassesPage() {
               No Classes Yet!
             </h3>
             <p className="text-blue-600 font-bold">
-              Classes for {userGrade} are coming soon! Stay tuned! 🎉
+              Classes for {activeStudent?.grade || 'Grade 1'} are coming soon! Stay tuned! 🎉
             </p>
           </div>
         )}
@@ -326,10 +308,10 @@ export default function ClassesPage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={() => {
-          checkPaymentStatus();
+          checkPaymentStatus(activeStudent?.grade || 'Grade 1');
           setIsModalOpen(false);
         }}
-        defaultGrade={userGrade}
+        defaultGrade={activeStudent?.grade || 'Grade 1'}
       />
     </div>
   );

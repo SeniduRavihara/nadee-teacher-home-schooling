@@ -1,23 +1,24 @@
 "use client";
 
 import PaymentModal from "@/components/student/PaymentModal";
+import { useData } from "@/context/DataContext";
 import { usePaymentStatus } from "@/hooks/usePaymentStatus";
 import { createClient } from "@/utils/supabase/client";
 import {
-  Clapperboard,
-  Clock,
-  Film,
-  Lock,
-  MonitorPlay,
-  PlayCircle,
-  Sparkles,
-  Video,
+    Clapperboard,
+    Clock,
+    Film,
+    Lock,
+    MonitorPlay,
+    PlayCircle,
+    Sparkles,
+    Video,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function VideosPage() {
-  const [userGrade, setUserGrade] = useState<string>("Grade 1");
+  const { activeStudent } = useData();
   const [loading, setLoading] = useState(true);
   const {
     isPaid,
@@ -32,30 +33,13 @@ export default function VideosPage() {
   const supabase = createClient();
 
   useEffect(() => {
-    fetchUserProfile();
-  }, []);
-
-  const fetchUserProfile = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (user) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("grade")
-        .eq("id", user.id)
-        .single();
-      if (profile?.grade) {
-        setUserGrade(profile.grade);
-        checkPaymentStatus(profile.grade);
-        fetchCourses(profile.grade);
-      } else {
-        setLoading(false);
-      }
+    if (activeStudent) {
+      checkPaymentStatus(activeStudent.grade);
+      fetchCourses(activeStudent.grade);
     } else {
       setLoading(false);
     }
-  };
+  }, [activeStudent]);
 
   const fetchCourses = async (grade: string) => {
     try {
@@ -130,7 +114,7 @@ export default function VideosPage() {
               Watch awesome videos and learn at your pace! 🚀
             </p>
             <p className="text-white/90 text-sm font-medium mt-1">
-              {userGrade}
+              {activeStudent?.grade || 'Grade 1'}
             </p>
           </div>
 
@@ -348,10 +332,10 @@ export default function VideosPage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={() => {
-          checkPaymentStatus(userGrade);
+          checkPaymentStatus(activeStudent?.grade || 'Grade 1');
           setIsModalOpen(false);
         }}
-        defaultGrade={userGrade}
+        defaultGrade={activeStudent?.grade || 'Grade 1'}
       />
     </div>
   );

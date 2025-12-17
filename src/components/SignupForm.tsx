@@ -47,7 +47,7 @@ export default function SignupForm() {
     }
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -61,6 +61,25 @@ export default function SignupForm() {
       });
 
       if (error) throw error;
+      
+      // AUTO-CREATE FIRST STUDENT RECORD
+      if (data.user) {
+          const fullStudentId = `${idPrefix}${studentId}`;
+          const { error: studentError } = await supabase
+            .from('students')
+            .insert({
+                parent_id: data.user.id,
+                full_name: childName,
+                grade: grade,
+                student_id: fullStudentId,
+                gender: 'boy', // Default, user can update later
+            });
+            
+          if (studentError) {
+             console.error('Error creating student record:', studentError);
+             // We don't block the signup flow but log it.
+          }
+      }
 
       // For now, we assume auto-confirmation or just redirect to login/onboarding
       // In a real app with email confirmation, you'd show a "Check your email" message
@@ -123,7 +142,12 @@ export default function SignupForm() {
               placeholder="Student ID Suffix"
               required
               value={studentId}
-              onChange={(e) => setStudentId(e.target.value)}
+              onChange={(e) => {
+                // Only allow numbers and max 4 digits
+                const val = e.target.value.replace(/\D/g, '').slice(0, 4);
+                setStudentId(val);
+              }}
+              maxLength={4}
               className={`w-full pr-6 py-3 rounded-full border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-gray-700 ${gradeCode ? 'pl-40' : 'pl-32'}`}
             />
           </div>

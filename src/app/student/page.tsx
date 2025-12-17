@@ -1,5 +1,6 @@
 "use client";
 
+import { useData } from "@/context/DataContext";
 import { createClient } from "@/utils/supabase/client";
 import { Book, Calendar, Clock, Play, Rocket, Sparkles } from "lucide-react";
 import Link from "next/link";
@@ -9,52 +10,40 @@ export default function StudentDashboard() {
   const [loading, setLoading] = useState(true);
   const [upcomingClasses, setUpcomingClasses] = useState<any[]>([]);
   const [recentCourses, setRecentCourses] = useState<any[]>([]);
-  const [userGrade, setUserGrade] = useState("Grade 1");
-  const [userName, setUserName] = useState("Student");
+  const { activeStudent } = useData();
+  const userName = activeStudent?.full_name?.split(' ')[0] || 'Student';
   const supabase = createClient();
 
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
+    if (activeStudent) {
+        fetchDashboardData();
+    }
+  }, [activeStudent]);
 
   const fetchDashboardData = async () => {
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!activeStudent) return;
 
-      // Fetch Profile
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("grade, full_name")
-        .eq("id", user.id)
-        .single();
+      // Fetch Upcoming Classes for Active Student's Grade
+      const { data: classes } = await supabase
+        .from("online_classes")
+        .select("*")
+        .eq("target_grade", activeStudent.grade)
+        .gte("start_time", new Date().toISOString())
+        .order("start_time", { ascending: true })
+        .limit(2);
 
-      if (profile) {
-        setUserGrade(profile.grade || "Grade 1");
-        setUserName(profile.full_name?.split(" ")[0] || "Student");
+      setUpcomingClasses(classes || []);
 
-        // Fetch Upcoming Classes
-        const { data: classes } = await supabase
-          .from("online_classes")
-          .select("*")
-          .eq("target_grade", profile.grade)
-          .gte("start_time", new Date().toISOString())
-          .order("start_time", { ascending: true })
-          .limit(2);
+      // Fetch Recent Courses for Active Student's Grade
+      const { data: courses } = await supabase
+        .from("courses")
+        .select("*")
+        .eq("target_grade", activeStudent.grade)
+        .limit(2);
 
-        setUpcomingClasses(classes || []);
-
-        // Fetch Recent Courses (simulated "Continue Learning")
-        const { data: courses } = await supabase
-          .from("courses")
-          .select("*")
-          .eq("target_grade", profile.grade)
-          .limit(2);
-
-        setRecentCourses(courses || []);
-      }
+      setRecentCourses(courses || []);
+      
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
