@@ -1,3 +1,4 @@
+import { syllabusData } from '@/data/syllabus'
 import { MetadataRoute } from 'next'
  
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -20,41 +21,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.8,
     },
-    {
-      url: 'https://nadeeteacher.online/classes/preschool',
+    ...Object.keys(syllabusData).map((grade): MetadataRoute.Sitemap[number] => ({
+      url: `https://nadeeteacher.online/classes/${grade}`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
-    },
-    {
-      url: 'https://nadeeteacher.online/classes/grade-1',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: 'https://nadeeteacher.online/classes/grade-2',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: 'https://nadeeteacher.online/classes/grade-3',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: 'https://nadeeteacher.online/classes/grade-4',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: 'https://nadeeteacher.online/classes/grade-5',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
+    })),
   ]
 }

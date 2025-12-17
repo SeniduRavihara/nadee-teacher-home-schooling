@@ -1,3 +1,6 @@
+import { AuthProvider } from '@/context/AuthContext';
+import { DataProvider } from '@/context/DataContext';
+import { DialogProvider } from '@/context/DialogContext';
 import type { Metadata } from "next";
 import { Chewy } from 'next/font/google';
 import "./globals.css";
@@ -9,6 +12,7 @@ const chewy = Chewy({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://nadeeteacher.online'),
   title: "NadeeTeacher - Fun & Effective Online Learning for Kids",
   description: "Join NadeeTeacher for interactive online classes, quizzes, and video lessons designed to make learning fun and effective for preschool to Grade 5 students.",
   keywords: [
@@ -27,16 +31,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "NadeeTeacher - Fun & Effective Online Learning for Kids",
     description: "Interactive online classes, quizzes, and video lessons for kids.",
-    url: "https://nadeeteacher.online", // Assuming this is the URL, or I can leave it out or use a placeholder
+    url: "https://nadeeteacher.online",
     siteName: "NadeeTeacher",
     locale: "en_US",
     type: "website",
   },
 };
 
-import { AuthProvider } from '@/context/AuthContext';
-import { DataProvider } from '@/context/DataContext';
-import { DialogProvider } from '@/context/DialogContext';
 
 export default function RootLayout({
   children,
@@ -48,7 +49,7 @@ export default function RootLayout({
       <body
         className={`antialiased font-sans ${chewy.variable}`}
       >
-        {/* <script
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
@@ -69,7 +70,7 @@ export default function RootLayout({
               }
             }),
           }}
-        /> */}
+        />
         <AuthProvider>
           <DialogProvider>
             <DataProvider>
