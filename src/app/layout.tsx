@@ -1,3 +1,4 @@
+import WhatsAppButton from '@/components/WhatsAppButton';
 import { AuthProvider } from '@/context/AuthContext';
 import { DataProvider } from '@/context/DataContext';
 import { DialogProvider } from '@/context/DialogContext';
@@ -75,6 +76,7 @@ export default function RootLayout({
           <DialogProvider>
             <DataProvider>
               {children}
+              <WhatsAppButton />
             </DataProvider>
           </DialogProvider>
         </AuthProvider>
