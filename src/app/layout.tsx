@@ -29,6 +29,16 @@ export const metadata: Metadata = {
     "Student Progress Tracking", "Live Classes", "Zoom Education", "Tuition Classes", "Online Tuition", 
     "Reading", "Writing", "Spoken English for Kids", "Elocution", "Abacus", "Coding for Kids"
   ],
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/logo.png', type: 'image/png', sizes: '512x512' },
+    ],
+    apple: [
+      { url: '/logo.png', sizes: '180x180', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+  },
   openGraph: {
     title: "NadeeTeacher - Fun & Effective Online Learning for Kids",
     description: "Interactive online classes, quizzes, and video lessons for kids.",
@@ -36,6 +46,14 @@ export const metadata: Metadata = {
     siteName: "NadeeTeacher",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: '/logo.png',
+        width: 512,
+        height: 512,
+        alt: 'NadeeTeacher Logo',
+      },
+    ],
   },
 };
 
