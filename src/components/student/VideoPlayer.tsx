@@ -36,10 +36,26 @@ export default function VideoPlayer({ title, videoUrl }: { title: string; videoU
     return fileId ? `https://drive.google.com/file/d/${fileId}/preview` : null;
   };
 
+  // Helper to extract Mega.nz embed URL
+  const getMegaEmbedUrl = (url: string) => {
+    // Convert https://mega.nz/file/ID#KEY to https://mega.nz/embed/ID#KEY
+    if (url.includes('mega.nz/file/')) {
+      return url.replace('/file/', '/embed/');
+    }
+    // Already an embed link
+    if (url.includes('mega.nz/embed/')) {
+      return url;
+    }
+    return null;
+  };
+
   // Detect video type
   const isGoogleDrive = videoUrl.includes('drive.google.com');
+  const isMega = videoUrl.includes('mega.nz');
+  
   const googleDriveUrl = isGoogleDrive ? getGoogleDriveEmbedUrl(videoUrl) : null;
-  const youtubeId = !isGoogleDrive ? getYoutubeId(videoUrl) : null;
+  const megaUrl = isMega ? getMegaEmbedUrl(videoUrl) : null;
+  const youtubeId = (!isGoogleDrive && !isMega) ? getYoutubeId(videoUrl) : null;
 
   return (
     <div className="bg-black rounded-2xl overflow-hidden aspect-video relative group shadow-lg">
@@ -47,6 +63,15 @@ export default function VideoPlayer({ title, videoUrl }: { title: string; videoU
         // Google Drive Video
         <iframe
           src={googleDriveUrl}
+          title={title}
+          className="absolute inset-0 w-full h-full"
+          allow="autoplay; encrypted-media"
+          allowFullScreen
+        />
+      ) : megaUrl ? (
+        // Mega.nz Video
+        <iframe
+          src={megaUrl}
           title={title}
           className="absolute inset-0 w-full h-full"
           allow="autoplay; encrypted-media"
@@ -64,7 +89,7 @@ export default function VideoPlayer({ title, videoUrl }: { title: string; videoU
       ) : (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
           <p className="text-white/50">Invalid Video URL</p>
-          <p className="text-white/30 text-sm mt-2">Supported: YouTube & Google Drive</p>
+          <p className="text-white/30 text-sm mt-2">Supported: YouTube, Google Drive & Mega.nz</p>
         </div>
       )}
     </div>
