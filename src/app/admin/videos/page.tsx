@@ -9,7 +9,7 @@ interface Course {
   id: string;
   title: string;
   description: string;
-  target_grade: string;
+  target_grade: string | string[];
   thumbnail_url: string;
   category: 'recording' | 'movie' | 'yt_video';
   is_single_video: boolean;
@@ -27,7 +27,7 @@ export default function AdminCoursesPage() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    targetGrade: 'Preschool',
+    targetGrade: ['Preschool'],
     thumbnailUrl: '',
     category: 'yt_video' as Course['category'],
     isSingleVideo: false,
@@ -61,7 +61,7 @@ export default function AdminCoursesPage() {
     setFormData({
       title: course.title,
       description: course.description,
-      targetGrade: course.target_grade,
+      targetGrade: Array.isArray(course.target_grade) ? course.target_grade : [course.target_grade],
       thumbnailUrl: course.thumbnail_url || '',
       category: course.category || 'yt_video',
       isSingleVideo: course.is_single_video || false,
@@ -77,7 +77,7 @@ export default function AdminCoursesPage() {
     setFormData({
       title: '',
       description: '',
-      targetGrade: 'Preschool',
+      targetGrade: ['Preschool'],
       thumbnailUrl: '',
       category: 'yt_video',
       isSingleVideo: false,
@@ -168,7 +168,9 @@ export default function AdminCoursesPage() {
 
   const filteredCourses = courses.filter(course =>
     course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    course.target_grade.toLowerCase().includes(searchQuery.toLowerCase())
+    Array.isArray(course.target_grade) 
+      ? (course.target_grade as string[]).some(g => g.toLowerCase().includes(searchQuery.toLowerCase()))
+      : (course.target_grade as string).toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const getCategoryIcon = (category: string) => {
@@ -200,7 +202,7 @@ export default function AdminCoursesPage() {
             setFormData({
               title: '',
               description: '',
-              targetGrade: 'Preschool',
+              targetGrade: ['Preschool'],
               thumbnailUrl: '',
               category: 'yt_video',
               isSingleVideo: false,
@@ -240,7 +242,9 @@ export default function AdminCoursesPage() {
               <div className="flex justify-between items-start mb-4">
                 <div className="flex gap-2">
                   <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-600">
-                    {course.target_grade}
+                    {Array.isArray(course.target_grade) 
+                      ? course.target_grade.join(', ') 
+                      : course.target_grade}
                   </span>
                   <span className="px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-600 flex items-center gap-1">
                     {getCategoryIcon(course.category || 'yt_video')}
@@ -327,19 +331,30 @@ export default function AdminCoursesPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Target Grade</label>
-                  <select
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={formData.targetGrade}
-                    onChange={(e) => setFormData({ ...formData, targetGrade: e.target.value })}
-                  >
-                    <option value="Preschool">Preschool</option>
-                    <option value="Grade 1">Grade 1</option>
-                    <option value="Grade 2">Grade 2</option>
-                    <option value="Grade 3">Grade 3</option>
-                    <option value="Grade 4">Grade 4</option>
-                    <option value="Grade 5">Grade 5</option>
-                  </select>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Target Grade(s)</label>
+                    <div className="flex flex-wrap gap-2">
+                       {['Preschool', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5'].map((grade) => (
+                          <label key={grade} className="flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                            <input
+                              type="checkbox"
+                              className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                              checked={formData.targetGrade.includes(grade)}
+                              onChange={(e) => {
+                                const newGrades = e.target.checked
+                                  ? [...formData.targetGrade, grade]
+                                  : formData.targetGrade.filter((g) => g !== grade);
+                                setFormData({ ...formData, targetGrade: newGrades });
+                              }}
+                            />
+                            <span className="text-sm text-gray-700 font-medium select-none">{grade}</span>
+                          </label>
+                       ))}
+                    </div>
+                    {formData.targetGrade.length === 0 && (
+                      <p className="text-xs text-red-500 mt-1">Please select at least one grade.</p>
+                    )}
+                  </div>
                 </div>
 
                 <div>

@@ -46,7 +46,7 @@ export default function VideosPage() {
       const { data, error } = await supabase
         .from("courses")
         .select("*, videos(id, is_locked)")
-        .eq("target_grade", grade)
+        .contains("target_grade", [grade])
         .order("created_at", { ascending: false });
 
       if (error) throw error;
