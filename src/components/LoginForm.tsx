@@ -74,9 +74,13 @@ export default function LoginForm() {
         )}
 
         <div className="text-right">
-            <Link href="#" className="text-blue-600 text-sm hover:underline">
+            <button 
+                type="button"
+                onClick={() => alert("Please contact the school administration to reset your password.")}
+                className="text-blue-600 text-sm hover:underline"
+            >
                 Forgot Password?
-            </Link>
+            </button>
         </div>
 
         <button

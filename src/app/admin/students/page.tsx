@@ -1,7 +1,8 @@
 'use client';
 
+import { updateUserPassword } from '@/app/actions/admin-auth';
 import { createClient } from '@/utils/supabase/client';
-import { Download, Search, User } from 'lucide-react';
+import { Download, Eye, EyeOff, Key, Search, User, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface Student {
@@ -24,6 +25,13 @@ export default function AdminStudentsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('All');
   const [downloading, setDownloading] = useState(false);
+  
+  // Password Reset State
+  const [resetModalOpen, setResetModalOpen] = useState(false);
+  const [studentToReset, setStudentToReset] = useState<Student | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   const supabase = createClient();
 
@@ -106,6 +114,35 @@ export default function AdminStudentsPage() {
       alert('Failed to download student data.');
     } finally {
       setDownloading(false);
+    }
+  };
+
+  const openResetModal = (student: Student) => {
+    setStudentToReset(student);
+    setNewPassword('');
+    setResetModalOpen(true);
+  };
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!studentToReset || !newPassword) return;
+
+    setResetting(true);
+    try {
+      const result = await updateUserPassword(studentToReset.parent_id, newPassword);
+      
+      if (result.error) {
+        alert(`Error: ${result.error}`);
+      } else {
+        alert('Password updated successfully!');
+        setResetModalOpen(false);
+        setStudentToReset(null);
+      }
+    } catch (err) {
+      console.error('Failed to reset password', err);
+      alert('An unexpected error occurred.');
+    } finally {
+      setResetting(false);
     }
   };
 
@@ -223,7 +260,16 @@ export default function AdminStudentsPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">
-                      {new Date(student.created_at).toLocaleDateString()}
+                      <div className="flex items-center justify-between">
+                         <span>{new Date(student.created_at).toLocaleDateString()}</span>
+                         <button 
+                            onClick={() => openResetModal(student)}
+                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                            title="Reset Password"
+                         >
+                            <Key size={18} />
+                         </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -232,6 +278,70 @@ export default function AdminStudentsPage() {
           </table>
         </div>
       </div>
+
+      {/* Password Reset Modal */}
+      {resetModalOpen && studentToReset && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+              <h3 className="font-bold text-lg text-gray-900">Reset Password</h3>
+              <button 
+                onClick={() => setResetModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            <form onSubmit={handlePasswordReset} className="p-6 space-y-4">
+              <div className="bg-blue-50 p-4 rounded-lg text-sm text-blue-800 mb-4">
+                <p>Combine resetting password for student: <span className="font-bold">{studentToReset.full_name}</span></p>
+                <p className="mt-1 text-xs opacity-75">Parent ID: {studentToReset.parent_id}</p>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">New Password</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter new password"
+                    required
+                    minLength={6}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+                <p className="text-xs text-gray-500">Min 6 characters.</p>
+              </div>
+
+              <div className="pt-4 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setResetModalOpen(false)}
+                  className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={resetting}
+                  className="flex-1 px-4 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 disabled:opacity-50"
+                >
+                  {resetting ? 'Updating...' : 'Update Password'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
