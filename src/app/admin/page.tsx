@@ -19,10 +19,11 @@ async function getDashboardData() {
   const supabase = await createClient();
 
   // Get total students count
+  // METHOD: Counting from 'students' table (individual enrolled children)
+  // This counts total enrolled children across all parents
   const { count: totalStudents } = await supabase
-    .from('profiles')
-    .select('*', { count: 'exact', head: true })
-    .eq('role', 'student');
+    .from('students')
+    .select('*', { count: 'exact', head: true });
 
   // Get active quizzes count
   const { count: activeQuizzes } = await supabase
