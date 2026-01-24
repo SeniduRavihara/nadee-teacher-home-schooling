@@ -5,6 +5,7 @@ import { createClient } from '@/utils/supabase/client';
 import { Check, Eye, X } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import GradePaymentAnalysis from '@/components/admin/GradePaymentAnalysis';
 
 interface Payment {
   id: string;
@@ -172,10 +173,15 @@ export default function AdminPaymentsPage() {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Payment Reviews</h1>
-        <div className="flex gap-2">
+    <div className="p-6 space-y-6">
+      {/* Grade-wise Payment Analysis */}
+      <GradePaymentAnalysis payments={payments} />
+
+      {/* Payment Reviews Section */}
+      <div>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-800">Payment Reviews</h1>
+          <div className="flex gap-2">
           {(['all', 'pending', 'approved', 'rejected'] as const).map((f) => (
             <button
               key={f}
@@ -190,7 +196,7 @@ export default function AdminPaymentsPage() {
             </button>
           ))}
         </div>
-      </div>
+        </div>
 
       {loading ? (
         <div className="text-center py-12">Loading payments...</div>
@@ -340,6 +346,7 @@ export default function AdminPaymentsPage() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
