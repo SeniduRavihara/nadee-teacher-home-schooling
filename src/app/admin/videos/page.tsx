@@ -1,7 +1,7 @@
 'use client';
 
 import { createClient } from '@/utils/supabase/client';
-import { BookOpen, Edit, Film, MonitorPlay, Plus, Search, Trash2, Video } from 'lucide-react';
+import { BookOpen, Edit, Film, Lock, MonitorPlay, Plus, Search, Trash2, Unlock, Video } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -14,6 +14,8 @@ interface Course {
   category: 'recording' | 'movie' | 'yt_video';
   is_single_video: boolean;
   created_at: string;
+  videos?: { is_locked: boolean }[];
+  hasLocked?: boolean; // derived client-side
 }
 
 export default function AdminCoursesPage() {
@@ -44,11 +46,16 @@ export default function AdminCoursesPage() {
     try {
       const { data, error } = await supabase
         .from('courses')
-        .select('*')
+        .select('*, videos(is_locked)')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setCourses(data || []);
+      const coursesWithLockFlag = (data || []).map((c) => ({
+        ...c,
+        hasLocked: (c as any)?.videos?.some((v: any) => v.is_locked) || false,
+      }));
+
+      setCourses(coursesWithLockFlag as Course[]);
     } catch (error) {
       console.error('Error fetching courses:', error);
     } finally {
@@ -166,6 +173,31 @@ export default function AdminCoursesPage() {
     }
   };
 
+  const toggleCourseLock = async (course: Course, lock: boolean) => {
+    try {
+      if (!course.videos || course.videos.length === 0) {
+        alert('Add at least one video to this course before toggling lock.');
+        return;
+      }
+
+      const { error } = await supabase
+        .from('videos')
+        .update({ is_locked: lock })
+        .eq('course_id', course.id);
+
+      if (error) throw error;
+
+      setCourses(prev => prev.map(c => c.id === course.id ? { 
+        ...c, 
+        hasLocked: lock,
+        videos: c.videos?.map(v => ({ ...v, is_locked: lock }))
+      } : c));
+    } catch (error) {
+      console.error('Error toggling course lock:', error);
+      alert('Failed to toggle lock for this course.');
+    }
+  };
+
   const filteredCourses = courses.filter(course =>
     course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     Array.isArray(course.target_grade) 
@@ -256,7 +288,14 @@ export default function AdminCoursesPage() {
                     </span>
                   )}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
+                  <button
+                    onClick={() => toggleCourseLock(course, !course.hasLocked)}
+                    className={`p-2 rounded-lg transition-colors border ${course.hasLocked ? 'text-orange-600 bg-orange-50 border-orange-100 hover:bg-orange-100' : 'text-green-600 bg-green-50 border-green-100 hover:bg-green-100'}`}
+                    title={course.hasLocked ? 'Unlock course (make free)' : 'Lock course (requires payment)'}
+                  >
+                    {course.hasLocked ? <Lock size={16} /> : <Unlock size={16} />}
+                  </button>
                   <button 
                     onClick={() => handleEdit(course)}
                     className="text-gray-400 hover:text-blue-500 transition-colors"
