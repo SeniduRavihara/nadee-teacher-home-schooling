@@ -1,11 +1,11 @@
 'use client';
 
+import GradePaymentAnalysis from '@/components/admin/GradePaymentAnalysis';
 import { useDialog } from '@/context/DialogContext';
 import { createClient } from '@/utils/supabase/client';
 import { Check, Eye, X } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import GradePaymentAnalysis from '@/components/admin/GradePaymentAnalysis';
 
 interface Payment {
   id: string;
@@ -245,13 +245,22 @@ export default function AdminPaymentsPage() {
                     {new Date(payment.created_at).toLocaleDateString()}
                   </td>
                   <td className="p-4">
-                    <button
-                      onClick={() => setSelectedPayment(payment)}
-                      className="p-2 text-gray-400 hover:text-orange-500 transition-colors"
-                      title="View Slip"
-                    >
-                      <Eye size={20} />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleUpdateStatus(payment.id, 'approved')}
+                        className="p-2 text-gray-400 hover:text-green-500 transition-colors"
+                        title="Quick Approve"
+                      >
+                        <Check size={20} />
+                      </button>
+                      <button
+                        onClick={() => setSelectedPayment(payment)}
+                        className="p-2 text-gray-400 hover:text-orange-500 transition-colors"
+                        title="View Slip"
+                      >
+                        <Eye size={20} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -302,8 +311,18 @@ export default function AdminPaymentsPage() {
               </div>
 
               <div className="border rounded-lg p-2 bg-gray-50 flex justify-center">
-                 {/* Handle PDF vs Image */}
-                 {selectedPayment.slip_url.toLowerCase().endsWith('.pdf') ? (
+                 {/* Handle PDF vs Image vs WhatsApp */}
+                 {selectedPayment.slip_url === 'pending_whatsapp_verification' ? (
+                    <div className="w-full h-96 flex flex-col items-center justify-center text-gray-500 gap-4">
+                        <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/><path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0 1 0v3a.5.5 0 0 1-1 0v-1a.5.5 0 0 1-1 0V10z"/><path d="M14 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0 1 0v3a.5.5 0 0 1-1 0v-1a.5.5 0 0 1-1 0V10z"/></svg>
+                        </div>
+                        <div className="text-center">
+                            <p className="font-medium text-gray-900">Paid via WhatsApp</p>
+                            <p className="text-sm">Please check your WhatsApp messages for the payment slip.</p>
+                        </div>
+                    </div>
+                 ) : selectedPayment.slip_url.toLowerCase().endsWith('.pdf') ? (
                     <iframe src={selectedPayment.slip_url} className="w-full h-96" />
                  ) : (
                     <div className="relative w-full h-96">
