@@ -261,33 +261,18 @@ export default function ClassesPage() {
                   </div>
                 </div>
 
-                {cls.status === "Live" || cls.status === "Upcoming" ? (
-                  <a
-                    href={cls.zoomLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`block w-full py-4 rounded-2xl font-black text-white text-center transition-all bg-gradient-to-r ${colorTheme.gradient} hover:scale-105 shadow-md border-2 border-white text-lg`}
-                  >
-                    {cls.status === "Live"
-                      ? "🔴 Join Live Now!"
-                      : "🚀 Join Class!"}
-                  </a>
-                ) : (
-                  <button
-                    onClick={() => handleClassAction(cls)}
-                    className={`w-full py-4 rounded-2xl font-black text-white transition-all bg-gradient-to-r ${
-                      colorTheme.gradient
-                    } ${
-                      cls.status === "Completed"
-                        ? "opacity-50 cursor-not-allowed"
-                        : "hover:scale-105"
-                    } shadow-md border-2 border-white text-lg`}
-                  >
-                    {cls.status === "Completed"
-                      ? "📼 Watch Recording"
-                      : "🔔 Set Reminder"}
-                  </button>
-                )}
+                <a
+                  href={cls.zoomLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`block w-full py-4 rounded-2xl font-black text-white text-center transition-all bg-gradient-to-r ${colorTheme.gradient} hover:scale-105 shadow-md border-2 border-white text-lg`}
+                >
+                  {cls.status === "Live"
+                    ? "🔴 Join Live Now!"
+                    : cls.status === "Completed"
+                    ? "↺ Join Class Again"
+                    : "🚀 Join Class!"}
+                </a>
               </div>
             );
           })
