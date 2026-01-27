@@ -124,7 +124,17 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth,
       );
     } catch (error: any) {
       console.error('Error uploading payment:', error);
-      await showAlert(error.message || 'Failed to upload payment', 'Error');
+      
+      // Handle RLS error (Conflict/Duplicate request for same month)
+      if (error.code === '42501' || error.message?.includes('row-level security')) {
+         onClose(); // Close modal first so alert is visible
+         await showAlert(
+             'Payment Request එක approve කරන තුරු රැඳී සිටින්න.', // "Wait until Payment Request is approved"
+             'Pending Approval'
+         );
+      } else {
+         await showAlert(error.message || 'Failed to upload payment', 'Error');
+      }
     } finally {
       setUploading(false);
     }
