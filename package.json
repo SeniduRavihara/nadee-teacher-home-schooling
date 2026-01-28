@@ -6,12 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:backup": "tsx scripts/create-backup.ts",
+    "db:restore": "tsx scripts/restore-backup.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.84.0",
+    "dotenv": "^17.2.3",
     "framer-motion": "^12.23.24",
+    "jszip": "^3.10.1",
     "lucide-react": "^0.554.0",
     "next": "16.0.7",
     "react": "19.2.0",
@@ -21,12 +25,14 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/jszip": "^3.4.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.0.7",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }
