@@ -117,9 +117,9 @@ export default function SignupForm() {
             className="w-full px-6 py-3 rounded-full border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-gray-700 appearance-none bg-white"
           >
             <option value="" disabled>Select Grade</option>
-            <option value="Preschool">Preschool</option>
-            <option value="Grade 1">Grade 1</option>
-            <option value="Grade 2">Grade 2</option>
+            <option value="Preschool">Preschool (SPARK FOUNDATION)</option>
+            <option value="Grade 1">Grade 1 (SPARK BUILDERS)</option>
+            <option value="Grade 2">Grade 2 (SPARK ACHIEVERS)</option>
             <option value="Grade 3">Grade 3</option>
             <option value="Grade 4">Grade 4</option>
             <option value="Grade 5">Grade 5</option>
