@@ -204,6 +204,9 @@ export default function VideosPage() {
                   activeTab !== "yt_video" &&
                   !course.hasFreeVideo && (
                     <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center text-center p-4">
+                      <h2 className="font-black text-gray-900 mb-3 text-xl line-clamp-2">
+                        {course.title}
+                      </h2>
                       <div className="w-16 h-16 bg-linear-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-3 shadow-md border-4 border-white">
                         <Lock className="text-gray-500" size={28} />
                       </div>
