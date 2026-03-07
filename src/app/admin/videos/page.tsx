@@ -13,10 +13,25 @@ interface Course {
   thumbnail_url: string;
   category: 'recording' | 'movie' | 'yt_video';
   is_single_video: boolean;
+  billing_month: string | null; // YYYY-MM-01, optional
   created_at: string;
   videos?: { is_locked: boolean }[];
   hasLocked?: boolean; // derived client-side
 }
+
+// Generate a list of month options: past 12 months + next 3 months
+function getMonthOptions() {
+  const options: { label: string; value: string }[] = [];
+  const now = new Date();
+  for (let i = -12; i <= 3; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+    const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`;
+    const label = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    options.push({ label, value });
+  }
+  return options;
+}
+const MONTH_OPTIONS = getMonthOptions();
 
 export default function AdminCoursesPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -34,7 +49,8 @@ export default function AdminCoursesPage() {
     category: 'yt_video' as Course['category'],
     isSingleVideo: false,
     videoUrl: '',
-    duration: ''
+    duration: '',
+    billingMonth: '' // empty = no restriction
   });
 
   useEffect(() => {
@@ -72,8 +88,9 @@ export default function AdminCoursesPage() {
       thumbnailUrl: course.thumbnail_url || '',
       category: course.category || 'yt_video',
       isSingleVideo: course.is_single_video || false,
-      videoUrl: '', // We don't fetch video details here for edit, user manages videos separately
-      duration: ''
+      videoUrl: '',
+      duration: '',
+      billingMonth: course.billing_month || ''
     });
     setIsCreateModalOpen(true);
   };
@@ -89,7 +106,8 @@ export default function AdminCoursesPage() {
       category: 'yt_video',
       isSingleVideo: false,
       videoUrl: '',
-      duration: ''
+      duration: '',
+      billingMonth: ''
     });
   };
 
@@ -102,7 +120,8 @@ export default function AdminCoursesPage() {
         target_grade: formData.targetGrade,
         thumbnail_url: formData.thumbnailUrl,
         category: formData.category,
-        is_single_video: formData.isSingleVideo
+        is_single_video: formData.isSingleVideo,
+        billing_month: formData.billingMonth || null // null = no restriction
       };
 
       let error;
@@ -239,7 +258,8 @@ export default function AdminCoursesPage() {
               category: 'yt_video',
               isSingleVideo: false,
               videoUrl: '',
-              duration: ''
+              duration: '',
+              billingMonth: ''
             });
             setIsCreateModalOpen(true);
           }}
@@ -271,24 +291,30 @@ export default function AdminCoursesPage() {
         ) : filteredCourses.length > 0 ? (
           filteredCourses.map((course) => (
             <div key={course.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex gap-2">
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-600">
-                    {Array.isArray(course.target_grade) 
-                      ? course.target_grade.join(', ') 
-                      : course.target_grade}
-                  </span>
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-600 flex items-center gap-1">
+              <div className="flex justify-between items-start mb-4 gap-4">
+                <div className="flex flex-wrap gap-2 flex-1">
+                  {Array.isArray(course.target_grade) ? (
+                    course.target_grade.map((grade) => (
+                      <span key={grade} className="px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-600 whitespace-nowrap">
+                        {grade}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-600 whitespace-nowrap">
+                      {course.target_grade}
+                    </span>
+                  )}
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-600 flex items-center gap-1 whitespace-nowrap">
                     {getCategoryIcon(course.category || 'yt_video')}
                     {getCategoryLabel(course.category || 'yt_video')}
                   </span>
                   {course.is_single_video && (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-600">
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-600 whitespace-nowrap">
                       Single
                     </span>
                   )}
                 </div>
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center flex-shrink-0">
                   <button
                     onClick={() => toggleCourseLock(course, !course.hasLocked)}
                     className={`p-2 rounded-lg transition-colors border ${course.hasLocked ? 'text-orange-600 bg-orange-50 border-orange-100 hover:bg-orange-100' : 'text-green-600 bg-green-50 border-green-100 hover:bg-green-100'}`}
@@ -312,14 +338,22 @@ export default function AdminCoursesPage() {
               </div>
               
               <h3 className="text-xl font-bold text-gray-900 mb-2">{course.title}</h3>
-              <p className="text-gray-500 text-sm mb-6 line-clamp-2">{course.description}</p>
+              <p className="text-gray-500 text-sm mb-4 line-clamp-2">{course.description}</p>
+
+              {/* Billing Month Badge */}
+              {(course as any).billing_month && (
+                <div className="mb-4">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                    📅 {new Date((course as any).billing_month).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}
+                  </span>
+                </div>
+              )}
               
               <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
                 <div className="flex items-center gap-1">
                   <BookOpen size={16} />
                   <span>{course.is_single_video ? 'Single Video' : 'Course'}</span>
                 </div>
-                {/* We could fetch video count here if needed, or join in the query */}
               </div>
 
               <Link 
@@ -408,6 +442,24 @@ export default function AdminCoursesPage() {
                     <option value="movie">Movie</option>
                   </select>
                 </div>
+              </div>
+
+              {/* Billing Month Picker */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Billing Month <span className="text-gray-400 font-normal">(Optional)</span>
+                </label>
+                <select
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={formData.billingMonth}
+                  onChange={(e) => setFormData({ ...formData, billingMonth: e.target.value })}
+                >
+                  <option value="">— No restriction (current month) —</option>
+                  {MONTH_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+                <p className="text-xs text-gray-400 mt-1">Students who paid for this month can access the course, even in later months.</p>
               </div>
 
               <div>

@@ -25,6 +25,17 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth,
   const [month, setMonth] = useState(
     billingMonth ? billingMonth.toISOString().slice(0, 7) : new Date().toISOString().slice(0, 7)
   );
+  
+  useEffect(() => {
+    if (isOpen) {
+      if (billingMonth) {
+        setMonth(billingMonth.toISOString().slice(0, 7));
+      } else {
+        setMonth(new Date().toISOString().slice(0, 7));
+      }
+    }
+  }, [isOpen, billingMonth]);
+
   const [uploading, setUploading] = useState(false);
   const [isWhatsApp, setIsWhatsApp] = useState(true);
   const supabase = createClient();
