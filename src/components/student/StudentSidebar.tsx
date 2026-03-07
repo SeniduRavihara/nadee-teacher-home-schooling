@@ -62,11 +62,6 @@ export default function StudentSidebar({
     fetchStars();
   }, []);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push("/login");
-  };
-
   return (
     <>
       {/* Overlay for mobile */}
@@ -98,7 +93,7 @@ export default function StudentSidebar({
         />
 
         {/* Logo Section */}
-        <div className="p-6 flex items-center gap-3 relative z-10 bg-white/40 backdrop-blur-sm border-b-2 border-blue-200">
+        <div className="p-5 flex items-center gap-3 relative z-10 bg-white/40 backdrop-blur-sm border-b-2 border-blue-200">
           <Link href="/" onClick={onClose} className="flex items-center gap-3">
             <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-none bg-transparent flex items-center justify-center">
               <Image src="/logo.png" alt="Logo" fill className="object-contain" />
@@ -189,29 +184,14 @@ export default function StudentSidebar({
           })}
         </nav>
 
-        {/* Decorative grass at bottom */}
-        <div className="absolute bottom-20 left-0 right-0 z-0">
-          <GrassSVG className="w-full h-16" />
-        </div>
-
-        {/* Flowers */}
-        <FlowerSVG className="absolute bottom-20 left-4 w-12 h-16 z-10" />
-        <FlowerVariant2 className="absolute bottom-24 right-6 w-10 h-14 z-10" />
-
-        {/* Small tree */}
-        <TreeSVG className="absolute bottom-16 right-16 w-10 h-16 z-10" />
-
-        {/* Logout */}
-        <div className="p-2 border-t-2 border-purple-200 bg-white/60 backdrop-blur-sm relative z-10">
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:text-gray-900 w-full rounded-2xl hover:bg-white/80 transition-all font-bold shadow-sm hover:shadow-md border-2 border-transparent hover:border-gray-200 text-sm"
-          >
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white text-xs font-black shadow-md">
-              {profile?.full_name?.charAt(0) || "N"}
-            </div>
-            <span>Logout 👋</span>
-          </button>
+        {/* Decorative elements anchored to bottom of sidebar */}
+        <div className="relative h-14 shrink-0 flex items-end relative top-8">
+          <div className="absolute -bottom-3 left-0 right-0 z-0 mb-12">
+            <GrassSVG className="w-full h-16" />
+          </div>
+          <FlowerSVG className="absolute bottom-8 left-4 w-12 h-16 z-10" />
+          <FlowerVariant2 className="absolute bottom-9 right-6 w-10 h-14 z-10" />
+          <TreeSVG className="absolute bottom-8 right-16 w-10 h-16 z-10" />
         </div>
       </aside>
     </>

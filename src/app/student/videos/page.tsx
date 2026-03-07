@@ -22,10 +22,12 @@ export default function VideosPage() {
   const [loading, setLoading] = useState(true);
   const {
     isPaid,
+    paidMonths,
     loading: paymentLoading,
     checkPaymentStatus,
   } = usePaymentStatus();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBillingMonth, setSelectedBillingMonth] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<
     "recording" | "movie" | "yt_video"
   >("recording");
@@ -81,6 +83,7 @@ export default function VideosPage() {
           category: course.category || "yt_video",
           isSingleVideo: course.is_single_video,
           hasFreeVideo,
+          billingMonth: course.billing_month || null, // e.g. '2026-03-01'
         };
       });
 
@@ -90,6 +93,22 @@ export default function VideosPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Helper: determine if a specific course is paid/accessible
+  const isCourseAccessible = (course: any): boolean => {
+    // YT Videos are always free
+    if (course.category === 'yt_video') return true;
+    // Free preview available
+    if (course.hasFreeVideo) return true;
+    // Has a billing month restriction → check if user paid for that month
+    if (course.billingMonth) {
+      const d = new Date(course.billingMonth);
+      const normalised = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-01`;
+      return paidMonths.includes(normalised);
+    }
+    // No billing month → fall back to current month
+    return !!isPaid;
   };
 
   const filteredCourses = courses.filter(
@@ -199,10 +218,8 @@ export default function VideosPage() {
                 key={course.id}
                 className="relative group bg-white rounded-3xl overflow-hidden shadow-lg border-4 border-purple-200 hover:shadow-2xl transition-all hover:-translate-y-2"
               >
-                {/* Locking Overlay */}
-                {!isPaid &&
-                  activeTab !== "yt_video" &&
-                  !course.hasFreeVideo && (
+                {/* Locking Overlay – per-course */}
+                {!isCourseAccessible(course) && (
                     <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center text-center p-4">
                       <h2 className="font-black text-gray-900 mb-3 text-xl line-clamp-2">
                         {course.title}
@@ -214,10 +231,15 @@ export default function VideosPage() {
                         Locked! 🔒
                       </h3>
                       <p className="text-sm text-gray-600 mb-4 font-bold">
-                        Payment needed to watch
+                        {course.billingMonth
+                          ? `Requires ${new Date(course.billingMonth).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })} payment`
+                          : 'Payment needed to watch'}
                       </p>
                       <button
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={() => {
+                          setSelectedBillingMonth(course.billingMonth || null);
+                          setIsModalOpen(true);
+                        }}
                         className="px-6 py-3 bg-linear-to-r from-orange-500 to-red-500 text-white text-sm font-black rounded-full hover:scale-105 transition-all shadow-lg border-2 border-white"
                       >
                         Unlock Now! 🔓
@@ -227,7 +249,7 @@ export default function VideosPage() {
 
                 <Link
                   href={
-                    !isPaid && activeTab !== "yt_video" && !course.hasFreeVideo
+                    !isCourseAccessible(course)
                       ? "#"
                       : `/student/videos/${course.id}`
                   }
@@ -241,8 +263,7 @@ export default function VideosPage() {
                     </div>
 
                     {/* Free Preview Badge */}
-                    {!isPaid &&
-                      activeTab !== "yt_video" &&
+                    {!isCourseAccessible(course) &&
                       course.hasFreeVideo && (
                         <div className="absolute top-4 left-4 bg-linear-to-r from-green-400 to-emerald-500 text-white text-xs font-black px-3 py-2 rounded-full shadow-lg flex items-center gap-1 animate-pulse border-2 border-white">
                           <PlayCircle size={14} fill="currentColor" />
@@ -299,9 +320,8 @@ export default function VideosPage() {
                       ></div>
                     </div>
 
-                    {/* Watch Free Video Button */}
-                    {!isPaid &&
-                      activeTab !== "yt_video" &&
+                    {/* Watch Free Video Button (still shown if hasFreeVideo) */}
+                    {!isCourseAccessible(course) &&
                       course.hasFreeVideo && (
                         <div className="mt-4 pt-4 border-t-2 border-purple-100">
                           <span className="block w-full text-center py-3 bg-linear-to-r from-green-400 to-emerald-500 text-white font-black rounded-2xl hover:scale-105 transition-all shadow-md border-2 border-white">
@@ -333,12 +353,17 @@ export default function VideosPage() {
 
       <PaymentModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedBillingMonth(null);
+        }}
         onSuccess={() => {
           checkPaymentStatus(activeStudent?.grade || 'Grade 1');
           setIsModalOpen(false);
+          setSelectedBillingMonth(null);
         }}
         defaultGrade={activeStudent?.grade || 'Grade 1'}
+        billingMonth={selectedBillingMonth ? new Date(selectedBillingMonth) : undefined}
       />
     </div>
   );

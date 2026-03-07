@@ -1,8 +1,10 @@
 "use client";
 
 import { useData } from "@/context/DataContext";
-import { Check, ChevronDown, LayoutDashboard, Menu, User } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
+import { Check, ChevronDown, LayoutDashboard, LogOut, Menu, User } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { CloudSVG } from "./decorations/CloudSVG";
 import { SunSVG } from "./decorations/SunSVG";
@@ -15,6 +17,8 @@ export default function StudentHeader({ onMenuClick }: StudentHeaderProps) {
   const { profile, activeStudent, students, switchStudent } = useData();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const supabase = createClient();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -142,6 +146,20 @@ export default function StudentHeader({ onMenuClick }: StudentHeaderProps) {
                   </div>
                   Manage Profiles
                 </Link>
+                
+                <button 
+                   onClick={async () => {
+                     setIsDropdownOpen(false);
+                     await supabase.auth.signOut();
+                     router.push("/login");
+                   }}
+                   className="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-red-50 transition-colors text-red-600 text-sm font-bold"
+                >
+                  <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                     <LogOut size={16} />
+                  </div>
+                  Logout
+                </button>
               </div>
             </div>
           )}

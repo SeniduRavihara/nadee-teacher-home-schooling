@@ -26,6 +26,7 @@ interface Course {
   description: string;
   is_single_video: boolean;
   category: string;
+  billing_month: string | null;
 }
 
 export default function CoursePlayerPage({
@@ -36,6 +37,7 @@ export default function CoursePlayerPage({
   const { courseId } = use(params);
   const {
     isPaid,
+    paidMonths,
     loading: paymentLoading,
     checkPaymentStatus,
   } = usePaymentStatus();
@@ -139,12 +141,20 @@ export default function CoursePlayerPage({
 
   const activeVideo = videos.find((v) => v.id === activeVideoId) || videos[0];
 
+  const isCourseAccessible = course && (
+    course.category === 'yt_video'
+    ? true
+    : course.billing_month
+      ? paidMonths.includes(`${new Date(course.billing_month).getUTCFullYear()}-${String(new Date(course.billing_month).getUTCMonth() + 1).padStart(2, '0')}-01`)
+      : !!isPaid
+  );
+
   // Map videos to Playlist format
   const playlistVideos = videos.map((v) => {
-    // Logic: Locked if (video is premium AND user not paid AND category is not yt_video)
+    // Logic: Locked if (video is premium AND user does not have access to course AND category is not yt_video)
     // If video.is_locked is false, it's free for everyone.
     // If video.is_locked is true, it requires payment, unless it's a YT video.
-    const isLocked = v.is_locked && !isPaid && course?.category !== "yt_video";
+    const isLocked = v.is_locked && !isCourseAccessible && course?.category !== "yt_video";
 
     return {
       id: v.id,
@@ -160,7 +170,7 @@ export default function CoursePlayerPage({
   const activeVideoIsLocked =
     activeVideo &&
     activeVideo.is_locked &&
-    !isPaid &&
+    !isCourseAccessible &&
     course?.category !== "yt_video";
 
   return (
@@ -215,7 +225,9 @@ export default function CoursePlayerPage({
                 </div>
                 <h3 className="text-3xl font-black mb-3">Video Locked! 🔒</h3>
                 <p className="text-gray-300 mb-8 max-w-md text-lg font-bold">
-                  Complete your monthly payment to watch this awesome video! 🎉
+                  {course.billing_month
+                    ? `Complete your ${new Date(course.billing_month).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })} payment to watch this awesome video! 🎉`
+                    : 'Complete your monthly payment to watch this awesome video! 🎉'}
                 </p>
                 <button
                   onClick={() => setIsModalOpen(true)}
@@ -287,6 +299,7 @@ export default function CoursePlayerPage({
           setIsModalOpen(false);
         }}
         defaultGrade={course?.target_grade}
+        billingMonth={course?.billing_month ? new Date(course?.billing_month) : undefined}
       />
     </div>
   );

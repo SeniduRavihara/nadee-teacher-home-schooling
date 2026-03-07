@@ -3,16 +3,16 @@
 import { useData } from '@/context/DataContext';
 
 import {
-  BarChart3,
-  BookOpen,
-  CreditCard,
-  GraduationCap,
-  LayoutDashboard,
-  LogOut,
-  Settings,
-  Shield,
-  Users,
-  Video
+    BarChart3,
+    BookOpen,
+    CreditCard,
+    GraduationCap,
+    LayoutDashboard,
+    LogOut,
+    Settings,
+    Shield,
+    Users,
+    Video
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -53,7 +53,7 @@ export default function AdminSidebar() {
         </Link>
       </div>
 
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-[#0a0a4a] [&::-webkit-scrollbar-thumb]:bg-blue-800 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-blue-600">
         {filteredMenuItems.map((item) => {
           const isActive = pathname === item.href;
           return (
