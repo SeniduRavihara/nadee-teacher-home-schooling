@@ -85,28 +85,75 @@ const main = async () => {
     let totalRecords = 0;
 
     try {
+        const fetchAllRecords = async (tableName: string) => {
+            let allData: any[] = [];
+            let from = 0;
+            const step = 1000;
+            let hasMore = true;
+
+            while (hasMore) {
+                const { data, error } = await supabase
+                    .from(tableName)
+                    .select('*')
+                    .range(from, from + step - 1)
+                    .order('created_at', { ascending: true }); // Ordering helps ensure stable pagination
+
+                if (error) {
+                    // Specific handling for tables without created_at
+                    if (error.message.includes('column "created_at" does not exist')) {
+                        const { data: retryData, error: retryError } = await supabase
+                            .from(tableName)
+                            .select('*')
+                            .range(from, from + step - 1);
+                        
+                        if (retryError) throw retryError;
+                        
+                        if (retryData && retryData.length > 0) {
+                            allData = [...allData, ...retryData];
+                            if (retryData.length < step) hasMore = false;
+                            else from += step;
+                        } else {
+                            hasMore = false;
+                        }
+                    } else {
+                        throw error;
+                    }
+                } else if (data && data.length > 0) {
+                    allData = [...allData, ...data];
+                    if (data.length < step) {
+                        hasMore = false;
+                    } else {
+                        from += step;
+                    }
+                } else {
+                    hasMore = false;
+                }
+            }
+            return allData;
+        };
+
         for (const tableName of TABLES) {
             process.stdout.write(`⏳ Backing up table: ${tableName}... `);
             
-            // Limit to 10000 records for safety, or iterate if needed. 
-            // For now assuming reasonable size.
-            const { data, error } = await supabase
-                .from(tableName)
-                .select('*');
-
-            if (error) {
-                // If table doesn't exist, just warn and continue (or better, make this robust)
+            try {
+                const data = await fetchAllRecords(tableName);
+                
+                if (data.length > 0) {
+                    const csv = toCSV(data);
+                    zip.file(`${tableName}_backup_${Date.now()}.csv`, csv);
+                    console.log(`✅ Done (${data.length} records).`);
+                    totalRecords += data.length;
+                } else {
+                    console.log(`✅ Done (0 records).`);
+                }
+            } catch (error: any) {
+                // If table doesn't exist, just warn and continue
                 if (error.code === '42P01') { // relation does not exist
                     console.log(`⚠️ Table not found (skipping).`);
                 } else {
                     console.log(`❌ Failed: ${error.message}`);
                     throw error;
                 }
-            } else if (data) {
-                const csv = toCSV(data);
-                zip.file(`${tableName}_backup_${Date.now()}.csv`, csv);
-                console.log(`✅ Done (${data.length} records).`);
-                totalRecords += data.length;
             }
         }
 
