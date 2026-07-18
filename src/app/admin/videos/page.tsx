@@ -1,6 +1,7 @@
 'use client';
 
 import { createClient } from '@/utils/supabase/client';
+import { GRADES } from '@/constants/grades';
 import { BookOpen, Edit, Film, Lock, MonitorPlay, Plus, Search, Trash2, Unlock, Video } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -407,7 +408,7 @@ export default function AdminCoursesPage() {
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Target Grade(s)</label>
                     <div className="flex flex-wrap gap-2">
-                       {['Preschool', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5'].map((grade) => (
+                       {GRADES.map((grade) => (
                           <label key={grade} className="flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
                             <input
                               type="checkbox"

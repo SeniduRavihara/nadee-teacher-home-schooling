@@ -2,6 +2,7 @@
 
 import { updateUserPassword } from '@/app/actions/admin-auth';
 import { createClient } from '@/utils/supabase/client';
+import { GRADES } from '@/constants/grades';
 import { Download, Eye, EyeOff, Key, Search, User, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -282,12 +283,9 @@ export default function AdminStudentsPage() {
           onChange={(e) => { setSelectedGrade(e.target.value); setCurrentPage(1); }}
         >
           <option value="All">All Grades</option>
-          <option value="Preschool">Preschool</option>
-          <option value="Grade 1">Grade 1</option>
-          <option value="Grade 2">Grade 2</option>
-          <option value="Grade 3">Grade 3</option>
-          <option value="Grade 4">Grade 4</option>
-          <option value="Grade 5">Grade 5</option>
+          {GRADES.map((g) => (
+            <option key={g} value={g}>{g}</option>
+          ))}
         </select>
       </div>
 
