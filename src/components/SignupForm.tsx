@@ -20,20 +20,24 @@ export default function SignupForm() {
   const router = useRouter();
   const supabase = createClient();
   
-  const getGradeCode = (selectedGrade: string) => {
-    switch(selectedGrade) {
-      case 'Preschool': return 'P1';
-      case 'Grade 1': return 'G1';
-      case 'Grade 2': return 'G2';
-      case 'Grade 3': return 'G3';
-      case 'Grade 4': return 'G4';
-      case 'Grade 5': return 'G5';
-      default: return '';
+  const idPrefix = 'mindsp/26/';
+
+  const getPlaceholder = (gradeName: string) => {
+    switch (gradeName) {
+      case 'Preschool':
+        return 'e.g. P';
+      case 'Grade 1':
+        return 'e.g. G1';
+      case 'Grade 2':
+        return 'e.g. G2';
+      case 'Homeschooling with spoken english':
+        return 'HP8, HS8, HK8';
+      case 'PHONICS LEVEL 1':
+        return '7P, 7S, 7K';
+      default:
+        return 'e.g. P';
     }
   };
-
-  const gradeCode = getGradeCode(grade);
-  const idPrefix = `mindsp/26/${gradeCode ? gradeCode + '/' : ''}`;
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,6 +124,8 @@ export default function SignupForm() {
             <option value="Preschool">SPARK FOUNDATION</option>
             <option value="Grade 1">SPARK BUILDERS</option>
             <option value="Grade 2">SPARK ACHIEVERS</option>
+            <option value="Homeschooling with spoken english">Homeschooling with spoken english</option>
+            <option value="PHONICS LEVEL 1">PHONICS LEVEL 1</option>
           </select>
            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-6 text-gray-700">
             <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
@@ -136,16 +142,15 @@ export default function SignupForm() {
             </div>
             <input
               type="text"
-              placeholder="Student ID Suffix"
+              placeholder={getPlaceholder(grade)}
               required
               value={studentId}
               onChange={(e) => {
-                // Only allow numbers and max 4 digits
-                const val = e.target.value.replace(/\D/g, '').slice(0, 4);
+                const val = e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 12);
                 setStudentId(val);
               }}
-              maxLength={4}
-              className={`w-full pr-6 py-3 rounded-full border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-gray-700 ${gradeCode ? 'pl-40' : 'pl-32'}`}
+              maxLength={12}
+              className="w-full pr-6 py-3 rounded-full border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-gray-700 pl-32"
             />
           </div>
         </div>

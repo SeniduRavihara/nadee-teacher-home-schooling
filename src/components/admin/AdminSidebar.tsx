@@ -1,6 +1,8 @@
 'use client';
 
 import { useData } from '@/context/DataContext';
+import { createClient } from '@/utils/supabase/client';
+import { useRouter } from 'next/navigation';
 
 import {
     BarChart3,
@@ -32,6 +34,8 @@ const menuItems = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const supabase = createClient();
+  const router = useRouter();
   const { profile } = useData();
 
   const filteredMenuItems = menuItems.filter(item => {
@@ -74,7 +78,13 @@ export default function AdminSidebar() {
       </nav>
 
       <div className="p-4 border-t border-blue-900">
-        <button className="flex items-center gap-3 px-4 py-3 text-blue-200 hover:text-white w-full rounded-xl hover:bg-blue-900 transition-colors">
+        <button 
+          onClick={async () => {
+            await supabase.auth.signOut();
+            router.push('/login');
+          }}
+          className="flex items-center gap-3 px-4 py-3 text-blue-200 hover:text-white w-full rounded-xl hover:bg-blue-900 transition-colors"
+        >
           <LogOut size={20} />
           <span>Logout</span>
         </button>

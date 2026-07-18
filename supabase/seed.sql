@@ -23,8 +23,8 @@ ON CONFLICT (id) DO NOTHING;
 -- Courses
 INSERT INTO public.courses (id, title, description, target_grade, thumbnail_url)
 VALUES
-    ('33333333-3333-3333-3333-333333333331', 'Space Exploration', 'Journey through the stars.', 'Grade 3', 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800'),
-    ('33333333-3333-3333-3333-333333333332', 'Basic Art', 'Learn to draw shapes.', 'Grade 1', 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800')
+    ('33333333-3333-3333-3333-333333333331', 'Space Exploration', 'Journey through the stars.', ARRAY['Grade 3'], 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800'),
+    ('33333333-3333-3333-3333-333333333332', 'Basic Art', 'Learn to draw shapes.', ARRAY['Grade 1'], 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800')
 ON CONFLICT (id) DO NOTHING;
 
 -- Videos for Course 1 (Space Exploration)

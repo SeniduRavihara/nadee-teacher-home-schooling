@@ -1,11 +1,11 @@
 'use client';
 
-import { GRADES } from '@/constants/grades';
+import { GRADES, GRADE_PREFIXES, type Grade } from '@/constants/grades';
 import { useData } from '@/context/DataContext';
 import { useDialog } from '@/context/DialogContext';
 import { createClient } from '@/utils/supabase/client';
 import { X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 interface AddChildModalProps {
@@ -22,9 +22,92 @@ export default function AddChildModal({ isOpen, onClose, onSuccess }: AddChildMo
     age: '',
     gender: 'boy',
   });
+  const [studentIdSuffix, setStudentIdSuffix] = useState('');
+  const [isSuffixManuallyEdited, setIsSuffixManuallyEdited] = useState(false);
+
   const supabase = createClient();
   const { showAlert } = useDialog();
   const { students } = useData();
+
+  const getDefaultSuffix = (gradeName: string, existingStudents: any[]) => {
+    if (gradeName === 'Homeschooling with spoken english' || gradeName === 'PHONICS LEVEL 1') {
+      return '';
+    }
+    if (existingStudents.length > 0) {
+      const prefixes = GRADE_PREFIXES[gradeName as Grade] || ['P'];
+      const L = prefixes.length;
+      const additionalChildIndex = existingStudents.length - 1;
+      const prefixIndex = additionalChildIndex % L;
+      const num = Math.floor(additionalChildIndex / L) + 1;
+      return `${prefixes[prefixIndex]}${num}`;
+    }
+    return '';
+  };
+
+  const getPlaceholder = (gradeName: string) => {
+    switch (gradeName) {
+      case 'Homeschooling with spoken english':
+        return 'HP8, HS8, HK8';
+      case 'PHONICS LEVEL 1':
+        return '7P, 7S, 7K';
+      case 'Preschool':
+        return 'e.g. P';
+      case 'Grade 1':
+        return 'e.g. G1';
+      case 'Grade 2':
+        return 'e.g. G2';
+      default:
+        return 'e.g. P';
+    }
+  };
+
+  const getCleanBaseId = () => {
+    if (students.length > 0) {
+      const baseId = students[0].student_id || '';
+      const segments = baseId.split('/');
+      if (segments.length >= 2) {
+        return `${segments[0]}/${segments[1]}`;
+      }
+      return baseId;
+    }
+    return 'mindsp/26';
+  };
+
+  const cleanBaseId = getCleanBaseId();
+
+  const handleGradeChange = (newGrade: string) => {
+    setFormData(prev => ({ ...prev, grade: newGrade }));
+    if (!isSuffixManuallyEdited) {
+      setStudentIdSuffix(getDefaultSuffix(newGrade, students));
+    }
+  };
+
+  const handleClose = () => {
+    setIsSuffixManuallyEdited(false);
+    setFormData({
+      childName: '',
+      grade: 'Preschool',
+      age: '',
+      gender: 'boy',
+    });
+    setStudentIdSuffix('');
+    onClose();
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      if (students.length > 0 && !isSuffixManuallyEdited) {
+        setStudentIdSuffix(getDefaultSuffix(formData.grade, students));
+      }
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen, students]);
 
   if (!isOpen) return null;
 
@@ -39,34 +122,8 @@ export default function AddChildModal({ isOpen, onClose, onSuccess }: AddChildMo
         let studentId = '';
 
         if (students.length > 0) {
-            // Logic: Get the first student's ID as the "Base ID"
-            // Example: mindsp/26/P1/1999
-            // If the base ID already has a suffix (which shouldn't happen for the 1st one usually, but we handle it), we clean it?
-            // User requirement: "mindsp/26/P1/1999" -> "mindsp/26/P1/1999/a"
-            
-            // We trust the first student in the array (ordered by created_at) is the "Main" profile.
-            const baseId = students[0].student_id || `STU-${Math.floor(1000 + Math.random() * 9000)}`;
-            
-            // Remove any existing suffix if we accidentally grabbed a child
-            // A suffix looks like "/a", "/b" at the end. 
-            // Regex to match "slash followed by single letter at end of string"
-            const cleanBaseId = baseId.replace(/\/[a-z]$/, '');
-
-            // Generate suffix: 'a', 'b', 'c'...
-            // If we have 1 student, we are adding the 2nd one. index=0 ('a')
-            // If we have 2 students, we are adding the 3rd one. index=1 ('b')
-            // students.length currently includes the main one (1). 
-            // So for the NEW child (2nd total), we want 97 + (1-1) = 97 ('a') -> Wait.
-            // User example: "every additional child will start with /a"
-            // Child 2 -> suffix 'a'. (students.length = 1) -> index 0
-            // Child 3 -> suffix 'b'. (students.length = 2) -> index 1
-            const suffixIndex = students.length - 1; 
-            const suffix = String.fromCharCode(97 + suffixIndex); // 97 is 'a'
-            
-            studentId = `${cleanBaseId}/${suffix}`;
-
+            studentId = `${cleanBaseId}/${studentIdSuffix.trim()}`;
         } else {
-             // Fallback if no students exist (should rarely happen from this modal)
              studentId = `STU-${Math.floor(1000 + Math.random() * 9000)}`;
         }
 
@@ -81,17 +138,9 @@ export default function AddChildModal({ isOpen, onClose, onSuccess }: AddChildMo
 
         if (error) throw error;
 
-        onClose();
+        handleClose();
         await showAlert("Child profile created successfully!", "Success");
         onSuccess();
-        
-        // Reset form
-        setFormData({
-            childName: '',
-            grade: 'Preschool',
-            age: '',
-            gender: 'boy',
-        });
 
     } catch (error: any) {
         console.error("Error adding child:", error);
@@ -102,10 +151,10 @@ export default function AddChildModal({ isOpen, onClose, onSuccess }: AddChildMo
   };
 
   return createPortal(
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl max-w-lg w-full p-8 relative shadow-2xl scale-100 animate-in zoom-in-95 duration-200 border-4 border-purple-100">
+    <div className="fixed inset-0 bg-black/50 overflow-y-auto grid place-items-center z-[9999] p-4 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white rounded-3xl max-w-lg w-full p-8 relative shadow-2xl scale-100 animate-in zoom-in-95 duration-200 border-4 border-purple-100 my-8">
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 p-2 rounded-full transition-colors"
         >
           <X size={20} />
@@ -141,12 +190,14 @@ export default function AddChildModal({ isOpen, onClose, onSuccess }: AddChildMo
                 </label>
                 <select
                   value={formData.grade}
-                  onChange={(e) => setFormData({...formData, grade: e.target.value})}
+                  onChange={(e) => handleGradeChange(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-100 font-bold bg-white transition-all"
                 >
-                  {GRADES.map((g) => (
-                    <option key={g} value={g}>{g}</option>
-                  ))}
+                  <option value="Preschool">SPARK FOUNDATION</option>
+                  <option value="Grade 1">SPARK BUILDERS</option>
+                  <option value="Grade 2">SPARK ACHIEVERS</option>
+                  <option value="Homeschooling with spoken english">Homeschooling with spoken english</option>
+                  <option value="PHONICS LEVEL 1">PHONICS LEVEL 1</option>
                 </select>
               </div>
               <div>
@@ -162,6 +213,31 @@ export default function AddChildModal({ isOpen, onClose, onSuccess }: AddChildMo
                   placeholder="Age"
                 />
               </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              Student ID Suffix
+            </label>
+            <div className="relative flex items-center">
+              <span className="bg-gray-50 px-4 py-3 rounded-l-xl border-2 border-r-0 border-gray-200 font-bold text-gray-400 select-none text-sm md:text-base whitespace-nowrap">
+                {cleanBaseId}/
+              </span>
+              <input
+                type="text"
+                required
+                value={studentIdSuffix}
+                onChange={(e) => {
+                  setStudentIdSuffix(e.target.value);
+                  setIsSuffixManuallyEdited(true);
+                }}
+                className="w-full px-4 py-3 rounded-r-xl border-2 border-gray-200 focus:outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-100 font-bold transition-all text-gray-700"
+                placeholder={getPlaceholder(formData.grade)}
+              />
+            </div>
+            <p className="text-xs text-gray-400 mt-1 font-medium">
+              Auto-filled based on grade, but you can enter your own text.
+            </p>
           </div>
 
           <div>

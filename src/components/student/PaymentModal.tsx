@@ -28,12 +28,19 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, billingMonth,
   
   useEffect(() => {
     if (isOpen) {
+      document.body.style.overflow = 'hidden';
       if (billingMonth) {
         setMonth(billingMonth.toISOString().slice(0, 7));
       } else {
         setMonth(new Date().toISOString().slice(0, 7));
       }
+    } else {
+      document.body.style.overflow = '';
     }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen, billingMonth]);
 
   const [uploading, setUploading] = useState(false);

@@ -2,10 +2,16 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { FaWhatsapp } from 'react-icons/fa';
 
 export default function WhatsAppButton() {
+  const pathname = usePathname();
   const phoneNumber = '94707001709'; // Using the number provided by the user with country code based on context (Sri Lanka)
+
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <motion.div

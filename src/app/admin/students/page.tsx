@@ -26,6 +26,12 @@ export default function AdminStudentsPage() {
   const [selectedGrade, setSelectedGrade] = useState('All');
   const [downloading, setDownloading] = useState(false);
   
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  
   // Password Reset State
   const [resetModalOpen, setResetModalOpen] = useState(false);
   const [studentToReset, setStudentToReset] = useState<Student | null>(null);
@@ -36,12 +42,35 @@ export default function AdminStudentsPage() {
   const supabase = createClient();
 
   useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+      setCurrentPage(1);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
+
+  useEffect(() => {
     fetchStudents();
-  }, []);
+  }, [currentPage, itemsPerPage, debouncedSearch, selectedGrade]);
 
   const fetchStudents = async () => {
+    setLoading(true);
     try {
-      const { data, error } = await supabase
+      let parentIds: string[] = [];
+      if (debouncedSearch) {
+        const { data: matchedProfiles } = await supabase
+          .from('profiles')
+          .select('id')
+          .or(`email.ilike.%${debouncedSearch}%,parent_name.ilike.%${debouncedSearch}%`);
+        if (matchedProfiles) {
+          parentIds = matchedProfiles.map(p => p.id);
+        }
+      }
+
+      let query = supabase
         .from('students')
         .select(`
             *,
@@ -50,11 +79,31 @@ export default function AdminStudentsPage() {
                 parent_name,
                 contact_number
             )
-        `)
-        .order('created_at', { ascending: false });
+        `, { count: 'exact' });
+
+      if (selectedGrade !== 'All') {
+        query = query.eq('grade', selectedGrade);
+      }
+
+      if (debouncedSearch) {
+        let orCondition = `full_name.ilike.%${debouncedSearch}%,student_id.ilike.%${debouncedSearch}%`;
+        if (parentIds.length > 0) {
+          orCondition += `,parent_id.in.(${parentIds.join(',')})`;
+        }
+        query = query.or(orCondition);
+      }
+
+      const from = (currentPage - 1) * itemsPerPage;
+      const to = from + itemsPerPage - 1;
+
+      const { data, count, error } = await query
+        .order('created_at', { ascending: false })
+        .range(from, to);
 
       if (error) throw error;
-      setStudents((data as any) || []);
+
+      setStudents((data as any[]) || []);
+      setTotalCount(count || 0);
     } catch (error) {
       console.error('Error fetching students:', error);
     } finally {
@@ -65,16 +114,67 @@ export default function AdminStudentsPage() {
   const handleDownload = async () => {
     setDownloading(true);
     try {
-      // 1. Get current billing month
+      let parentIds: string[] = [];
+      if (debouncedSearch) {
+        const { data: matchedProfiles } = await supabase
+          .from('profiles')
+          .select('id')
+          .or(`email.ilike.%${debouncedSearch}%,parent_name.ilike.%${debouncedSearch}%`);
+        if (matchedProfiles) {
+          parentIds = matchedProfiles.map(p => p.id);
+        }
+      }
+
+      let allExportStudents: Student[] = [];
+      let from = 0;
+      const limit = 1000;
+      let hasMore = true;
+
+      while (hasMore) {
+        let query = supabase
+          .from('students')
+          .select(`
+              *,
+              profiles:parent_id (
+                  email,
+                  parent_name,
+                  contact_number
+              )
+          `);
+
+        if (selectedGrade !== 'All') {
+          query = query.eq('grade', selectedGrade);
+        }
+
+        if (debouncedSearch) {
+          let orCondition = `full_name.ilike.%${debouncedSearch}%,student_id.ilike.%${debouncedSearch}%`;
+          if (parentIds.length > 0) {
+            orCondition += `,parent_id.in.(${parentIds.join(',')})`;
+          }
+          query = query.or(orCondition);
+        }
+
+        const { data, error } = await query
+          .order('created_at', { ascending: false })
+          .range(from, from + limit - 1);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          allExportStudents = [...allExportStudents, ...(data as any[])];
+          from += limit;
+          if (data.length < limit) {
+            hasMore = false;
+          }
+        } else {
+          hasMore = false;
+        }
+      }
+
       const now = new Date();
       const billingMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
       const monthName = now.toLocaleString('default', { month: 'long', year: 'numeric' });
 
-      // 2. Fetch payments for this month
-      // Note: Payments are linked to user_id (parent_id), so we check if the PARENT has paid
-      // Ideally payments should be linked to student_id or we check specific grade, 
-      // but for now we check if the parent linked to this student has a payment.
-      
       const { data: payments, error: paymentError } = await supabase
         .from('payments')
         .select('user_id, status, grade')
@@ -82,15 +182,10 @@ export default function AdminStudentsPage() {
 
       if (paymentError) throw paymentError;
 
-      // Create a map for quick lookup: ParentID -> Status (Simple check)
-      // TODO: Improve this to check specific grade payment if needed
       const paymentMap = new Map();
       payments?.forEach(p => paymentMap.set(p.user_id, p.status));
 
-      // 3. Generate Excel Data
-      const studentsToExport = filteredStudents.length > 0 ? filteredStudents : students;
-
-      const excelData = studentsToExport.map(student => ({
+      const excelData = allExportStudents.map(student => ({
         'Student ID': student.student_id || 'N/A',
         'Student Name': student.full_name || '',
         'Email': student.profiles?.email || '',
@@ -100,8 +195,6 @@ export default function AdminStudentsPage() {
         [`Payment Status (${monthName})`]: paymentMap.get(student.parent_id) || 'Not Paid'
       }));
 
-      // 4. Create Workbook and Download
-      // Dynamically import xlsx to avoid server-side issues if any
       const XLSX = await import('xlsx');
       const worksheet = XLSX.utils.json_to_sheet(excelData);
       const workbook = XLSX.utils.book_new();
@@ -146,16 +239,8 @@ export default function AdminStudentsPage() {
     }
   };
 
-  const filteredStudents = students.filter(student => {
-    const parentEmail = student.profiles?.email?.toLowerCase() || '';
-    const studentName = student.full_name?.toLowerCase() || '';
-    const studentId = student.student_id?.toLowerCase() || '';
-    const term = searchTerm.toLowerCase();
-
-    const matchesSearch = studentName.includes(term) || parentEmail.includes(term) || studentId.includes(term);
-    const matchesGrade = selectedGrade === 'All' || student.grade === selectedGrade;
-    return matchesSearch && matchesGrade;
-  });
+  const totalPages = Math.ceil(totalCount / itemsPerPage) || 1;
+  const startIndex = (currentPage - 1) * itemsPerPage;
 
   return (
     <div className="space-y-8">
@@ -166,7 +251,7 @@ export default function AdminStudentsPage() {
         </div>
         <div className="flex items-center gap-4">
           <div className="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg font-medium">
-            Total Students: {students.length}
+            Total Students: {totalCount}
           </div>
           <button
             onClick={handleDownload}
@@ -188,13 +273,13 @@ export default function AdminStudentsPage() {
             placeholder="Search by student name, ID or parent email..."
             className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
           />
         </div>
         <select
           className="px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={selectedGrade}
-          onChange={(e) => setSelectedGrade(e.target.value)}
+          onChange={(e) => { setSelectedGrade(e.target.value); setCurrentPage(1); }}
         >
           <option value="All">All Grades</option>
           <option value="Preschool">Preschool</option>
@@ -212,12 +297,12 @@ export default function AdminStudentsPage() {
           <table className="w-full text-left">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                <th className="px-6 py-4 font-semibold text-gray-700">Student ID</th>
-                <th className="px-6 py-4 font-semibold text-gray-700">Student Name</th>
-                <th className="px-6 py-4 font-semibold text-gray-700">Email (Parent)</th>
-                <th className="px-6 py-4 font-semibold text-gray-700">Grade</th>
-                <th className="px-6 py-4 font-semibold text-gray-700">Parent Details</th>
-                <th className="px-6 py-4 font-semibold text-gray-700">Joined Date</th>
+                <th className="px-6 py-3 font-semibold text-gray-700">Student ID</th>
+                <th className="px-6 py-3 font-semibold text-gray-700">Student Name</th>
+                <th className="px-6 py-3 font-semibold text-gray-700">Email (Parent)</th>
+                <th className="px-6 py-3 font-semibold text-gray-700">Grade</th>
+                <th className="px-6 py-3 font-semibold text-gray-700">Parent Details</th>
+                <th className="px-6 py-3 font-semibold text-gray-700">Joined Date</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -225,41 +310,36 @@ export default function AdminStudentsPage() {
                 <tr>
                   <td colSpan={6} className="px-6 py-8 text-center text-gray-500">Loading students...</td>
                 </tr>
-              ) : filteredStudents.length === 0 ? (
+              ) : students.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-8 text-center text-gray-500">No students found matching your filters.</td>
                 </tr>
               ) : (
-                filteredStudents.map((student) => (
+                students.map((student) => (
                   <tr key={student.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-2">
                       <span className="font-mono text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
                         {student.student_id || 'N/A'}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
-                          {student.full_name?.[0]?.toUpperCase() || <User size={18} />}
-                        </div>
-                        <div className="font-medium text-gray-900">{student.full_name || 'Unnamed Student'}</div>
-                      </div>
+                    <td className="px-6 py-2">
+                      <div className="font-medium text-gray-900">{student.full_name || 'Unnamed Student'}</div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-2">
                       <div className="text-sm text-gray-500">{student.profiles?.email || 'N/A'}</div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-2">
                       <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
                         {student.grade || 'N/A'}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-2">
                       <div className="text-sm">
                         <div className="font-medium text-gray-900">{student.profiles?.parent_name || 'N/A'}</div>
                         <div className="text-gray-500">{student.profiles?.contact_number || 'N/A'}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
+                    <td className="px-6 py-2 text-sm text-gray-500">
                       <div className="flex items-center justify-between">
                          <span>{new Date(student.created_at).toLocaleDateString()}</span>
                          <button 
@@ -278,6 +358,50 @@ export default function AdminStudentsPage() {
           </table>
         </div>
       </div>
+
+      {/* Pagination Controls */}
+      {students.length > 0 && (
+        <div className="flex flex-col sm:flex-row justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-100 gap-4">
+          <div className="text-sm text-gray-500">
+            Showing <span className="font-medium text-gray-900">{startIndex + 1}</span> to <span className="font-medium text-gray-900">{Math.min(startIndex + students.length, totalCount)}</span> of <span className="font-medium text-gray-900">{totalCount}</span> students
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-500">Rows per page:</span>
+              <select
+                value={itemsPerPage}
+                onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}
+                className="px-2 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+              >
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+              </select>
+            </div>
+            <div className="flex gap-1 items-center">
+              <button
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1.5 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium transition-colors"
+              >
+                Previous
+              </button>
+              
+              <span className="px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg border border-gray-100 flex items-center min-w-20 justify-center">
+                {currentPage} / {totalPages}
+              </span>
+
+              <button
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1.5 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium transition-colors"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Password Reset Modal */}
       {resetModalOpen && studentToReset && (
